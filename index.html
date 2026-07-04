@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basket Command Center</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f5f7; color: #16181d; padding: 20px; font-size: 14px;
+    max-width: 1500px; margin: 0 auto;
+  }
+  .eyebrow { font-size: 12px; color: #6b7280; letter-spacing: .02em; }
+  h1 { font-size: 26px; font-weight: 700; margin: 2px 0 4px; }
+  .sub { color: #6b7280; font-size: 13px; margin-bottom: 6px; }
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .bench-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { background: #fff; border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .up { color: #0a9e5c; } .down { color: #e5484d; } .flat { color: #6b7280; }
+  .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+  .stat { background: #fff; border: 1px solid #e9eaee; border-radius: 14px; padding: 14px 16px; }
+  .stat .label { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+  .stat .big { font-size: 20px; font-weight: 700; }
+  .stat .small { font-size: 12px; color: #6b7280; margin-top: 4px; }
+  .panel { background: #fff; border: 1px solid #e9eaee; border-radius: 16px; padding: 16px; margin-bottom: 16px; }
+  .panel h2 { font-size: 17px; margin-bottom: 2px; }
+  .panel .desc { font-size: 12px; color: #6b7280; margin-bottom: 12px; }
+  .addbar { display: flex; gap: 8px; margin: 10px 0 14px; flex-wrap: wrap; }
+  .addbar input { flex: 1; min-width: 160px; max-width: 260px; padding: 8px 12px; border: 1px solid #d6d9de; border-radius: 10px; font-size: 13px; text-transform: uppercase; }
+  .addbar input:focus { outline: 2px solid #4c7dfc33; border-color: #4c7dfc; }
+  button { padding: 8px 14px; border: 1px solid #d6d9de; background: #fff; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  button:hover { background: #f3f4f6; }
+  button.primary { background: #16181d; color: #fff; border-color: #16181d; }
+  button.primary:hover { background: #33363d; }
+  .notice { font-size: 12px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 8px 12px; margin: 0 0 12px; display: none; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; }
+  .card { background: #fff; border: 1px solid #e9eaee; border-radius: 12px; padding: 12px; position: relative; }
+  .card.benchmark { background: #f0f1f4; }
+  .card .tick { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+  .card .etf { font-size: 9px; background: #e5e7eb; border-radius: 4px; padding: 1px 5px; color: #4b5563; font-weight: 700; }
+  .card .price { font-size: 13px; color: #374151; margin-top: 6px; }
+  .card .chg { font-weight: 700; font-size: 13px; }
+  .card .vs { font-size: 11px; color: #6b7280; margin-top: 6px; display: flex; justify-content: space-between; }
+  .card .rm, .dcard .rm { position: absolute; top: 6px; right: 6px; border: none; background: none; color: #9ca3af; font-size: 14px; line-height: 1; padding: 3px 5px; border-radius: 6px; cursor: pointer; }
+  .card .rm:hover, .dcard .rm:hover { background: #fee2e2; color: #dc2626; }
+  .card .errmsg, .errmsg { font-size: 11px; color: #dc2626; margin-top: 6px; }
+  .dcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  .dcard { background: #fff; border: 1px solid #e9eaee; border-radius: 14px; padding: 14px; position: relative; }
+  .dcard-head { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; padding-right: 16px; }
+  .dcard-head .logo { width: 30px; height: 30px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 30px; }
+  .dcard-head .idblock { flex: 1; min-width: 0; }
+  .dcard-head .tk { font-weight: 700; font-size: 15px; }
+  .dcard-head .ind { font-size: 11px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dcard-head .pxblock { text-align: right; }
+  .dcard-head .px { font-weight: 700; font-size: 15px; }
+  .dcard-head .dchg { font-size: 12px; font-weight: 600; }
+  .spark { width: 100%; height: 56px; margin: 8px 0 10px; display: block; }
+  .chips3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+  .rchip { border: 1px solid #e9eaee; border-radius: 9px; padding: 6px 8px; }
+  .rchip .rlab { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; }
+  .rchip .rlab .per { color: #6b7280; }
+  .rchip .rbar { height: 4px; background: #f0f1f4; border-radius: 3px; margin-top: 5px; overflow: hidden; }
+  .rchip .rbar i { display: block; height: 100%; border-radius: 3px; }
+  .range-row { display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; margin-bottom: 3px; }
+  .range-row b { color: #16181d; font-weight: 600; }
+  .range-track { height: 5px; background: #f0f1f4; border-radius: 3px; position: relative; margin-bottom: 12px; }
+  .range-track i { position: absolute; top: -2px; width: 9px; height: 9px; border-radius: 50%; background: #16181d; border: 2px solid #fff; box-shadow: 0 0 0 1px #d6d9de; }
+  .dstats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; border-top: 1px solid #f3f4f6; padding-top: 10px; }
+  .dstats .k { font-size: 11px; color: #6b7280; }
+  .dstats .v { font-size: 12.5px; font-weight: 600; }
+  .dcard-sector { border-top: 1px solid #f3f4f6; margin-top: 10px; padding-top: 8px; font-size: 11px; color: #6b7280; }
+  .dcard-sector b { display: block; color: #16181d; font-size: 12.5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: right; font-weight: 600; color: #6b7280; font-size: 12px; padding: 8px 10px; border-bottom: 1px solid #e9eaee; cursor: pointer; user-select: none; white-space: nowrap; }
+  th:first-child { text-align: left; }
+  th:hover { color: #16181d; }
+  th .arrow { font-size: 10px; }
+  td { text-align: right; padding: 9px 10px; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+  td:first-child { text-align: left; font-weight: 700; }
+  .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
+  .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="header-row">
+  <div>
+    <div class="eyebrow">Tech, AI, cybersecurity, software, and ETF monitor</div>
+    <h1>Basket command center</h1>
+    <div class="sub" id="subtitle">End-of-day quotes, performance, and benchmark comparison.</div>
+  </div>
+  <div class="bench-chips" id="benchChips"></div>
+</div>
+
+<div class="statgrid" id="stats"></div>
+
+<div class="panel">
+  <h2>Watchlist</h2>
+  <div class="desc">Hide a ticker with the &times; on its card, or re-show it by typing it below. To track a NEW ticker, edit <b>tickers.txt</b> in the GitHub repo — the site updates automatically.</div>
+  <div class="addbar">
+    <input id="addInput" placeholder="Show ticker e.g. TSM" maxlength="12">
+    <button class="primary" id="addBtn">Show</button>
+    <button id="showAllBtn">Show all</button>
+  </div>
+  <div class="notice" id="notice"></div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<div class="panel">
+  <h2>Detailed ticker cards</h2>
+  <div class="desc">Last close, 3-month daily trend line, 1M/3M/1Y returns, 52-week range position, market cap, beta, volume vs 20-day average, sector, and industry.</div>
+  <div class="dcards" id="dcards"></div>
+</div>
+
+<div class="panel">
+  <h2>Performance overview</h2>
+  <div class="desc">Daily, WTD, MTD, YTD, and 1-year returns from daily closes. Click a column to sort.</div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr id="theadRow"></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+'use strict';
+const LS_HIDDEN = 'basket-hidden-tickers-v1';
+const BENCHMARKS = new Set(["SPY","QQQ","IWM"]);
+const PINNED = new Set(["SPY"]);
+
+let allTickers = [];   // from data.json, in file order
+let hidden = loadHidden();
+const data = {};       // sym -> metrics or {error}
+const fund = {};       // sym -> {mcap, beta, sector, industry, name}
+let asofStr = null;
+let sortCol = 'ytd', sortDir = -1;
+
+function loadHidden() {
+  try { const a = JSON.parse(localStorage.getItem(LS_HIDDEN) || '[]'); return new Set(Array.isArray(a) ? a : []); }
+  catch (e) { return new Set(); }
+}
+function saveHidden() { try { localStorage.setItem(LS_HIDDEN, JSON.stringify([...hidden])); } catch (e) {} }
+function visibleTickers() { return allTickers.filter(t => !hidden.has(t)); }
+
+function pct(a, b) { return b ? (a - b) / b * 100 : null; }
+
+function computeMetrics(rawBars) {
+  const bars = rawBars.map(b => ({ time: b[0], open: b[1], high: b[2], low: b[3], close: b[4], volume: b[5] }));
+  const last = bars[bars.length - 1];
+  const prev = bars[bars.length - 2];
+  const lastDate = new Date(last.time * 1000);
+  function refCloseBefore(pred) {
+    for (let i = bars.length - 1; i >= 0; i--) {
+      const d = new Date(bars[i].time * 1000);
+      if (pred(d)) return bars[i].close;
+    }
+    return null;
+  }
+  const wk = new Date(lastDate); const day = (wk.getDay() + 6) % 7; wk.setDate(wk.getDate() - day); wk.setHours(0,0,0,0);
+  const mo = new Date(lastDate.getFullYear(), lastDate.getMonth(), 1);
+  const yr = new Date(lastDate.getFullYear(), 0, 1);
+  const oneYearAgo = new Date(lastDate); oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  const oneMonthAgo = new Date(lastDate); oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  const threeMonthsAgo = new Date(lastDate); threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  const wtdRef = refCloseBefore(d => d < wk);
+  const mtdRef = refCloseBefore(d => d < mo);
+  const ytdRef = refCloseBefore(d => d < yr);
+  const y1Ref  = refCloseBefore(d => d <= oneYearAgo);
+  const m1Ref  = refCloseBefore(d => d <= oneMonthAgo);
+  const m3Ref  = refCloseBefore(d => d <= threeMonthsAgo);
+  let hi52 = -Infinity, lo52 = Infinity;
+  for (const b of bars) {
+    if (new Date(b.time * 1000) >= oneYearAgo) {
+      if (b.high > hi52) hi52 = b.high;
+      if (b.low < lo52) lo52 = b.low;
+    }
+  }
+  if (!isFinite(hi52)) { hi52 = null; lo52 = null; }
+  const v20 = bars.slice(-20);
+  const avgVol = v20.reduce((s, b) => s + (b.volume || 0), 0) / v20.length;
+  return {
+    price: last.close,
+    daily: pct(last.close, prev.close),
+    wtd: wtdRef != null ? pct(last.close, wtdRef) : null,
+    mtd: mtdRef != null ? pct(last.close, mtdRef) : null,
+    ytd: ytdRef != null ? pct(last.close, ytdRef) : null,
+    y1:  y1Ref  != null ? pct(last.close, y1Ref)  : null,
+    m1:  m1Ref  != null ? pct(last.close, m1Ref)  : null,
+    m3:  m3Ref  != null ? pct(last.close, m3Ref)  : null,
+    vol: last.volume, avgVol: avgVol,
+    hi52: hi52, lo52: lo52,
+    offHigh: hi52 ? pct(last.close, hi52) : null,
+    spark: bars.slice(-63).map(b => b.close),
+    asOf: lastDate
+  };
+}
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function pctHtml(v, opts) {
+  opts = opts || {};
+  if (v == null || isNaN(v)) return '<span class="flat">—</span>';
+  const cls = v > 0.005 ? 'up' : v < -0.005 ? 'down' : 'flat';
+  const arrow = opts.arrow === false ? '' : (v > 0.005 ? '↑ ' : v < -0.005 ? '↓ ' : '');
+  const sign = opts.sign && v > 0 ? '+' : '';
+  return '<span class="' + cls + '">' + arrow + sign + v.toFixed(opts.dp == null ? 1 : opts.dp) + '%</span>';
+}
+function fmtVol(v) {
+  if (v == null) return '—';
+  if (v >= 1e9) return (v / 1e9).toFixed(2) + 'B';
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return (v / 1e3).toFixed(0) + 'K';
+  return String(v);
+}
+function fmtPrice(p) { return p == null ? '—' : '$' + p.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+function fmtMcap(v) {
+  if (v == null || !isFinite(v)) return '—';
+  if (v >= 1e12) return '$' + (v / 1e12).toFixed(2) + 'T';
+  if (v >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
+  if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
+  return '$' + Math.round(v).toLocaleString();
+}
+const LOGO_COLORS = ['#1f2937','#4c7dfc','#0a9e5c','#d97706','#7c3aed','#db2777','#0891b2','#e5484d'];
+function logoColor(t) { let h = 0; for (const c of t) h = (h * 31 + c.charCodeAt(0)) >>> 0; return LOGO_COLORS[h % LOGO_COLORS.length]; }
+
+function statCard(label, big, small) {
+  return '<div class="stat"><div class="label">' + label + '</div><div class="big">' + big + '</div><div class="small">' + small + '</div></div>';
+}
+
+function sparkSvg(closes) {
+  if (!closes || closes.length < 2) return '';
+  const w = 240, h = 56, pad = 3;
+  const min = Math.min(...closes), max = Math.max(...closes), span = (max - min) || 1;
+  const pts = closes.map((c, i) =>
+    (pad + i * (w - 2 * pad) / (closes.length - 1)).toFixed(1) + ',' +
+    (h - pad - (c - min) / span * (h - 2 * pad)).toFixed(1)
+  ).join(' ');
+  const up = closes[closes.length - 1] >= closes[0];
+  const color = up ? '#0a9e5c' : '#e5484d';
+  return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' +
+    '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+}
+
+function retChip(label, v, maxAbs) {
+  const barColor = v == null || Math.abs(v) <= 0.005 ? '#d6d9de' : v > 0 ? '#0a9e5c' : '#e5484d';
+  const width = v == null ? 0 : Math.max(6, Math.min(100, Math.abs(v) / maxAbs * 100));
+  return '<div class="rchip"><div class="rlab"><span class="per">' + label + '</span>' + pctHtml(v, {dp:2}) + '</div>' +
+    '<div class="rbar"><i style="width:' + width.toFixed(0) + '%;background:' + barColor + '"></i></div></div>';
+}
+
+function render() {
+  const tickers = visibleTickers();
+  const spy = data['SPY'] && !data['SPY'].error ? data['SPY'] : null;
+  const loaded = tickers.filter(t => data[t] && !data[t].error);
+  const stocks = loaded.filter(t => !BENCHMARKS.has(t));
+
+  let asOf = null;
+  for (const t of loaded) if (data[t].asOf && (!asOf || data[t].asOf > asOf)) asOf = data[t].asOf;
+  document.getElementById('subtitle').textContent =
+    'End-of-day coverage across ' + tickers.length + ' tickers.' +
+    (asOf ? ' Prices as of ' + asOf.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'}) + ' close.' : '') +
+    (asofStr ? ' Data refreshed ' + new Date(asofStr).toLocaleString() + '.' : '');
+
+  document.getElementById('benchChips').innerHTML = ['SPY','QQQ','IWM']
+    .filter(b => tickers.includes(b))
+    .map(b => {
+      const d = data[b];
+      const inner = d && !d.error ? pctHtml(d.daily) : '<span class="flat">…</span>';
+      return '<span class="chip">' + b + ' ' + inner + '</span>';
+    }).join('');
+
+  let statsHtml = '';
+  if (stocks.length) {
+    const sorted = [...stocks].sort((a, b) => data[b].daily - data[a].daily);
+    const best = sorted[0], worst = sorted[sorted.length - 1];
+    const avg = stocks.reduce((s, t) => s + data[t].daily, 0) / stocks.length;
+    const movers = stocks.filter(t => Math.abs(data[t].daily) >= 3)
+      .sort((a, b) => Math.abs(data[b].daily) - Math.abs(data[a].daily));
+    const moverNames = movers.length
+      ? movers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1})).join(' · ')
+      : 'None today (' + stocks.length + ' stocks tracked)';
+    statsHtml =
+      statCard('Best daily move', '<b>' + best + '</b> ' + pctHtml(data[best].daily, {dp:2}), fmtPrice(data[best].price)) +
+      statCard('Weakest daily move', '<b>' + worst + '</b> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)) +
+      statCard('Basket daily return', pctHtml(avg, {dp:2}), spy ? 'vs SPY ' + pctHtml(avg - spy.daily, {sign:true, arrow:false, dp:2}) : '') +
+      statCard('Big movers (±3%+)', '<span class="big">' + movers.length + '</span>', moverNames);
+  }
+  document.getElementById('stats').innerHTML = statsHtml;
+
+  document.getElementById('cards').innerHTML = tickers.length ? tickers.map(t => {
+    const d = data[t];
+    const isB = BENCHMARKS.has(t);
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
+    let body;
+    if (!d) body = '<div class="price">no data</div>';
+    else if (d.error) body = '<div class="errmsg">' + esc(d.error).slice(0, 60) + '</div>';
+    else {
+      const vsSpy = spy && t !== 'SPY' ? d.daily - spy.daily : (t === 'SPY' ? 0 : null);
+      body = '<div class="price">' + fmtPrice(d.price) + ' <span class="chg">' + pctHtml(d.daily) + '</span></div>' +
+             '<div class="vs"><span>vs SPY</span>' + (vsSpy == null ? '—' : pctHtml(vsSpy, {sign:true, arrow:false})) + '</div>';
+    }
+    return '<div class="card' + (isB ? ' benchmark' : '') + '">' +
+      rm + '<div class="tick">' + t + (isB ? ' <span class="etf">BENCH</span>' : '') + '</div>' + body + '</div>';
+  }).join('') : '<div class="empty">No data yet. Run the "Update market data" workflow in GitHub Actions once, then reload.</div>';
+
+  renderDetailed(spy, tickers);
+  renderTable(spy, tickers);
+}
+
+function renderDetailed(spy, tickers) {
+  document.getElementById('dcards').innerHTML = tickers.map(t => {
+    const d = data[t];
+    const f = fund[t] || {};
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
+    const head = (body, err) =>
+      '<div class="dcard">' + rm +
+      '<div class="dcard-head">' +
+        '<span class="logo" style="background:' + logoColor(t) + '">' + esc(t.slice(0, 2)) + '</span>' +
+        '<div class="idblock"><div class="tk">' + esc(t) + '</div><div class="ind" title="' + esc(f.name || '') + '">' +
+          esc(f.industry || f.name || '') + '</div></div>' +
+        '<div class="pxblock">' + (d && !d.error ? '<div class="px">' + fmtPrice(d.price) + '</div><div class="dchg">' + pctHtml(d.daily, {dp:2}) + '</div>' : '') + '</div>' +
+      '</div>' + body + '</div>';
+
+    if (!d) return head('<div class="dcard-sector" style="border:none;padding-top:20px">No data</div>', false);
+    if (d.error) return head('<div class="errmsg" style="margin-top:8px">' + esc(d.error).slice(0, 80) + '</div>', true);
+
+    const maxAbs = Math.max(Math.abs(d.m1 || 0), Math.abs(d.m3 || 0), Math.abs(d.y1 || 0), 1);
+    const rangePos = d.hi52 && d.hi52 > d.lo52 ? (d.price - d.lo52) / (d.hi52 - d.lo52) * 100 : null;
+    const vsSpy = spy && t !== 'SPY' ? d.daily - spy.daily : (t === 'SPY' ? 0 : null);
+
+    let body = sparkSvg(d.spark);
+    body += '<div class="chips3">' + retChip('1M', d.m1, maxAbs) + retChip('3M', d.m3, maxAbs) + retChip('1Y', d.y1, maxAbs) + '</div>';
+    if (d.hi52 != null && rangePos != null) {
+      body += '<div class="range-row"><b>' + fmtPrice(d.lo52) + '</b><span>52W range</span><b>' + fmtPrice(d.hi52) + '</b></div>' +
+        '<div class="range-track"><i style="left:calc(' + Math.max(0, Math.min(100, rangePos)).toFixed(1) + '% - 4px)"></i></div>';
+    }
+    body += '<div class="dstats">' +
+      '<div><div class="k">Market cap</div><div class="v">' + fmtMcap(f.mcap) + '</div></div>' +
+      '<div><div class="k">Volume</div><div class="v">' + fmtVol(d.vol) + '</div></div>' +
+      '<div><div class="k">Beta</div><div class="v">' + (f.beta != null ? Number(f.beta).toFixed(2) : '—') + '</div></div>' +
+      '<div><div class="k">Avg volume (20D)</div><div class="v">' + fmtVol(d.avgVol) + '</div></div>' +
+      '<div><div class="k">Off 52W high</div><div class="v">' + pctHtml(d.offHigh, {arrow:false, dp:1}) + '</div></div>' +
+      '<div><div class="k">vs SPY (daily)</div><div class="v">' + (vsSpy == null ? '—' : pctHtml(vsSpy, {sign:true, arrow:false, dp:2})) + '</div></div>' +
+      '</div>';
+    body += '<div class="dcard-sector">Sector<b>' + esc(f.sector || '—') + '</b></div>';
+    return head(body, false);
+  }).join('');
+}
+
+const COLS = [
+  ['sym', 'Ticker'], ['price', 'Price'], ['daily', 'Daily'], ['wtd', 'WTD'], ['mtd', 'MTD'],
+  ['ytd', 'YTD'], ['y1', '1Y'], ['vsSpy', 'vs SPY'], ['mcap', 'Market cap'], ['vol', 'Volume']
+];
+
+function renderTable(spy, tickers) {
+  document.getElementById('theadRow').innerHTML = COLS.map(c =>
+    '<th onclick="setSort(\'' + c[0] + '\')">' + c[1] +
+    (sortCol === c[0] ? ' <span class="arrow">' + (sortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
+  ).join('');
+
+  const rows = tickers.filter(t => data[t] && !data[t].error).map(t => {
+    const d = data[t];
+    const f = fund[t] || {};
+    return { sym: t, price: d.price, daily: d.daily, wtd: d.wtd, mtd: d.mtd, ytd: d.ytd, y1: d.y1,
+             vsSpy: spy ? d.daily - spy.daily : null, mcap: f.mcap != null ? f.mcap : null, vol: d.vol };
+  });
+  rows.sort((a, b) => {
+    const x = a[sortCol], y = b[sortCol];
+    if (sortCol === 'sym') return sortDir * String(x).localeCompare(String(y));
+    return sortDir * ((x == null ? -Infinity : x) - (y == null ? -Infinity : y));
+  });
+
+  const extraRows = tickers.filter(t => data[t] && data[t].error).map(t =>
+    '<tr><td>' + t + '</td><td colspan="9" style="text-align:left"><span class="down">no data: ' +
+    esc(data[t].error).slice(0, 40) + '</span></td></tr>'
+  ).join('');
+
+  document.getElementById('tbody').innerHTML = rows.map(r =>
+    '<tr><td>' + r.sym + (BENCHMARKS.has(r.sym) ? '<span class="bench-badge">Benchmark</span>' : '') + '</td>' +
+    '<td>' + fmtPrice(r.price) + '</td>' +
+    '<td>' + pctHtml(r.daily, {dp:2}) + '</td>' +
+    '<td>' + pctHtml(r.wtd) + '</td>' +
+    '<td>' + pctHtml(r.mtd) + '</td>' +
+    '<td>' + pctHtml(r.ytd) + '</td>' +
+    '<td>' + pctHtml(r.y1) + '</td>' +
+    '<td>' + pctHtml(r.vsSpy, {sign:true, arrow:false, dp:2}) + '</td>' +
+    '<td>' + fmtMcap(r.mcap) + '</td>' +
+    '<td>' + fmtVol(r.vol) + '</td></tr>'
+  ).join('') + extraRows;
+}
+
+function setSort(col) {
+  if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = col === 'sym' ? 1 : -1; }
+  render();
+}
+
+function hideTicker(sym) {
+  if (PINNED.has(sym)) return;
+  hidden.add(sym);
+  saveHidden();
+  render();
+}
+
+function showTicker() {
+  const inp = document.getElementById('addInput');
+  const notice = document.getElementById('notice');
+  const sym = inp.value.trim().toUpperCase().replace(/[^A-Z0-9.]/g, '');
+  if (!sym) return;
+  inp.value = '';
+  if (allTickers.includes(sym)) {
+    hidden.delete(sym);
+    saveHidden();
+    notice.style.display = 'none';
+    render();
+  } else {
+    notice.style.display = 'block';
+    notice.innerHTML = '<b>' + esc(sym) + '</b> is not in the data yet. Add it to <b>tickers.txt</b> in your GitHub repo — the update workflow runs automatically and the site will show it within a few minutes.';
+  }
+}
+
+document.getElementById('addBtn').addEventListener('click', showTicker);
+document.getElementById('addInput').addEventListener('keydown', e => { if (e.key === 'Enter') showTicker(); });
+document.getElementById('showAllBtn').addEventListener('click', () => { hidden = new Set(); saveHidden(); render(); });
+
+(async function init() {
+  try {
+    const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+    const j = await res.json();
+    asofStr = j.asof;
+    allTickers = Object.keys(j.tickers || {});
+    for (const sym of allTickers) {
+      const entry = j.tickers[sym];
+      if (entry.error || !entry.bars || entry.bars.length < 2) {
+        data[sym] = { error: entry.error || 'no bars' };
+      } else {
+        data[sym] = computeMetrics(entry.bars);
+      }
+      fund[sym] = { name: entry.name, sector: entry.sector, industry: entry.industry, mcap: entry.mcap, beta: entry.beta };
+    }
+  } catch (e) {
+    document.getElementById('cards').innerHTML = '<div class="empty">Could not load data.json — ' + esc(e.message) + '</div>';
+    return;
+  }
+  render();
+})();
+</script>
+</body>
+</html>
