@@ -197,7 +197,12 @@ function loadHidden() {
   catch (e) { return new Set(); }
 }
 function saveHidden() { try { localStorage.setItem(LS_HIDDEN, JSON.stringify([...hidden])); } catch (e) {} }
-function visibleTickers() { return allTickers.filter(t => !hidden.has(t)).sort(); }
+function visibleTickers() {
+  const vis = allTickers.filter(t => !hidden.has(t));
+  const benches = vis.filter(t => BENCHMARKS.has(t)).sort();
+  const stocks = vis.filter(t => !BENCHMARKS.has(t)).sort();
+  return benches.concat(stocks);
+}
 
 function pct(a, b) { return b ? (a - b) / b * 100 : null; }
 
