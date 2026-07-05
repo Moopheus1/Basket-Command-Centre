@@ -36,6 +36,8 @@ from datetime import datetime, timezone
 import pandas as pd
 import yfinance as yf
 
+import alerts
+
 DATA_PATH = "docs/data.json"
 
 
@@ -201,6 +203,11 @@ def main():
         if mode == "intraday":
             print("[intraday] no existing docs/data.json found — falling back to full eod fetch")
         out = run_eod(tickers)
+
+    try:
+        alerts.check_and_alert(out["tickers"])
+    except Exception as e:
+        print(f"[alerts] check failed, not blocking data write: {e}")
 
     os.makedirs("docs", exist_ok=True)
     with open(DATA_PATH, "w") as f:
