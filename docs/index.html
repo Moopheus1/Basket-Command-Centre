@@ -414,7 +414,7 @@ function render() {
   document.getElementById('cards').innerHTML = tickers.length ? tickers.map(t => {
     const d = data[t];
     const isB = BENCHMARKS.has(t);
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">×</button>';
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
     let body;
     if (!d) body = '<div class="price">no data</div>';
     else if (d.error) body = '<div class="errmsg">' + esc(d.error).slice(0, 60) + '</div>';
@@ -572,7 +572,7 @@ function renderDetailed(spy, tickers) {
   document.getElementById('dcards').innerHTML = tickers.map(t => {
     const d = data[t];
     const f = fund[t] || {};
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">×</button>';
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
     const head = (body, err) =>
       '<div class="dcard">' + rm +
       '<div class="dcard-head">' +
@@ -620,7 +620,7 @@ const COLS = [
 ];
 function renderTable(spy, tickers) {
   document.getElementById('theadRow').innerHTML = COLS.map(c =>
-    '<th onclick="setSort('' + c[0] + '')">' + c[1] +
+    '<th onclick="setSort(\'' + c[0] + '\')">' + c[1] +
     (sortCol === c[0] ? ' <span class="arrow">' + (sortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
   ).join('');
 
