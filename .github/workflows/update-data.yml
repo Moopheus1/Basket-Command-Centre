@@ -2,8 +2,21 @@ name: Update market data
 
 on:
   schedule:
-    # 21:45 UTC weekdays = 45-105 min after the 4pm ET US close (DST-dependent)
-    - cron: "45 21 * * 1-5"
+    # --- Premarket: 8:30-9:20am ET, every 10 min (6 runs) ---
+    - cron: "30,40,50 8 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "0,10,20 9 * * 1-5"
+      timezone: "America/New_York"
+
+    # --- Trading, first 4.5 hours: 9:30am-1:50pm ET, every 10 min (27 runs) ---
+    - cron: "30,40,50 9 * * 1-5"
+      timezone: "America/New_York"
+    - cron: "0,10,20,30,40,50 10,11,12,13 * * 1-5"
+      timezone: "America/New_York"
+
+    # --- EOD: single run at 4:30pm ET, after close settles ---
+    - cron: "30 16 * * 1-5"
+      timezone: "America/New_York"
   workflow_dispatch: {}
   push:
     paths:
@@ -12,17 +25,40 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: update-market-data
+  cancel-in-progress: false   # if a run is still going when the next trigger fires, the
+                              # new one waits instead of racing it to git push. Only one
+                              # run can be pending at a time (GitHub default) - if a third
+                              # trigger fires before the first two finish, the older pending
+                              # run is dropped and replaced by the newest. That's fine here:
+                              # skipping a stale 10-min-old fetch to catch up to "now" is the
+                              # right behavior, not a bug.
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 8   # kill hung runs well before the next 10-min trigger fires
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install yfinance
+        run: pip install yfinance pandas
+      - name: Determine fetch mode
+        id: mode
+        run: |
+          if [ "${{ github.event.schedule }}" = "30 16 * * 1-5" ]; then
+            echo "mode=eod" >> "$GITHUB_OUTPUT"
+          elif [ -z "${{ github.event.schedule }}" ]; then
+            echo "mode=eod" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=intraday" >> "$GITHUB_OUTPUT"
+          fi
       - name: Fetch market data
+        env:
+          FETCH_MODE: ${{ steps.mode.outputs.mode }}
         run: python scripts/fetch_data.py
       - name: Commit updated data
         run: |
