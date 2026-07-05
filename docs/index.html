@@ -81,6 +81,7 @@
   td:first-child { text-align: left; font-weight: 700; }
   .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
   .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
+  .nowrap-pill { white-space: nowrap; display: inline-block; }
 </style>
 </head>
 <body>
@@ -386,7 +387,7 @@ function render() {
     const movers = stocks.filter(t => Math.abs(data[t].daily) >= 3)
       .sort((a, b) => Math.abs(data[b].daily) - Math.abs(data[a].daily));
     const moverNames = movers.length
-      ? movers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1})).join(' · ')
+      ? movers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' · ')
       : 'None today (' + stocks.length + ' stocks tracked)';
     // Weekly stats
     const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
@@ -395,20 +396,20 @@ function render() {
     const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 8)
       .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
     const wkMoverNames = wkMovers.length
-      ? wkMovers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1})).join(' · ')
+      ? wkMovers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' · ')
       : 'None this week (' + stocks.length + ' stocks)';
 
     // Momentum leaders (top 3)
     const momLeaders = [...stocks].sort((a, b) => (data[b].momScore || 0) - (data[a].momScore || 0)).slice(0, 3);
-    const momHtml = momLeaders.map(t => '<b>' + t + '</b> ' + scoreBadge(data[t].momScore)).join(' · ');
+    const momHtml = momLeaders.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + scoreBadge(data[t].momScore) + '</span>').join(' · ');
 
     // Persistence leaders (top 3)
     const perLeaders = [...stocks].sort((a, b) => (data[b].perScore || 0) - (data[a].perScore || 0)).slice(0, 3);
-    const perHtml = perLeaders.map(t => '<b>' + t + '</b> ' + scoreBadge(data[t].perScore)).join(' · ');
+    const perHtml = perLeaders.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + scoreBadge(data[t].perScore) + '</span>').join(' · ');
 
     // Best setups (combined signal)
     const setups = [...stocks].sort((a, b) => (data[b].combinedRank || 0) - (data[a].combinedRank || 0)).slice(0, 3);
-    const setupHtml = setups.map(t => '<b>' + t + '</b> ' + signalBadge(data[t].signal)).join(' · ');
+    const setupHtml = setups.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + signalBadge(data[t].signal) + '</span>').join(' · ');
 
     statsHtml =
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">' +
