@@ -429,7 +429,6 @@ function render() {
     const setupHtml = [...setups].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + signalBadge(data[t].signal) + '</span>').join(' ');
 
     statsHtml =
-      '<div class="eyebrow" style="margin:2px 0 6px">Market movers</div>' +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">' +
       statCard('Best daily move', '<a class="tklink" href="' + rallyLink(best) + '" target="_blank" rel="noopener noreferrer"><b>' + best + '</b></a> ' + pctHtml(data[best].daily, {dp:2}), fmtPrice(data[best].price)) +
       statCard('Weakest daily move', '<a class="tklink" href="' + rallyLink(worst) + '" target="_blank" rel="noopener noreferrer"><b>' + worst + '</b></a> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)) +
