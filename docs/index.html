@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+html = '''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -46,7 +47,7 @@
   .card .rm, .dcard .rm { position: absolute; top: 6px; right: 6px; border: none; background: none; color: #9ca3af; font-size: 14px; line-height: 1; padding: 3px 5px; border-radius: 6px; cursor: pointer; }
   .card .rm:hover, .dcard .rm:hover { background: #fee2e2; color: #dc2626; }
   .card .errmsg, .errmsg { font-size: 11px; color: #dc2626; margin-top: 6px; }
-  .dcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .dcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
   .dcard { background: #fff; border: 1px solid #e9eaee; border-radius: 14px; padding: 14px; position: relative; }
   .dcard-head { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; padding-right: 16px; }
   .dcard-head .logo { width: 30px; height: 30px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 30px; }
@@ -82,11 +83,14 @@
   .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
   .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
 
-  /* ─── LIVE & PRE-MARKET STYLES ─── */
+  /* LIVE PRICE STYLES */
   .live-dot {
-    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
-    background: #0a9e5c; margin-right: 5px;
-    animation: pulse 1.5s infinite; vertical-align: middle;
+    display: inline-block;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #0a9e5c;
+    margin-right: 5px;
+    animation: pulse 1.5s infinite;
+    vertical-align: middle;
   }
   .live-dot.stale { background: #d97706; animation: none; }
   .live-dot.offline { background: #9ca3af; animation: none; }
@@ -108,60 +112,17 @@
   .live-badge.error { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
   .live-price { color: #0a9e5c !important; }
   .live-price.down { color: #e5484d !important; }
-  .last-updated { font-size: 10px; color: #9ca3af; margin-top: 2px; }
+  .last-updated { font-size: 11px; color: #9ca3af; margin-top: 2px; }
   .status-bar {
     display: flex; align-items: center; gap: 10px;
     font-size: 12px; color: #6b7280;
     margin-bottom: 12px; flex-wrap: wrap;
   }
-  .refresh-btn { font-size: 12px; padding: 4px 10px; }
+  .refresh-btn {
+    font-size: 12px; padding: 4px 10px;
+  }
   .countdown { font-variant-numeric: tabular-nums; color: #9ca3af; }
-
-  /* Pre-market specific */
-  .premkt-badge {
-    font-size: 9px; font-weight: 700;
-    background: #fffbeb; color: #92400e;
-    border: 1px solid #fde68a;
-    border-radius: 4px; padding: 1px 5px;
-    margin-left: 4px; text-transform: uppercase;
-  }
-  .premkt-price { color: #92400e !important; }
-  .premkt-price.down { color: #b45309 !important; }
-  .postmkt-badge {
-    font-size: 9px; font-weight: 700;
-    background: #eff6ff; color: #2563eb;
-    border: 1px solid #bfdbfe;
-    border-radius: 4px; padding: 1px 5px;
-    margin-left: 4px; text-transform: uppercase;
-  }
-  .postmkt-price { color: #2563eb !important; }
-  .postmkt-price.down { color: #dc2626 !important; }
-  .premkt-row {
-    font-size: 11px; color: #92400e;
-    margin-top: 3px; display: flex; justify-content: space-between;
-  }
-  .postmkt-row {
-    font-size: 11px; color: #2563eb;
-    margin-top: 3px; display: flex; justify-content: space-between;
-  }
-  .session-divider {
-    border-top: 1px dashed #e5e7eb;
-    margin: 8px 0 6px;
-    padding-top: 6px;
-  }
-  .session-label {
-    font-size: 10px; font-weight: 600; color: #9ca3af;
-    text-transform: uppercase; letter-spacing: 0.05em;
-    margin-bottom: 4px;
-  }
-  .premkt-stat {
-    display: flex; justify-content: space-between;
-    font-size: 11px; padding: 3px 0;
-  }
-  .premkt-stat .k { color: #9ca3af; }
-  .premkt-stat .v { font-weight: 600; }
 </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -196,7 +157,7 @@
 
 <div class="panel">
   <h2>Detailed ticker cards</h2>
-  <div class="desc">Live prices, pre-market/after-hours, last close, 3-month trend, returns, 52-week range, market cap, beta, volume, sector & industry.</div>
+  <div class="desc">Last close, 3-month daily trend line, 1M/3M/1Y returns, 52-week range position, market cap, beta, volume vs 20-day average, sector, and industry.</div>
   <div class="dcards" id="dcards"></div>
 </div>
 
@@ -219,28 +180,26 @@ const PINNED = new Set(["SPY"]);
 
 let allTickers = [];
 let hidden = loadHidden();
-const data = {};      // EOD data from data.json
-const fund = {};      // fundamentals
+const data = {};
+const fund = {};
 let asofStr = null;
 let sortCol = 'ytd', sortDir = -1;
 
-/* ─── LIVE / PRE-MARKET / AFTER-HOURS STATE ─── */
-const live = {};      // sym -> { price, change, changePercent, prevClose, preMarketPrice, preMarketChange,
-                    //          preMarketChangePercent, postMarketPrice, postMarketChange, postMarketChangePercent,
-                    //          currency, marketState, time, source }
+/* ─── LIVE PRICE STATE ─── */
+const live = {};        // sym -> { price, change, changePercent, currency, marketState, time, source }
 let liveEnabled = true;
 let liveInterval = null;
 let countdownInterval = null;
 let nextRefreshIn = 0;
-const REFRESH_EVERY = 30;
-let marketNow = 'CLOSED';
+const REFRESH_EVERY = 30; // seconds
+let marketNow = 'CLOSED'; // 'REGULAR' | 'PRE' | 'POST' | 'CLOSED'
 
 function loadHidden() {
   try { const a = JSON.parse(localStorage.getItem(LS_HIDDEN) || '[]'); return new Set(Array.isArray(a) ? a : []); }
   catch (e) { return new Set(); }
 }
 function saveHidden() { try { localStorage.setItem(LS_HIDDEN, JSON.stringify([...hidden])); } catch (e) {} }
-function visibleTickers() { return allTickers.filter(t => !hidden.has(t)).sort(); }
+function visibleTickers() { return allTickers.filter(t => !hidden.has(t)); }
 
 function pct(a, b) { return b ? (a - b) / b * 100 : null; }
 
@@ -347,7 +306,7 @@ function retChip(label, v, maxAbs) {
     '<div class="rbar"><i style="width:' + width.toFixed(0) + '%;background:' + barColor + '"></i></div></div>';
 }
 
-/* ─── MARKET SESSION HELPERS ─── */
+/* ─── LIVE PRICE HELPERS ─── */
 function getMarketState() {
   const now = new Date();
   const et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
@@ -368,144 +327,53 @@ function shouldAutoRefresh() {
   return state === 'REGULAR' || state === 'PRE' || state === 'POST';
 }
 
-/* ─── PRICE RESOLUTION: returns the best available price for current session ─── */
-function getSession(sym) {
-  const l = live[sym];
-  if (!l) return { type: 'eod', price: null, change: null, changePct: null };
-  const state = l.marketState || getMarketState();
-
-  // PRE-MARKET: show pre-market price vs previous close
-  if (state === 'PRE' && l.preMarketPrice != null) {
-    return {
-      type: 'pre',
-      price: l.preMarketPrice,
-      change: l.preMarketChange,
-      changePct: l.preMarketChangePercent,
-      prevClose: l.prevClose
-    };
-  }
-
-  // REGULAR HOURS: show regular price vs previous close
-  if (state === 'REGULAR' && l.price != null) {
-    return {
-      type: 'regular',
-      price: l.price,
-      change: l.change,
-      changePct: l.changePercent,
-      prevClose: l.prevClose
-    };
-  }
-
-  // AFTER HOURS: show post-market price vs regular close
-  if (state === 'POST' && l.postMarketPrice != null) {
-    return {
-      type: 'post',
-      price: l.postMarketPrice,
-      change: l.postMarketChange,
-      changePct: l.postMarketChangePercent,
-      prevClose: l.price  // compare to regular close
-    };
-  }
-
-  // Fallback: if we have any live price, use it
-  if (l.price != null) {
-    return {
-      type: state === 'PRE' ? 'pre' : state === 'POST' ? 'post' : 'regular',
-      price: l.price,
-      change: l.change,
-      changePct: l.changePercent,
-      prevClose: l.prevClose
-    };
-  }
-
-  return { type: 'eod', price: null, change: null, changePct: null };
-}
-
 function effectivePrice(sym) {
-  const s = getSession(sym);
-  if (s.price != null) return s.price;
+  const l = live[sym];
+  if (l && l.price != null) return l.price;
   const d = data[sym];
   return d && !d.error ? d.price : null;
 }
 
 function effectiveDaily(sym) {
-  const s = getSession(sym);
-  if (s.changePct != null) return s.changePct;
+  const l = live[sym];
+  if (l && l.changePercent != null) return l.changePercent;
   const d = data[sym];
   return d && !d.error ? d.daily : null;
 }
 
-function effectiveChange(sym) {
-  const s = getSession(sym);
-  if (s.change != null) return s.change;
-  const d = data[sym];
-  return d && !d.error ? (d.price - (d.price / (1 + d.daily/100))) : null;
-}
-
 function isLive(sym) {
-  return live[sym] && (live[sym].price != null || live[sym].preMarketPrice != null || live[sym].postMarketPrice != null);
-}
-
-function sessionLabel(sym) {
-  const s = getSession(sym);
-  const labels = { pre: 'PRE', regular: 'LIVE', post: 'POST', eod: 'EOD' };
-  return labels[s.type] || 'EOD';
-}
-
-function sessionClass(sym) {
-  const s = getSession(sym);
-  if (s.type === 'pre') return 'premkt';
-  if (s.type === 'post') return 'postmkt';
-  if (s.type === 'regular') return 'live';
-  return '';
+  return live[sym] && live[sym].price != null;
 }
 
 /* ─── LIVE PRICE FETCHING ─── */
 async function fetchLiveQuotes(tickers) {
+  // Use Yahoo Finance query1 endpoint directly (no API key needed)
   const symbols = tickers.join(',');
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbols}?interval=1d&range=1d&includePrePost=true`;
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbols}?interval=1d&range=1d`;
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     const results = json.chart?.result || [];
     const errors = json.chart?.error || null;
-
+    
     if (errors) throw new Error(errors.description || 'Yahoo error');
-
+    
     results.forEach(r => {
       const meta = r.meta;
       const sym = meta.symbol || meta.shortName || meta.longName;
       if (!sym) return;
       const state = meta.marketState || 'CLOSED';
       marketNow = state;
-
       const price = meta.regularMarketPrice;
       const prevClose = meta.previousClose || meta.chartPreviousClose;
       const change = price != null && prevClose != null ? price - prevClose : null;
       const changePct = change != null && prevClose ? (change / prevClose) * 100 : null;
-
-      // Pre-market data
-      const prePrice = meta.preMarketPrice;
-      const preChange = prePrice != null && prevClose != null ? prePrice - prevClose : null;
-      const preChangePct = preChange != null && prevClose ? (preChange / prevClose) * 100 : null;
-
-      // Post-market data
-      const postPrice = meta.postMarketPrice;
-      const postChange = postPrice != null && price != null ? postPrice - price : null;
-      const postChangePct = postChange != null && price ? (postChange / price) * 100 : null;
-
       live[sym] = {
         price: price,
         change: change,
         changePercent: changePct,
         prevClose: prevClose,
-        preMarketPrice: prePrice,
-        preMarketChange: preChange,
-        preMarketChangePercent: preChangePct,
-        postMarketPrice: postPrice,
-        postMarketChange: postChange,
-        postMarketChangePercent: postChangePct,
         currency: meta.currency,
         marketState: state,
         time: Date.now(),
@@ -521,9 +389,10 @@ async function fetchLiveQuotes(tickers) {
   }
 }
 
+// Fallback: fetch one at a time if batch fails
 async function fetchLiveQuotesFallback(tickers) {
   const promises = tickers.map(async sym => {
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d&includePrePost=true`;
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`;
     try {
       const res = await fetch(url);
       const json = await res.json();
@@ -532,25 +401,14 @@ async function fetchLiveQuotesFallback(tickers) {
       const meta = r.meta;
       const state = meta.marketState || 'CLOSED';
       marketNow = state;
-
       const price = meta.regularMarketPrice;
       const prevClose = meta.previousClose || meta.chartPreviousClose;
       const change = price != null && prevClose != null ? price - prevClose : null;
       const changePct = change != null && prevClose ? (change / prevClose) * 100 : null;
-
-      const prePrice = meta.preMarketPrice;
-      const preChange = prePrice != null && prevClose != null ? prePrice - prevClose : null;
-      const preChangePct = preChange != null && prevClose ? (preChange / prevClose) * 100 : null;
-
-      const postPrice = meta.postMarketPrice;
-      const postChange = postPrice != null && price != null ? postPrice - price : null;
-      const postChangePct = postChange != null && price ? (postChange / price) * 100 : null;
-
       live[sym] = {
-        price, change, changePercent: changePct, prevClose,
-        preMarketPrice: prePrice, preMarketChange: preChange, preMarketChangePercent: preChangePct,
-        postMarketPrice: postPrice, postMarketChange: postChange, postMarketChangePercent: postChangePct,
-        currency: meta.currency, marketState: state, time: Date.now(), source: 'yahoo'
+        price, change, changePercent: changePct,
+        prevClose, currency: meta.currency,
+        marketState: state, time: Date.now(), source: 'yahoo'
       };
     } catch (e) {
       // silently fail per ticker
@@ -565,7 +423,7 @@ function updateLiveUI(error = false) {
   const text = document.getElementById('liveText');
   const badge = document.getElementById('liveStatus');
   const state = getMarketState();
-
+  
   if (error) {
     dot.className = 'live-dot offline';
     text.textContent = 'Live prices unavailable — showing last close';
@@ -573,21 +431,13 @@ function updateLiveUI(error = false) {
     badge.textContent = 'EOD only';
     return;
   }
-
-  const liveCount = Object.values(live).filter(l => l.price != null || l.preMarketPrice != null || l.postMarketPrice != null).length;
-  const preCount = Object.values(live).filter(l => l.preMarketPrice != null).length;
-  const postCount = Object.values(live).filter(l => l.postMarketPrice != null).length;
-
+  
+  const liveCount = Object.values(live).filter(l => l.price != null).length;
   const stateLabels = { REGULAR: 'Market Open', PRE: 'Pre-Market', POST: 'After Hours', CLOSED: 'Market Closed' };
   const stateClasses = { REGULAR: 'live-badge', PRE: 'live-badge pre', POST: 'live-badge post', CLOSED: 'live-badge closed' };
-
-  let extra = '';
-  if (state === 'PRE' && preCount > 0) extra = ` · ${preCount} pre-mkt`;
-  else if (state === 'POST' && postCount > 0) extra = ` · ${postCount} post-mkt`;
-  else if (liveCount > 0) extra = ` · ${liveCount} live`;
-
+  
   dot.className = state === 'REGULAR' ? 'live-dot' : state === 'CLOSED' ? 'live-dot offline' : 'live-dot stale';
-  text.textContent = (stateLabels[state] || state) + extra;
+  text.textContent = `${stateLabels[state] || state} · ${liveCount} tickers live`;
   badge.className = stateClasses[state] || 'live-badge closed';
   badge.textContent = stateLabels[state] || state;
 }
@@ -631,22 +481,18 @@ function startLiveLoop() {
 /* ─── RENDER ─── */
 function render() {
   const tickers = visibleTickers();
-  const spySession = getSession('SPY');
-  const spyDaily = spySession.changePct != null ? spySession.changePct : (data['SPY'] && !data['SPY'].error ? data['SPY'].daily : null);
+  const spyLive = live['SPY'];
+  const spyEod = data['SPY'] && !data['SPY'].error ? data['SPY'] : null;
+  const spyDaily = spyLive && spyLive.changePercent != null ? spyLive.changePercent : (spyEod ? spyEod.daily : null);
   const loaded = tickers.filter(t => data[t] && !data[t].error);
   const stocks = loaded.filter(t => !BENCHMARKS.has(t));
 
   let asOf = null;
   for (const t of loaded) if (data[t].asOf && (!asOf || data[t].asOf > asOf)) asOf = data[t].asOf;
-
+  
   const liveCount = tickers.filter(t => isLive(t)).length;
-  const preCount = tickers.filter(t => getSession(t).type === 'pre').length;
-  const postCount = tickers.filter(t => getSession(t).type === 'post').length;
-  let liveSuffix = '';
-  if (preCount > 0) liveSuffix = ` · ${preCount} pre-market`;
-  else if (postCount > 0) liveSuffix = ` · ${postCount} after-hours`;
-  else if (liveCount > 0) liveSuffix = ` · ${liveCount} live now`;
-
+  const liveSuffix = liveCount > 0 ? ` · ${liveCount} live now` : '';
+  
   document.getElementById('subtitle').textContent =
     'End-of-day coverage across ' + tickers.length + ' tickers.' +
     (asOf ? ' Prices as of ' + asOf.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'}) + ' close.' : '') +
@@ -656,18 +502,17 @@ function render() {
   document.getElementById('benchChips').innerHTML = ['SPY','QQQ','IWM']
     .filter(b => tickers.includes(b))
     .map(b => {
-      const s = getSession(b);
+      const l = live[b];
       const d = data[b];
       let inner;
-      if (s.price != null) {
-        inner = pctHtml(s.changePct);
+      if (l && l.changePercent != null) {
+        inner = pctHtml(l.changePercent);
       } else if (d && !d.error) {
         inner = pctHtml(d.daily);
       } else {
         inner = '<span class="flat">…</span>';
       }
-      const badge = s.type === 'pre' ? '<span class="premkt-badge">PRE</span>' : s.type === 'post' ? '<span class="postmkt-badge">POST</span>' : '';
-      return '<span class="chip">' + b + badge + ' ' + inner + '</span>';
+      return '<span class="chip">' + b + ' ' + inner + '</span>';
     }).join('');
 
   let statsHtml = '';
@@ -691,10 +536,9 @@ function render() {
   document.getElementById('cards').innerHTML = tickers.length ? tickers.map(t => {
     const d = data[t];
     const l = live[t];
-    const s = getSession(t);
     const isB = BENCHMARKS.has(t);
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">×</button>';
-
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
+    
     let body;
     if (!d && !l) body = '<div class="price">no data</div>';
     else if (d && d.error && !l) body = '<div class="errmsg">' + esc(d.error).slice(0, 60) + '</div>';
@@ -702,25 +546,12 @@ function render() {
       const price = effectivePrice(t);
       const daily = effectiveDaily(t);
       const vsSpy = spyDaily != null && t !== 'SPY' ? daily - spyDaily : (t === 'SPY' ? 0 : null);
-      const sessLabel = sessionLabel(t);
-      const sessClass = sessionClass(t);
-      const badge = sessLabel !== 'EOD' ? '<span class="' + sessClass + '-badge">' + sessLabel + '</span>' : '';
-      const dot = isLive(t) ? '<span class="live-dot" style="width:5px;height:5px;margin:0 3px 0 0;animation:none"></span>' : '';
-
-      body = '<div class="price">' + dot + fmtPrice(price) + badge + ' <span class="chg">' + pctHtml(daily) + '</span></div>' +
+      const liveTag = isLive(t) ? '<span class="live-dot" style="width:5px;height:5px;margin:0 3px 0 0;animation:none"></span>' : '';
+      body = '<div class="price">' + liveTag + fmtPrice(price) + ' <span class="chg">' + pctHtml(daily) + '</span></div>' +
              '<div class="vs"><span>vs SPY</span>' + (vsSpy == null ? '—' : pctHtml(vsSpy, {sign:true, arrow:false})) + '</div>';
-
-      // Show pre-market / post-market details if applicable
-      if (l) {
-        if (s.type === 'pre' && l.price != null) {
-          body += '<div class="premkt-row"><span>Prev close</span><span>' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-        } else if (s.type === 'post' && l.price != null) {
-          body += '<div class="postmkt-row"><span>Regular close</span><span>' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-        }
-        if (isLive(t) && l.time) {
-          const ago = Math.round((Date.now() - l.time) / 1000);
-          body += '<div class="last-updated">updated ' + (ago < 60 ? ago + 's ago' : Math.floor(ago/60) + 'm ago') + '</div>';
-        }
+      if (isLive(t) && l.time) {
+        const ago = Math.round((Date.now() - l.time) / 1000);
+        body += '<div class="last-updated">updated ' + (ago < 60 ? ago + 's ago' : Math.floor(ago/60) + 'm ago') + '</div>';
       }
     }
     return '<div class="card' + (isB ? ' benchmark' : '') + '">' +
@@ -736,9 +567,8 @@ function renderDetailed(spyDaily, tickers) {
     const d = data[t];
     const l = live[t];
     const f = fund[t] || {};
-    const s = getSession(t);
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">×</button>';
-
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
+    
     const head = (body, err) =>
       '<div class="dcard">' + rm +
       '<div class="dcard-head">' +
@@ -746,7 +576,7 @@ function renderDetailed(spyDaily, tickers) {
         '<div class="idblock"><div class="tk">' + esc(t) + '</div><div class="ind" title="' + esc(f.name || '') + '">' +
           esc(f.industry || f.name || '') + '</div></div>' +
         '<div class="pxblock">' + 
-          (d && !d.error || l ? '<div class="px' + (isLive(t) ? ' ' + sessionClass(t) + '-price' + (effectiveDaily(t) < 0 ? ' down' : '') : '') + '">' + fmtPrice(effectivePrice(t)) + '</div><div class="dchg">' + pctHtml(effectiveDaily(t), {dp:2}) + '</div>' : '') + 
+          (d && !d.error || l ? '<div class="px' + (isLive(t) ? ' live-price' + (effectiveDaily(t) < 0 ? ' down' : '') : '') + '">' + fmtPrice(effectivePrice(t)) + '</div><div class="dchg">' + pctHtml(effectiveDaily(t), {dp:2}) + '</div>' : '') + 
         '</div>' +
       '</div>' + body + '</div>';
 
@@ -757,40 +587,7 @@ function renderDetailed(spyDaily, tickers) {
     const rangePos = d.hi52 && d.hi52 > d.lo52 ? (effectivePrice(t) - d.lo52) / (d.hi52 - d.lo52) * 100 : null;
     const vsSpy = spyDaily != null && t !== 'SPY' ? effectiveDaily(t) - spyDaily : (t === 'SPY' ? 0 : null);
 
-    let body = '';
-
-    // Session info block
-    if (l && (l.preMarketPrice != null || l.postMarketPrice != null || l.price != null)) {
-      body += '<div class="session-divider">';
-      if (s.type === 'pre') {
-        body += '<div class="session-label">Pre-Market</div>';
-        body += '<div class="premkt-stat"><span class="k">Price</span><span class="v">' + fmtPrice(l.preMarketPrice) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change</span><span class="v">' + (l.preMarketChange != null ? (l.preMarketChange >= 0 ? '+' : '') + l.preMarketChange.toFixed(2) : '—') + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change %</span><span class="v">' + pctHtml(l.preMarketChangePercent, {sign:true, dp:2}) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Prev close</span><span class="v">' + fmtPrice(l.prevClose) + '</span></div>';
-        if (l.price != null) {
-          body += '<div class="premkt-stat"><span class="k">Last regular</span><span class="v">' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-        }
-      } else if (s.type === 'post') {
-        body += '<div class="session-label">After Hours</div>';
-        body += '<div class="premkt-stat"><span class="k">Price</span><span class="v">' + fmtPrice(l.postMarketPrice) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change</span><span class="v">' + (l.postMarketChange != null ? (l.postMarketChange >= 0 ? '+' : '') + l.postMarketChange.toFixed(2) : '—') + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change %</span><span class="v">' + pctHtml(l.postMarketChangePercent, {sign:true, dp:2}) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Regular close</span><span class="v">' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-      } else if (s.type === 'regular') {
-        body += '<div class="session-label">Regular Hours</div>';
-        body += '<div class="premkt-stat"><span class="k">Price</span><span class="v">' + fmtPrice(l.price) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change</span><span class="v">' + (l.change != null ? (l.change >= 0 ? '+' : '') + l.change.toFixed(2) : '—') + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change %</span><span class="v">' + pctHtml(l.changePercent, {sign:true, dp:2}) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Prev close</span><span class="v">' + fmtPrice(l.prevClose) + '</span></div>';
-        if (l.preMarketPrice != null) {
-          body += '<div class="premkt-stat"><span class="k">Pre-market</span><span class="v">' + fmtPrice(l.preMarketPrice) + ' ' + pctHtml(l.preMarketChangePercent, {arrow:false, dp:1}) + '</span></div>';
-        }
-      }
-      body += '</div>';
-    }
-
-    body += sparkSvg(d.spark);
+    let body = sparkSvg(d.spark);
     body += '<div class="chips3">' + retChip('1M', d.m1, maxAbs) + retChip('3M', d.m3, maxAbs) + retChip('1Y', d.y1, maxAbs) + '</div>';
     if (d.hi52 != null && rangePos != null) {
       body += '<div class="range-row"><b>' + fmtPrice(d.lo52) + '</b><span>52W range</span><b>' + fmtPrice(d.hi52) + '</b></div>' +
@@ -816,7 +613,7 @@ const COLS = [
 
 function renderTable(spyDaily, tickers) {
   document.getElementById('theadRow').innerHTML = COLS.map(c =>
-    '<th onclick="setSort('' + c[0] + '')">' + c[1] +
+    '<th onclick="setSort(\'' + c[0] + '\')">' + c[1] +
     (sortCol === c[0] ? ' <span class="arrow">' + (sortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
   ).join('');
 
@@ -881,6 +678,7 @@ function showTicker() {
     saveHidden();
     notice.style.display = 'none';
     render();
+    // Also fetch live for this ticker immediately
     fetchLiveQuotesFallback([sym]);
   } else {
     notice.style.display = 'block';
@@ -912,8 +710,14 @@ document.getElementById('showAllBtn').addEventListener('click', () => { hidden =
     return;
   }
   render();
+  // Start live price updates
   startLiveLoop();
 })();
 </script>
 </body>
-</html>
+</html>'''
+
+with open('/mnt/agents/output/index.html', 'w') as f:
+    f.write(html)
+
+print("Saved! File size:", len(html), "bytes")
