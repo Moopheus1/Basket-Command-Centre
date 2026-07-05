@@ -304,7 +304,7 @@ function render() {
       statCard('Best weekly move', '<b>' + wkBest + '</b> ' + pctHtml(data[wkBest].wtd, {dp:2}), fmtPrice(data[wkBest].price)) +
       statCard('Weakest weekly move', '<b>' + wkWorst + '</b> ' + pctHtml(data[wkWorst].wtd, {dp:2}), fmtPrice(data[wkWorst].price)) +
       statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), spy ? 'vs SPY ' + pctHtml(wkAvg - spy.wtd, {sign:true, arrow:false, dp:2}) : '') +
-      statCard('Weekly big movers (±3%+)', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames);
+      statCard('Weekly big movers (±8%+)', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames);
   }
   document.getElementById('stats').innerHTML = statsHtml;
 
