@@ -6,6 +6,7 @@
 <title>Basket Command Center</title>
 <style>
   :root { color-scheme: light; }
+  html { scroll-behavior: smooth; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -17,6 +18,9 @@
   .sub { color: #6b7280; font-size: 13px; margin-bottom: 6px; }
   .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
   .bench-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .jumpbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; }
+  .jumpbar a { background: #fff; border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #16181d; text-decoration: none; }
+  .jumpbar a:hover { background: #f3f4f6; }
   .chip { background: #fff; border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
   .up { color: #0a9e5c; } .down { color: #e5484d; } .flat { color: #6b7280; }
   .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
@@ -97,6 +101,11 @@
   <div class="bench-chips" id="benchChips"></div>
 </div>
 
+<div class="jumpbar">
+  <a href="#detailedPanel">↓ Detailed ticker cards</a>
+  <a href="#performancePanel">↓ Performance overview</a>
+</div>
+
 <div class="statgrid" id="stats"></div>
 
 <div class="panel">
@@ -133,13 +142,13 @@
   <div class="cards" id="cards"></div>
 </div>
 
-<div class="panel">
+<div class="panel" id="detailedPanel">
   <h2>Detailed ticker cards</h2>
   <div class="desc">Last close, 3-month daily trend line, 1M/3M/1Y returns, 52-week range position, market cap, beta, volume vs 20-day average, sector, and industry.</div>
   <div class="dcards" id="dcards"></div>
 </div>
 
-<div class="panel">
+<div class="panel" id="performancePanel">
   <h2>Performance overview</h2>
   <div class="desc">Daily, WTD, MTD, YTD, and 1-year returns from daily closes. Click a column to sort.</div>
   <div style="overflow-x:auto">
@@ -357,6 +366,13 @@ function logoColor(t) { let h = 0; for (const c of t) h = (h * 31 + c.charCodeAt
 function statCard(label, big, small) {
   return '<div class="stat"><div class="label">' + label + '</div><div class="big">' + big + '</div><div class="small">' + small + '</div></div>';
 }
+function statCardPair(a, b) {
+  return '<div style="display:flex;flex-direction:column;gap:10px">' + a + b + '</div>';
+}
+function statCardTrio(a, b, c) {
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' + a + b +
+    '<div style="grid-column:1 / -1">' + c + '</div></div>';
+}
 
 function sparkSvg(closes) {
   if (!closes || closes.length < 2) return '';
@@ -396,8 +412,8 @@ function render() {
     .filter(b => tickers.includes(b))
     .map(b => {
       const d = data[b];
-      const inner = d && !d.error ? pctHtml(d.daily) : '<span class="flat">…</span>';
-      return '<span class="chip">' + b + ' ' + inner + '</span>';
+      const inner = d && !d.error ? fmtPrice(d.price) + ' ' + pctHtml(d.daily) : '<span class="flat">…</span>';
+      return '<span class="chip"><a class="tklink" href="' + rallyLink(b) + '" target="_blank" rel="noopener noreferrer">' + b + '</a> ' + inner + '</span>';
     }).join('');
 
   // Compute scores for all stocks
@@ -413,7 +429,7 @@ function render() {
     const movers = stocks.filter(t => Math.abs(data[t].daily) >= 3)
       .sort((a, b) => Math.abs(data[b].daily) - Math.abs(data[a].daily));
     const moverNames = movers.length
-      ? movers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
+      ? movers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + fmtPrice(data[t].price) + ' ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None today (' + stocks.length + ' stocks tracked)';
     // Weekly stats
     const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
@@ -422,7 +438,7 @@ function render() {
     const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 8)
       .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
     const wkMoverNames = wkMovers.length
-      ? wkMovers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
+      ? wkMovers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + fmtPrice(data[t].price) + ' ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None this week (' + stocks.length + ' stocks)';
 
     // Momentum leaders (top 3 by score, displayed alphabetically - score badge still shows rank)
@@ -438,16 +454,20 @@ function render() {
     const setupHtml = [...setups].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + signalBadge(data[t].signal) + '</span>').join(' ');
 
     statsHtml =
-      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">' +
-      statCard('Best daily move', '<a class="tklink" href="' + rallyLink(best) + '" target="_blank" rel="noopener noreferrer"><b>' + best + '</b></a> ' + pctHtml(data[best].daily, {dp:2}), fmtPrice(data[best].price)) +
-      statCard('Weakest daily move', '<a class="tklink" href="' + rallyLink(worst) + '" target="_blank" rel="noopener noreferrer"><b>' + worst + '</b></a> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)) +
-      statCard('Basket daily return', pctHtml(avg, {dp:2}), spy ? 'vs SPY ' + pctHtml(avg - spy.daily, {sign:true, arrow:false, dp:2}) : '') +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
+      statCardTrio(
+        statCard('Best daily move', '<a class="tklink" href="' + rallyLink(best) + '" target="_blank" rel="noopener noreferrer"><b>' + best + '</b></a> ' + pctHtml(data[best].daily, {dp:2}), fmtPrice(data[best].price)),
+        statCard('Weakest daily move', '<a class="tklink" href="' + rallyLink(worst) + '" target="_blank" rel="noopener noreferrer"><b>' + worst + '</b></a> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)),
+        statCard('Basket daily return', pctHtml(avg, {dp:2}), spy ? 'vs SPY ' + pctHtml(avg - spy.daily, {sign:true, arrow:false, dp:2}) : '')
+      ) +
       statCard('Big movers (daily ±3%'+')', '<span class="big">' + movers.length + '</span>', moverNames) +
       '</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">' +
-      statCard('Best weekly move', '<a class="tklink" href="' + rallyLink(wkBest) + '" target="_blank" rel="noopener noreferrer"><b>' + wkBest + '</b></a> ' + pctHtml(data[wkBest].wtd, {dp:2}), fmtPrice(data[wkBest].price)) +
-      statCard('Weakest weekly move', '<a class="tklink" href="' + rallyLink(wkWorst) + '" target="_blank" rel="noopener noreferrer"><b>' + wkWorst + '</b></a> ' + pctHtml(data[wkWorst].wtd, {dp:2}), fmtPrice(data[wkWorst].price)) +
-      statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), spy ? 'vs SPY ' + pctHtml(wkAvg - spy.wtd, {sign:true, arrow:false, dp:2}) : '') +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
+      statCardTrio(
+        statCard('Best weekly move', '<a class="tklink" href="' + rallyLink(wkBest) + '" target="_blank" rel="noopener noreferrer"><b>' + wkBest + '</b></a> ' + pctHtml(data[wkBest].wtd, {dp:2}), fmtPrice(data[wkBest].price)),
+        statCard('Weakest weekly move', '<a class="tklink" href="' + rallyLink(wkWorst) + '" target="_blank" rel="noopener noreferrer"><b>' + wkWorst + '</b></a> ' + pctHtml(data[wkWorst].wtd, {dp:2}), fmtPrice(data[wkWorst].price)),
+        statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), spy ? 'vs SPY ' + pctHtml(wkAvg - spy.wtd, {sign:true, arrow:false, dp:2}) : '')
+      ) +
       statCard('Weekly big movers (±8%'+')', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames) +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">' +
