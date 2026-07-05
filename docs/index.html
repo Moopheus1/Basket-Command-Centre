@@ -125,6 +125,17 @@
   </div>
 </div>
 
+<div class="panel">
+  <h2>Rebound setups to MA200, R:R 2+ (2-3 week view)</h2>
+  <div class="desc" id="reboundCaption">Stocks below MA200 with at least 2R reward for 1R risked. Stop = lowest low of last 12 bars (floored at 0.5x ATR14). Feasibility is a distance-vs-3-week-volatility heuristic, not a predicted probability - it does not account for trend direction.</div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Ticker</th><th>Price</th><th>MA200</th><th>Distance</th><th>Stop (12D low)</th><th>R:R</th><th>Feasibility</th></tr></thead>
+      <tbody id="reboundBody"></tbody>
+    </table>
+  </div>
+</div>
+
 <script>
 'use strict';
 const LS_HIDDEN = 'basket-hidden-tickers-v1';
@@ -211,6 +222,7 @@ function computeMetrics(rawBars) {
   }
   const ma20 = sma(20);
   const ma50 = sma(50);
+  const ma200 = sma(200);
 
   // ATR 14
   function atr14() {
@@ -256,6 +268,11 @@ function computeMetrics(rawBars) {
     rsiPrev = rsi14(prevCloses);
   }
 
+  // Swing low over the last 12 bars (used as the stop reference for rebound R:R)
+  const SWING_LOOKBACK = 12;
+  const swingBars = bars.slice(-SWING_LOOKBACK);
+  const swingLow = swingBars.length ? Math.min(...swingBars.map(b => b.low)) : null;
+
   return {
     price: last.close,
     daily: pct(last.close, prev.close),
@@ -275,11 +292,13 @@ function computeMetrics(rawBars) {
     rsi: rsi,
     ma20: ma20,
     ma50: ma50,
+    ma200: ma200,
     atr: atr,
     atrPrev: atrPrev,
     higherLows: totalLows > 0 ? higherLows / totalLows : null,
     rsiPrev: rsiPrev,
-    closes: closes
+    closes: closes,
+    swingLow: swingLow
   };
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -357,6 +376,7 @@ function render() {
 
   // Compute scores for all stocks
   computeScores(stocks);
+  computeRebound(stocks);
 
   let statsHtml = '';
   if (stocks.length) {
@@ -429,6 +449,7 @@ function render() {
 
   renderDetailed(spy, tickers);
   renderTable(spy, tickers);
+  renderRebound(stocks);
 }
 function scoreBadge(score) {
   if (score == null) return '<span style="color:#6b7280">—</span>';
@@ -568,6 +589,50 @@ function computeScores(stocks) {
   }
 }
 
+// --- Rebound setups: which stocks sit below MA20/MA50/MA200 and what's the
+// risk/reward + rough feasibility of reclaiming the NEAREST one within ~3 weeks.
+// This is a heuristic distance/volatility score, not a predicted probability.
+// It says nothing about trend direction - a stock in a persistent downtrend
+// scores identically to one basing for a bounce if the distances match.
+const REBOUND_HORIZON_DAYS = 15; // ~3 trading weeks
+const MIN_RISK_ATR_MULT = 0.5;   // floor risk at 0.5x ATR to avoid /0 or absurd R:R
+const MIN_RR = 2;                // only surface setups risking 1R to make 2R+
+function computeRebound(stocks) {
+  for (const t of stocks) {
+    const d = data[t];
+    if (!d || d.error) { d.rebound = null; continue; }
+    const price = d.price, atr = d.atr, swingLow = d.swingLow;
+    if (price == null || atr == null || swingLow == null) { d.rebound = null; continue; }
+
+    // MA200 only - MA20/MA50 dropped as targets. They saturated the feasibility
+    // score at 100 for nearly every stock (ATR-based 3-week move comfortably
+    // covers those short distances), so they added rows without adding signal.
+    if (d.ma200 == null || d.ma200 <= price) { d.rebound = { none: true }; continue; }
+    const target = { label: 'MA200', ma: d.ma200 };
+
+    const reward = target.ma - price;
+    let risk = price - swingLow;
+    const minRisk = MIN_RISK_ATR_MULT * atr;
+    const tightStop = risk < minRisk;
+    if (tightStop) risk = minRisk; // floor it so R:R doesn't blow up
+
+    const rr = risk > 0 ? reward / risk : null;
+    const expectedMove = atr * Math.sqrt(REBOUND_HORIZON_DAYS);
+    const feasibility = reward > 0 ? Math.max(0, Math.min(100, (expectedMove / reward) * 100)) : null;
+
+    d.rebound = {
+      label: target.label,
+      target: target.ma,
+      reward: reward,
+      risk: risk,
+      rr: rr,
+      feasibility: feasibility,
+      tightStop: tightStop,
+      swingLow: swingLow
+    };
+  }
+}
+
 function renderDetailed(spy, tickers) {
   document.getElementById('dcards').innerHTML = tickers.map(t => {
     const d = data[t];
@@ -661,6 +726,49 @@ function renderTable(spy, tickers) {
     '<td>' + fmtMcap(r.mcap) + '</td>' +
     '<td>' + fmtVol(r.vol) + '</td></tr>'
   ).join('') + extraRows;
+}
+function rrBadge(rr) {
+  if (rr == null) return '<span style="color:#6b7280">—</span>';
+  const color = rr >= 3 ? '#0a9e5c' : rr >= 1.5 ? '#6b7280' : '#e5484d';
+  return '<span style="color:' + color + ';font-weight:700">' + rr.toFixed(2) + '</span>';
+}
+function feasBadge(f) {
+  if (f == null) return '<span style="color:#6b7280">—</span>';
+  const color = f >= 66 ? '#0a9e5c' : f >= 33 ? '#f59e0b' : '#e5484d';
+  return '<span style="color:' + color + ';font-weight:700">' + Math.round(f) + '</span>';
+}
+function renderRebound(stocks) {
+  const el = document.getElementById('reboundBody');
+  if (!el) return;
+  const belowMA200 = stocks.filter(t => data[t] && data[t].rebound && !data[t].rebound.none);
+  const rows = belowMA200
+    .filter(t => data[t].rebound.rr != null && data[t].rebound.rr >= MIN_RR)
+    .map(t => ({ t: t, d: data[t], r: data[t].rebound }));
+  const skippedWeakRR = belowMA200.length - rows.length;
+  const skippedNoTarget = stocks.filter(t => data[t] && data[t].rebound && data[t].rebound.none).length;
+  const skippedNoData = stocks.filter(t => data[t] && !data[t].rebound).length;
+
+  rows.sort((a, b) => (b.r.rr || 0) - (a.r.rr || 0));
+
+  const caption = document.getElementById('reboundCaption');
+  if (caption) {
+    caption.textContent = rows.length + ' of ' + stocks.length + ' stocks are below MA200 with R:R >= ' + MIN_RR + '. ' +
+      belowMA200.length + ' total sit below MA200, but ' + skippedWeakRR + ' were filtered out for R:R under ' + MIN_RR + '. ' +
+      skippedNoTarget + ' are already above MA200 (nothing to reclaim). ' +
+      (skippedNoData ? skippedNoData + ' skipped (insufficient bars for MA200/ATR).' : '') +
+      ' Feasibility is a distance-vs-volatility heuristic, not a probability - it ignores trend direction.';
+  }
+
+  el.innerHTML = rows.length ? rows.map(({t, d, r}) => {
+    const distPct = pct(r.target, d.price);
+    return '<tr><td>' + t + '</td>' +
+      '<td>' + fmtPrice(d.price) + '</td>' +
+      '<td>' + fmtPrice(r.target) + '</td>' +
+      '<td>' + pctHtml(distPct, {arrow:false, sign:true, dp:1}) + '</td>' +
+      '<td>' + fmtPrice(r.swingLow) + (r.tightStop ? ' <span title="Swing low was tighter than 0.5x ATR - floored to avoid an inflated R:R" style="color:#92400e">*</span>' : '') + '</td>' +
+      '<td>' + rrBadge(r.rr) + '</td>' +
+      '<td>' + feasBadge(r.feasibility) + '</td></tr>';
+  }).join('') : '<tr><td colspan="7" class="empty">No stocks below MA200 currently clear an R:R of ' + MIN_RR + '+.</td></tr>';
 }
 function setSort(col) {
   if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = col === 'sym' ? 1 : -1; }
