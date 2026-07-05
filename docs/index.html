@@ -127,8 +127,8 @@
 </div>
 
 <div class="panel">
-  <h2>Rebound setups to MA200, R:R 2+ (2-3 week view)</h2>
-  <div class="desc" id="reboundCaption">Stocks below MA200 with at least 2R reward for 1R risked. Stop = lowest low of last 12 bars (floored at 0.5x ATR14). Feasibility is a distance-vs-3-week-volatility heuristic, not a predicted probability - it does not account for trend direction.</div>
+  <h2>Rebound setups to MA200, R:R 1.5+ (2-3 week view)</h2>
+  <div class="desc" id="reboundCaption">Stocks below MA200 with at least 1.5R reward for 1R risked. Stop = lowest low of last 12 bars (floored at 0.5x ATR14). Feasibility is a distance-vs-3-week-volatility heuristic, not a predicted probability - it does not account for trend direction.</div>
   <div style="overflow-x:auto">
     <table>
       <thead><tr><th>Ticker</th><th>Price</th><th>MA200</th><th>Distance</th><th>Stop (12D low)</th><th>R:R</th><th>Feasibility</th></tr></thead>
@@ -597,7 +597,7 @@ function computeScores(stocks) {
 // scores identically to one basing for a bounce if the distances match.
 const REBOUND_HORIZON_DAYS = 15; // ~3 trading weeks
 const MIN_RISK_ATR_MULT = 0.5;   // floor risk at 0.5x ATR to avoid /0 or absurd R:R
-const MIN_RR = 2;                // only surface setups risking 1R to make 2R+
+const MIN_RR = 1.5;              // only surface setups risking 1R to make 1.5R+
 function computeRebound(stocks) {
   for (const t of stocks) {
     const d = data[t];
