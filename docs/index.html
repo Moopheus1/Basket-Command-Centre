@@ -82,6 +82,8 @@
   .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
   .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
   .nowrap-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; }
+  .tklink { color: inherit; text-decoration: none; }
+  .tklink:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -314,6 +316,9 @@ function computeMetrics(rawBars) {
   };
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function rallyLink(t) {
+  return 'https://rallies.ai/research/' + encodeURIComponent(t);
+}
 function pctHtml(v, opts) {
   opts = opts || {};
   if (v == null || isNaN(v)) return '<span class="flat">—</span>';
@@ -457,7 +462,7 @@ function render() {
              '<div class="vs"><span>vs SPY</span>' + (vsSpy == null ? '—' : pctHtml(vsSpy, {sign:true, arrow:false})) + '</div>';
     }
     return '<div class="card' + (isB ? ' benchmark' : '') + '">' +
-      rm + '<div class="tick">' + t + (isB ? ' <span class="etf">BENCH</span>' : '') + '</div>' + body + '</div>';
+      rm + '<div class="tick"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer">' + t + '</a>' + (isB ? ' <span class="etf">BENCH</span>' : '') + '</div>' + body + '</div>';
   }).join('') : '<div class="empty">No data yet. Run the "Update market data" workflow in GitHub Actions once, then reload.</div>';
 
   renderDetailed(spy, tickers);
@@ -698,7 +703,7 @@ function renderDetailed(spy, tickers) {
       '<div class="dcard">' + rm +
       '<div class="dcard-head">' +
         '<span class="logo" style="background:' + logoColor(t) + '">' + esc(t.slice(0, 2)) + '</span>' +
-        '<div class="idblock"><div class="tk">' + esc(t) + '</div><div class="ind" title="' + esc(f.name || '') + '">' +
+        '<div class="idblock"><div class="tk"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer">' + esc(t) + '</a></div><div class="ind" title="' + esc(f.name || '') + '">' +
           esc(f.industry || f.name || '') + '</div></div>' +
         '<div class="pxblock">' + (d && !d.error ? '<div class="px">' + fmtPrice(d.price) + '</div><div class="dchg">' + pctHtml(d.daily, {dp:2}) + '</div>' : '') + '</div>' +
       '</div>' + body + '</div>';
@@ -768,7 +773,7 @@ function renderTable(spy, tickers) {
   ).join('');
 
   document.getElementById('tbody').innerHTML = rows.map(r =>
-    '<tr><td>' + r.sym + (BENCHMARKS.has(r.sym) ? '<span class="bench-badge">Benchmark</span>' : '') + '</td>' +
+    '<tr><td><a class="tklink" href="' + rallyLink(r.sym) + '" target="_blank" rel="noopener noreferrer">' + r.sym + '</a>' + (BENCHMARKS.has(r.sym) ? '<span class="bench-badge">Benchmark</span>' : '') + '</td>' +
     '<td>' + fmtPrice(r.price) + '</td>' +
     '<td>' + pctHtml(r.daily, {dp:2}) + '</td>' +
     '<td>' + pctHtml(r.wtd) + '</td>' +
