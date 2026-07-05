@@ -21,6 +21,8 @@
   .jumpbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; }
   .jumpbar a { background: #fff; border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #16181d; text-decoration: none; }
   .jumpbar a:hover { background: #f3f4f6; }
+  .jumpbar-inline { display: inline-block; margin-top: 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #16181d; text-decoration: none; }
+  .jumpbar-inline:hover { background: #f3f4f6; }
   .chip { background: #fff; border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
   .up { color: #0a9e5c; } .down { color: #e5484d; } .flat { color: #6b7280; }
   .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
@@ -93,6 +95,7 @@
 </head>
 <body>
 
+<div id="top"></div>
 <div class="header-row">
   <div>
     <div class="eyebrow">Tech, AI, cybersecurity, software, and ETF monitor</div>
@@ -150,7 +153,10 @@
 </div>
 
 <div class="panel" id="performancePanel">
-  <h2>Performance overview</h2>
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <h2>Performance overview</h2>
+    <a href="#top" class="jumpbar-inline" style="margin-top:0">↑ Back to top</a>
+  </div>
   <div class="desc">Daily, WTD, MTD, YTD, and 1-year returns from daily closes. Click a column to sort.</div>
   <div style="overflow-x:auto">
     <table>
@@ -158,6 +164,7 @@
       <tbody id="tbody"></tbody>
     </table>
   </div>
+  <a href="#top" class="jumpbar-inline">↑ Back to top</a>
 </div>
 
 <script>
