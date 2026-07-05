@@ -2,8 +2,8 @@ name: Update market data
 
 on:
   schedule:
-    # --- Premarket: 8:30-9:20am ET, every 10 min (6 runs) ---
-    - cron: "30,40,50 8 * * 1-5"
+    # --- Premarket: 8:00-9:20am ET, every 10 min (9 runs) ---
+    - cron: "0,10,20,30,40,50 8 * * 1-5"
       timezone: "America/New_York"
     - cron: "0,10,20 9 * * 1-5"
       timezone: "America/New_York"
@@ -24,6 +24,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # needed to dispatch pages.yml after a successful data commit
 
 concurrency:
   group: update-market-data
@@ -61,8 +62,26 @@ jobs:
           FETCH_MODE: ${{ steps.mode.outputs.mode }}
         run: python scripts/fetch_data.py
       - name: Commit updated data
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/data.json
-          git diff --staged --quiet || (git commit -m "Update market data [skip ci]" && git push)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Update market data [skip ci]"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Trigger Pages deploy
+        # GITHUB_TOKEN-authenticated pushes don't fire other workflows' `push`
+        # triggers (GitHub's anti-recursion rule) - workflow_dispatch is exempt
+        # from that rule, so we dispatch pages.yml explicitly instead of relying
+        # on it noticing the push. Only fires when data.json actually changed,
+        # not on every 10-min tick that found nothing new.
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run pages.yml
