@@ -943,6 +943,10 @@ function renderTable(spyDaily, tickers) {
     (sortCol === c[0] ? ' <span class="arrow">' + (sortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
   ).join('');
 
+  const COLS = [
+  ['sym', 'Ticker'], ['price', 'Price'], ['daily', 'Daily'], ['wtd', 'WTD'], ['mtd', 'MTD'],
+  ['ytd', 'YTD'], ['y1', '1Y'], ['vsSpy', 'vs SPY'], ['mom', 'Momentum'], ['per', 'Persist'], ['sig', 'Signal'], ['mcap', 'Market cap'], ['vol', 'Volume']
+];
   const rows = tickers.filter(t => data[t] && !data[t].error).map(t => {
     const d = data[t];
     const f = fund[t] || {};
