@@ -81,38 +81,6 @@
   td:first-child { text-align: left; font-weight: 700; }
   .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
   .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
-
-  /* Live price styles */
-  .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #0a9e5c; margin-right: 5px; animation: pulse 1.5s infinite; vertical-align: middle; }
-  .live-dot.stale { background: #d97706; animation: none; }
-  .live-dot.offline { background: #9ca3af; animation: none; }
-  @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1); } }
-  .live-badge { font-size: 10px; font-weight: 600; background: #ecfdf5; color: #0a9e5c; border: 1px solid #a7f3d0; border-radius: 6px; padding: 1px 6px; margin-left: 6px; white-space: nowrap; }
-  .live-badge.pre { background: #fffbeb; color: #92400e; border-color: #fde68a; }
-  .live-badge.post { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
-  .live-badge.closed { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
-  .live-badge.error { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
-  .live-price { color: #0a9e5c !important; }
-  .live-price.down { color: #e5484d !important; }
-  .last-updated { font-size: 10px; color: #9ca3af; margin-top: 2px; }
-  .status-bar { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #6b7280; margin-bottom: 12px; flex-wrap: wrap; }
-  .refresh-btn { font-size: 12px; padding: 4px 10px; }
-  .countdown { font-variant-numeric: tabular-nums; color: #9ca3af; }
-
-  /* Pre/post market */
-  .premkt-badge { font-size: 9px; font-weight: 700; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; border-radius: 4px; padding: 1px 5px; margin-left: 4px; text-transform: uppercase; }
-  .premkt-price { color: #92400e !important; }
-  .premkt-price.down { color: #b45309 !important; }
-  .postmkt-badge { font-size: 9px; font-weight: 700; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 4px; padding: 1px 5px; margin-left: 4px; text-transform: uppercase; }
-  .postmkt-price { color: #2563eb !important; }
-  .postmkt-price.down { color: #dc2626 !important; }
-  .premkt-row { font-size: 11px; color: #92400e; margin-top: 3px; display: flex; justify-content: space-between; }
-  .postmkt-row { font-size: 11px; color: #2563eb; margin-top: 3px; display: flex; justify-content: space-between; }
-  .session-divider { border-top: 1px dashed #e5e7eb; margin: 8px 0 6px; padding-top: 6px; }
-  .session-label { font-size: 10px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-  .premkt-stat { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; }
-  .premkt-stat .k { color: #9ca3af; }
-  .premkt-stat .v { font-weight: 600; }
 </style>
 </head>
 <body>
@@ -129,14 +97,8 @@
 <div class="statgrid" id="stats"></div>
 
 <div class="panel">
-  <h2>Watchlist <span id="liveStatus" class="live-badge closed">Loading...</span></h2>
+  <h2>Watchlist</h2>
   <div class="desc">Hide a ticker with the &times; on its card, or re-show it by typing it below. To track a NEW ticker, edit <b>tickers.txt</b> in the GitHub repo — the site updates automatically.</div>
-  <div class="status-bar">
-    <span class="live-dot offline" id="liveDot"></span>
-    <span id="liveText">Connecting to live prices...</span>
-    <span class="countdown" id="countdown"></span>
-    <button class="refresh-btn" id="refreshBtn" onclick="forceRefresh()">Refresh now</button>
-  </div>
   <div class="addbar">
     <input id="addInput" placeholder="Show ticker e.g. TSM" maxlength="12">
     <button class="primary" id="addBtn">Show</button>
@@ -169,20 +131,12 @@ const LS_HIDDEN = 'basket-hidden-tickers-v1';
 const BENCHMARKS = new Set(["SPY","QQQ","IWM"]);
 const PINNED = new Set(["SPY"]);
 
-let allTickers = [];
+let allTickers = [];   // from data.json, in file order
 let hidden = loadHidden();
-const data = {};
-const fund = {};
+const data = {};       // sym -> metrics or {error}
+const fund = {};       // sym -> {mcap, beta, sector, industry, name}
 let asofStr = null;
 let sortCol = 'ytd', sortDir = -1;
-
-/* ─── LIVE PRICE STATE ─── */
-const live = {};
-let liveInterval = null;
-let countdownInterval = null;
-let nextRefreshIn = 0;
-const REFRESH_EVERY = 30;
-let marketNow = 'CLOSED';
 
 function loadHidden() {
   try { const a = JSON.parse(localStorage.getItem(LS_HIDDEN) || '[]'); return new Set(Array.isArray(a) ? a : []); }
@@ -232,78 +186,6 @@ function computeMetrics(rawBars) {
   if (!isFinite(hi52)) { hi52 = null; lo52 = null; }
   const v20 = bars.slice(-20);
   const avgVol = v20.reduce((s, b) => s + (b.volume || 0), 0) / v20.length;
-  /* ─── momentum & persistence metrics ─── */
-  const closes = bars.map(b => b.close);
-  const ma20 = closes.slice(-20).reduce((s,c) => s+c, 0) / 20;
-  const ma50 = closes.length >= 50 ? closes.slice(-50).reduce((s,c) => s+c, 0) / 50 : null;
-  const d20 = closes.length >= 21 ? pct(last.close, closes[closes.length - 21]) : null;
-  const d5  = closes.length >= 6  ? pct(last.close, closes[closes.length - 6])  : null;
-
-  // RSI 14
-  let rsi14 = null;
-  if (closes.length >= 15) {
-    let gains = 0, losses = 0;
-    for (let i = closes.length - 14; i < closes.length; i++) {
-      const ch = closes[i] - closes[i-1];
-      if (ch > 0) gains += ch; else losses -= ch;
-    }
-    const avgGain = gains / 14, avgLoss = losses / 14;
-    if (avgLoss === 0) rsi14 = 100;
-    else rsi14 = 100 - (100 / (1 + avgGain / avgLoss));
-  }
-
-  // Volume trends
-  const avgVol5  = closes.length >= 5  ? bars.slice(-5).reduce((s,b) => s + (b.volume||0), 0) / 5 : null;
-  const avgVol10 = closes.length >= 10 ? bars.slice(-10).reduce((s,b) => s + (b.volume||0), 0) / 10 : null;
-
-  // Higher lows (last 20 days)
-  let higherLows = 0;
-  if (bars.length >= 21) {
-    for (let i = bars.length - 20; i < bars.length; i++) {
-      if (bars[i].low > bars[i-1].low) higherLows++;
-    }
-  }
-
-  // RSI trajectory
-  let rsiTraj = null;
-  if (closes.length >= 20 && rsi14 != null) {
-    let gains5 = 0, losses5 = 0;
-    for (let i = closes.length - 19; i < closes.length - 5; i++) {
-      const ch = closes[i] - closes[i-1];
-      if (ch > 0) gains5 += ch; else losses5 -= ch;
-    }
-    const avgG5 = gains5 / 14, avgL5 = losses5 / 14;
-    let rsi5 = 50;
-    if (avgL5 === 0) rsi5 = 100;
-    else rsi5 = 100 - (100 / (1 + avgG5 / avgL5));
-    rsiTraj = rsi14 - rsi5;
-  }
-
-  // ATR 14
-  let atr14 = null, atrTrend = null;
-  if (bars.length >= 15) {
-    let trSum = 0;
-    for (let i = bars.length - 14; i < bars.length; i++) {
-      const tr = Math.max(bars[i].high - bars[i].low,
-        Math.abs(bars[i].high - bars[i-1].close),
-        Math.abs(bars[i].low - bars[i-1].close));
-      trSum += tr;
-    }
-    atr14 = trSum / 14;
-
-    if (bars.length >= 29) {
-      let trSumOld = 0;
-      for (let i = bars.length - 28; i < bars.length - 14; i++) {
-        const tr = Math.max(bars[i].high - bars[i].low,
-          Math.abs(bars[i].high - bars[i-1].close),
-          Math.abs(bars[i].low - bars[i-1].close));
-        trSumOld += tr;
-      }
-      const atrOld = trSumOld / 14;
-      atrTrend = atrOld > 0 ? (atr14 - atrOld) / atrOld * 100 : null;
-    }
-  }
-
   return {
     price: last.close,
     daily: pct(last.close, prev.close),
@@ -317,14 +199,7 @@ function computeMetrics(rawBars) {
     hi52: hi52, lo52: lo52,
     offHigh: hi52 ? pct(last.close, hi52) : null,
     spark: bars.slice(-63).map(b => b.close),
-    asOf: lastDate,
-    ma20: ma20, ma50: ma50,
-    d20: d20, d5: d5,
-    rsi14: rsi14,
-    atr14: atr14, atrTrend: atrTrend,
-    avgVol5: avgVol5, avgVol10: avgVol10,
-    higherLows: higherLows,
-    rsiTraj: rsiTraj
+    asOf: lastDate
   };
 }
 
@@ -355,681 +230,6 @@ function fmtMcap(v) {
 const LOGO_COLORS = ['#1f2937','#4c7dfc','#0a9e5c','#d97706','#7c3aed','#db2777','#0891b2','#e5484d'];
 function logoColor(t) { let h = 0; for (const c of t) h = (h * 31 + c.charCodeAt(0)) >>> 0; return LOGO_COLORS[h % LOGO_COLORS.length]; }
 
-
-/* ─── LIVE PRICE HELPERS ─── */
-function getMarketState() {
-  const now = new Date();
-  const et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  const day = et.getDay();
-  const hour = et.getHours();
-  const min = et.getMinutes();
-  const time = hour * 60 + min;
-  const isWeekday = day >= 1 && day <= 5;
-  if (!isWeekday) return 'CLOSED';
-  if (time >= 930 && time < 1600) return 'REGULAR';
-  if (time >= 400 && time < 930) return 'PRE';
-  if (time >= 1600 && time < 2000) return 'POST';
-  return 'CLOSED';
-}
-
-function shouldAutoRefresh() {
-  const state = getMarketState();
-  return state === 'REGULAR' || state === 'PRE' || state === 'POST';
-}
-
-function getSession(sym) {
-  const l = live[sym];
-  if (!l) return { type: 'eod', price: null, change: null, changePct: null };
-  const state = l.marketState || getMarketState();
-  if (state === 'PRE' && l.preMarketPrice != null) {
-    return { type: 'pre', price: l.preMarketPrice, change: l.preMarketChange, changePct: l.preMarketChangePercent, prevClose: l.prevClose };
-  }
-  if (state === 'REGULAR' && l.price != null) {
-    return { type: 'regular', price: l.price, change: l.change, changePct: l.changePercent, prevClose: l.prevClose };
-  }
-  if (state === 'POST' && l.postMarketPrice != null) {
-    return { type: 'post', price: l.postMarketPrice, change: l.postMarketChange, changePct: l.postMarketChangePercent, prevClose: l.price };
-  }
-  if (l.price != null) {
-    return { type: state === 'PRE' ? 'pre' : state === 'POST' ? 'post' : 'regular', price: l.price, change: l.change, changePct: l.changePercent, prevClose: l.prevClose };
-  }
-  return { type: 'eod', price: null, change: null, changePct: null };
-}
-
-function effectivePrice(sym) {
-  const s = getSession(sym);
-  if (s.price != null) return s.price;
-  const d = data[sym];
-  return d && !d.error ? d.price : null;
-}
-
-function effectiveDaily(sym) {
-  const s = getSession(sym);
-  if (s.changePct != null) return s.changePct;
-  const d = data[sym];
-  return d && !d.error ? d.daily : null;
-}
-
-function isLive(sym) {
-  return live[sym] && (live[sym].price != null || live[sym].preMarketPrice != null || live[sym].postMarketPrice != null);
-}
-
-function sessionLabel(sym) {
-  const s = getSession(sym);
-  const labels = { pre: 'PRE', regular: 'LIVE', post: 'POST', eod: 'EOD' };
-  return labels[s.type] || 'EOD';
-}
-
-function sessionClass(sym) {
-  const s = getSession(sym);
-  if (s.type === 'pre') return 'premkt';
-  if (s.type === 'post') return 'postmkt';
-  if (s.type === 'regular') return 'live';
-  return '';
-}
-
-/* ─── LIVE FETCHING ─── */
-async function fetchLiveQuotes(tickers) {
-  const symbols = tickers.join(',');
-  const url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + symbols + '?interval=1d&range=1d&includePrePost=true';
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    const results = json.chart && json.chart.result ? json.chart.result : [];
-    results.forEach(function(r) {
-      const meta = r.meta;
-      const sym = meta.symbol || meta.shortName || meta.longName;
-      if (!sym) return;
-      const state = meta.marketState || 'CLOSED';
-      marketNow = state;
-      const price = meta.regularMarketPrice;
-      const prevClose = meta.previousClose || meta.chartPreviousClose;
-      const change = price != null && prevClose != null ? price - prevClose : null;
-      const changePct = change != null && prevClose ? (change / prevClose) * 100 : null;
-      const prePrice = meta.preMarketPrice;
-      const preChange = prePrice != null && prevClose != null ? prePrice - prevClose : null;
-      const preChangePct = preChange != null && prevClose ? (preChange / prevClose) * 100 : null;
-      const postPrice = meta.postMarketPrice;
-      const postChange = postPrice != null && price != null ? postPrice - price : null;
-      const postChangePct = postChange != null && price ? (postChange / price) * 100 : null;
-      live[sym] = {
-        price: price, change: change, changePercent: changePct, prevClose: prevClose,
-        preMarketPrice: prePrice, preMarketChange: preChange, preMarketChangePercent: preChangePct,
-        postMarketPrice: postPrice, postMarketChange: postChange, postMarketChangePercent: postChangePct,
-        currency: meta.currency, marketState: state, time: Date.now(), source: 'yahoo'
-      };
-    });
-    updateLiveUI();
-    return true;
-  } catch (e) {
-    updateLiveUI(true);
-    return false;
-  }
-}
-
-async function fetchLiveQuotesFallback(tickers) {
-  await Promise.all(tickers.map(async function(sym) {
-    const url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + sym + '?interval=1d&range=1d&includePrePost=true';
-    try {
-      const res = await fetch(url);
-      const json = await res.json();
-      const r = json.chart && json.chart.result && json.chart.result[0];
-      if (!r) return;
-      const meta = r.meta;
-      const state = meta.marketState || 'CLOSED';
-      marketNow = state;
-      const price = meta.regularMarketPrice;
-      const prevClose = meta.previousClose || meta.chartPreviousClose;
-      const change = price != null && prevClose != null ? price - prevClose : null;
-      const changePct = change != null && prevClose ? (change / prevClose) * 100 : null;
-      const prePrice = meta.preMarketPrice;
-      const preChange = prePrice != null && prevClose != null ? prePrice - prevClose : null;
-      const preChangePct = preChange != null && prevClose ? (preChange / prevClose) * 100 : null;
-      const postPrice = meta.postMarketPrice;
-      const postChange = postPrice != null && price != null ? postPrice - price : null;
-      const postChangePct = postChange != null && price ? (postChange / price) * 100 : null;
-      live[sym] = {
-        price: price, change: change, changePercent: changePct, prevClose: prevClose,
-        preMarketPrice: prePrice, preMarketChange: preChange, preMarketChangePercent: preChangePct,
-        postMarketPrice: postPrice, postMarketChange: postChange, postMarketChangePercent: postChangePct,
-        currency: meta.currency, marketState: state, time: Date.now(), source: 'yahoo'
-      };
-    } catch (e) {}
-  }));
-  updateLiveUI();
-}
-
-function updateLiveUI(error) {
-  const dot = document.getElementById('liveDot');
-  const text = document.getElementById('liveText');
-  const badge = document.getElementById('liveStatus');
-  const state = getMarketState();
-  if (error) {
-    dot.className = 'live-dot offline';
-    text.textContent = 'Live prices unavailable';
-    badge.className = 'live-badge error';
-    badge.textContent = 'EOD only';
-    return;
-  }
-  const liveCount = Object.values(live).filter(function(l) { return l.price != null || l.preMarketPrice != null || l.postMarketPrice != null; }).length;
-  const preCount = Object.values(live).filter(function(l) { return l.preMarketPrice != null; }).length;
-  const postCount = Object.values(live).filter(function(l) { return l.postMarketPrice != null; }).length;
-  const stateLabels = { REGULAR: 'Market Open', PRE: 'Pre-Market', POST: 'After Hours', CLOSED: 'Market Closed' };
-  const stateClasses = { REGULAR: 'live-badge', PRE: 'live-badge pre', POST: 'live-badge post', CLOSED: 'live-badge closed' };
-  let extra = '';
-  if (state === 'PRE' && preCount > 0) extra = ' - ' + preCount + ' pre-mkt';
-  else if (state === 'POST' && postCount > 0) extra = ' - ' + postCount + ' post-mkt';
-  else if (liveCount > 0) extra = ' - ' + liveCount + ' live';
-  dot.className = state === 'REGULAR' ? 'live-dot' : state === 'CLOSED' ? 'live-dot offline' : 'live-dot stale';
-  text.textContent = (stateLabels[state] || state) + extra;
-  badge.className = stateClasses[state] || 'live-badge closed';
-  badge.textContent = stateLabels[state] || state;
-}
-
-function startCountdown() {
-  nextRefreshIn = REFRESH_EVERY;
-  const el = document.getElementById('countdown');
-  if (countdownInterval) clearInterval(countdownInterval);
-  countdownInterval = setInterval(function() {
-    nextRefreshIn--;
-    if (nextRefreshIn <= 0) nextRefreshIn = REFRESH_EVERY;
-    el.textContent = shouldAutoRefresh() ? 'next refresh in ' + nextRefreshIn + 's' : '';
-  }, 1000);
-}
-
-async function refreshLive() {
-  const tickers = visibleTickers();
-  if (!tickers.length) return;
-  const ok = await fetchLiveQuotes(tickers);
-  if (!ok) await fetchLiveQuotesFallback(tickers);
-  render();
-}
-
-function forceRefresh() {
-  refreshLive();
-  nextRefreshIn = REFRESH_EVERY;
-}
-
-function startLiveLoop() {
-  refreshLive();
-  startCountdown();
-  if (liveInterval) clearInterval(liveInterval);
-  liveInterval = setInterval(function() {
-    if (shouldAutoRefresh()) {
-      refreshLive();
-      nextRefreshIn = REFRESH_EVERY;
-    }
-  }, REFRESH_EVERY * 1000);
-}
-
-/* ─── MOMENTUM SCORE (0-100) ─── */
-function momentumScore(t, spyDaily) {
-  const d = data[t];
-  if (!d || d.error) return null;
-  const f = fund[t] || {};
-  let s1 = 50;
-  if (d.d20 != null) s1 = Math.min(100, Math.max(0, 50 + d.d20 * 5));
-  let s2 = 50;
-  if (d.d5 != null && spyDaily != null) {
-    const rel5 = d.daily - spyDaily;
-    s2 = Math.min(100, Math.max(0, 50 + rel5 * 10));
-  }
-  let s3 = 50;
-  if (d.avgVol && d.avgVol > 0) {
-    const volRatio = d.vol / d.avgVol;
-    s3 = Math.min(100, volRatio * 50);
-  }
-  let s4 = 50;
-  if (d.rsi14 != null) {
-    if (d.rsi14 >= 50 && d.rsi14 <= 70) s4 = 100 - Math.abs(d.rsi14 - 60) * 2;
-    else if (d.rsi14 < 50) s4 = d.rsi14 * 1.5;
-    else s4 = Math.max(0, 100 - (d.rsi14 - 70) * 3);
-  }
-  let s5 = 50;
-  if (d.ma20 != null) {
-    s5 = d.price > d.ma20 ? Math.min(100, 50 + (d.price / d.ma20 - 1) * 500) : Math.max(0, 50 - (1 - d.price / d.ma20) * 500);
-  }
-  let s6 = 50;
-  if (d.hi52 != null && d.lo52 != null && d.hi52 > d.lo52) {
-    const pos = (d.price - d.lo52) / (d.hi52 - d.lo52);
-    s6 = pos >= 0.3 && pos <= 0.7 ? 100 - Math.abs(pos - 0.5) * 200 : Math.max(0, 100 - Math.abs(pos - 0.5) * 300);
-  }
-  let s7 = 50;
-  if (f.beta != null) s7 = f.beta <= 1.0 ? 100 - f.beta * 30 : Math.max(0, 70 - (f.beta - 1) * 40);
-  return Math.round(s1 * 0.25 + s2 * 0.20 + s3 * 0.15 + s4 * 0.15 + s5 * 0.10 + s6 * 0.10 + s7 * 0.05);
-}
-
-function momentumGrade(score) {
-  if (score >= 80) return { label: 'Strong', cls: 'up' };
-  if (score >= 60) return { label: 'Moderate', cls: 'up' };
-  if (score >= 40) return { label: 'Neutral', cls: 'flat' };
-  if (score >= 20) return { label: 'Weak', cls: 'down' };
-  return { label: 'Poor', cls: 'down' };
-}
-
-/* ─── PERSISTENCE SCORE (0-100) ─── */
-function persistenceScore(t, spyDaily) {
-  const d = data[t];
-  if (!d || d.error) return null;
-  const f = fund[t] || {};
-  let s1 = 50;
-  if (d.ma20 != null && d.ma50 != null) {
-    if (d.price > d.ma20 && d.ma20 > d.ma50) s1 = 100;
-    else if (d.price > d.ma20 && d.price > d.ma50) s1 = 75;
-    else if (d.price > d.ma20) s1 = 60;
-    else if (d.price > d.ma50) s1 = 40;
-    else s1 = 20;
-  } else if (d.ma20 != null) {
-    s1 = d.price > d.ma20 ? 70 : 30;
-  }
-  let s2 = 50;
-  if (d.avgVol5 != null && d.avgVol10 != null && d.avgVol != null && d.avgVol > 0) {
-    const v5v10 = d.avgVol5 / d.avgVol10;
-    const v10v20 = d.avgVol10 / d.avgVol;
-    if (v5v10 > 1.1 && v10v20 > 1.05) s2 = 100;
-    else if (v5v10 > 1.0 && v10v20 > 1.0) s2 = 80;
-    else if (v5v10 > 1.0 || v10v20 > 1.0) s2 = 65;
-    else if (v5v10 < 0.9 && v10v20 < 0.95) s2 = 20;
-    else s2 = 40;
-  }
-  let s3 = 50;
-  if (d.atrTrend != null && d.daily != null) {
-    if (d.daily > 0 && d.atrTrend < -5) s3 = 100;
-    else if (d.daily > 0 && d.atrTrend < 0) s3 = 80;
-    else if (d.daily > 0 && d.atrTrend < 5) s3 = 60;
-    else if (d.daily > 0) s3 = 40;
-    else if (d.atrTrend < -5) s3 = 70;
-    else s3 = 30;
-  }
-  let s4 = 50;
-  if (d.higherLows != null) s4 = Math.min(100, Math.max(0, d.higherLows * 5));
-  let s5 = 50;
-  if (d.rsiTraj != null) {
-    if (d.rsiTraj > 5 && d.rsi14 < 70) s5 = 100;
-    else if (d.rsiTraj > 0 && d.rsi14 < 70) s5 = 80;
-    else if (d.rsiTraj > 0) s5 = 60;
-    else if (d.rsiTraj > -3) s5 = 50;
-    else s5 = Math.max(0, 50 + d.rsiTraj * 5);
-  }
-  let s6 = 50;
-  if (f.sector) {
-    const sectorEtfs = { 'Technology': 'XLK', 'Healthcare': 'XLV', 'Financials': 'XLF',
-      'Consumer Discretionary': 'XLY', 'Industrials': 'XLI', 'Energy': 'XLE',
-      'Materials': 'XLB', 'Real Estate': 'XLRE', 'Utilities': 'XLU',
-      'Communication Services': 'XLC', 'Consumer Staples': 'XLP' };
-    const etf = sectorEtfs[f.sector];
-    if (etf && data[etf] && !data[etf].error) {
-      const secDaily = data[etf].daily;
-      const secD20 = data[etf].d20;
-      if (secDaily > 0 && secD20 > 0) s6 = 100;
-      else if (secDaily > 0 || secD20 > 0) s6 = 70;
-      else if (secDaily < -1) s6 = 20;
-      else s6 = 50;
-    }
-  }
-  return Math.round(s1 * 0.25 + s2 * 0.20 + s3 * 0.15 + s4 * 0.15 + s5 * 0.15 + s6 * 0.10);
-}
-
-function persistenceGrade(score) {
-  if (score >= 80) return { label: 'High', cls: 'up' };
-  if (score >= 60) return { label: 'Good', cls: 'up' };
-  if (score >= 40) return { label: 'Mixed', cls: 'flat' };
-  if (score >= 20) return { label: 'Low', cls: 'down' };
-  return { label: 'Poor', cls: 'down' };
-}
-
-function combinedSignal(mom, per) {
-  if (mom == null || per == null) return { label: '-', cls: 'flat', tip: 'Insufficient data' };
-  if (mom >= 70 && per >= 70) return { label: 'STRONG BUY', cls: 'up', tip: 'Strong momentum + high persistence. Best setup.' };
-  if (mom >= 70 && per >= 50) return { label: 'BUY', cls: 'up', tip: 'Strong momentum with decent persistence. Favorable.' };
-  if (mom >= 70 && per < 50) return { label: 'CAUTION', cls: 'flat', tip: 'Strong momentum but low persistence. Possible trap.' };
-  if (mom >= 50 && per >= 70) return { label: 'ACCUMULATE', cls: 'up', tip: 'Moderate momentum building with strong persistence. Early entry.' };
-  if (mom >= 50 && per >= 50) return { label: 'HOLD', cls: 'flat', tip: 'Moderate momentum and persistence. Neutral.' };
-  if (mom >= 50 && per < 50) return { label: 'WEAKENING', cls: 'down', tip: 'Momentum fading. Consider reducing.' };
-  if (mom < 50 && per >= 70) return { label: 'WATCH', cls: 'flat', tip: 'Weak now but high persistence. Potential reversal setup.' };
-  if (mom < 50 && per >= 50) return { label: 'AVOID', cls: 'down', tip: 'Weak momentum with mixed persistence. Stay away.' };
-  return { label: 'SELL', cls: 'down', tip: 'Poor momentum and persistence. Avoid or exit.' };
-}
-
-
-/* --- LIVE PRICE HELPERS --- */
-function getMarketState() {
-  const now = new Date();
-  const et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-  const day = et.getDay();
-  const hour = et.getHours();
-  const min = et.getMinutes();
-  const time = hour * 60 + min;
-  const isWeekday = day >= 1 && day <= 5;
-  if (!isWeekday) return 'CLOSED';
-  if (time >= 930 && time < 1600) return 'REGULAR';
-  if (time >= 400 && time < 930) return 'PRE';
-  if (time >= 1600 && time < 2000) return 'POST';
-  return 'CLOSED';
-}
-
-function shouldAutoRefresh() {
-  const state = getMarketState();
-  return state === 'REGULAR' || state === 'PRE' || state === 'POST';
-}
-
-function getSession(sym) {
-  const l = live[sym];
-  if (!l) return { type: 'eod', price: null, change: null, changePct: null };
-  const state = l.marketState || getMarketState();
-  if (state === 'PRE' && l.preMarketPrice != null) {
-    return { type: 'pre', price: l.preMarketPrice, change: l.preMarketChange, changePct: l.preMarketChangePercent, prevClose: l.prevClose };
-  }
-  if (state === 'REGULAR' && l.price != null) {
-    return { type: 'regular', price: l.price, change: l.change, changePct: l.changePercent, prevClose: l.prevClose };
-  }
-  if (state === 'POST' && l.postMarketPrice != null) {
-    return { type: 'post', price: l.postMarketPrice, change: l.postMarketChange, changePct: l.postMarketChangePercent, prevClose: l.price };
-  }
-  if (l.price != null) {
-    return { type: state === 'PRE' ? 'pre' : state === 'POST' ? 'post' : 'regular', price: l.price, change: l.change, changePct: l.changePercent, prevClose: l.prevClose };
-  }
-  return { type: 'eod', price: null, change: null, changePct: null };
-}
-
-function effectivePrice(sym) {
-  const s = getSession(sym);
-  if (s.price != null) return s.price;
-  const d = data[sym];
-  return d && !d.error ? d.price : null;
-}
-
-function effectiveDaily(sym) {
-  const s = getSession(sym);
-  if (s.changePct != null) return s.changePct;
-  const d = data[sym];
-  return d && !d.error ? d.daily : null;
-}
-
-function isLive(sym) {
-  return live[sym] && (live[sym].price != null || live[sym].preMarketPrice != null || live[sym].postMarketPrice != null);
-}
-
-function sessionLabel(sym) {
-  const s = getSession(sym);
-  const labels = { pre: 'PRE', regular: 'LIVE', post: 'POST', eod: 'EOD' };
-  return labels[s.type] || 'EOD';
-}
-
-function sessionClass(sym) {
-  const s = getSession(sym);
-  if (s.type === 'pre') return 'premkt';
-  if (s.type === 'post') return 'postmkt';
-  if (s.type === 'regular') return 'live';
-  return '';
-}
-
-/* --- LIVE FETCHING --- */
-async function fetchLiveQuotes(tickers) {
-  const symbols = tickers.join(',');
-  const url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + symbols + '?interval=1d&range=1d&includePrePost=true';
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    const results = json.chart && json.chart.result ? json.chart.result : [];
-    results.forEach(function(r) {
-      const meta = r.meta;
-      const sym = meta.symbol || meta.shortName || meta.longName;
-      if (!sym) return;
-      const state = meta.marketState || 'CLOSED';
-      marketNow = state;
-      const price = meta.regularMarketPrice;
-      const prevClose = meta.previousClose || meta.chartPreviousClose;
-      const change = price != null && prevClose != null ? price - prevClose : null;
-      const changePct = change != null && prevClose ? (change / prevClose) * 100 : null;
-      const prePrice = meta.preMarketPrice;
-      const preChange = prePrice != null && prevClose != null ? prePrice - prevClose : null;
-      const preChangePct = preChange != null && prevClose ? (preChange / prevClose) * 100 : null;
-      const postPrice = meta.postMarketPrice;
-      const postChange = postPrice != null && price != null ? postPrice - price : null;
-      const postChangePct = postChange != null && price ? (postChange / price) * 100 : null;
-      live[sym] = {
-        price: price, change: change, changePercent: changePct, prevClose: prevClose,
-        preMarketPrice: prePrice, preMarketChange: preChange, preMarketChangePercent: preChangePct,
-        postMarketPrice: postPrice, postMarketChange: postChange, postMarketChangePercent: postChangePct,
-        currency: meta.currency, marketState: state, time: Date.now(), source: 'yahoo'
-      };
-    });
-    updateLiveUI();
-    return true;
-  } catch (e) {
-    updateLiveUI(true);
-    return false;
-  }
-}
-
-async function fetchLiveQuotesFallback(tickers) {
-  await Promise.all(tickers.map(async function(sym) {
-    const url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + sym + '?interval=1d&range=1d&includePrePost=true';
-    try {
-      const res = await fetch(url);
-      const json = await res.json();
-      const r = json.chart && json.chart.result && json.chart.result[0];
-      if (!r) return;
-      const meta = r.meta;
-      const state = meta.marketState || 'CLOSED';
-      marketNow = state;
-      const price = meta.regularMarketPrice;
-      const prevClose = meta.previousClose || meta.chartPreviousClose;
-      const change = price != null && prevClose != null ? price - prevClose : null;
-      const changePct = change != null && prevClose ? (change / prevClose) * 100 : null;
-      const prePrice = meta.preMarketPrice;
-      const preChange = prePrice != null && prevClose != null ? prePrice - prevClose : null;
-      const preChangePct = preChange != null && prevClose ? (preChange / prevClose) * 100 : null;
-      const postPrice = meta.postMarketPrice;
-      const postChange = postPrice != null && price != null ? postPrice - price : null;
-      const postChangePct = postChange != null && price ? (postChange / price) * 100 : null;
-      live[sym] = {
-        price: price, change: change, changePercent: changePct, prevClose: prevClose,
-        preMarketPrice: prePrice, preMarketChange: preChange, preMarketChangePercent: preChangePct,
-        postMarketPrice: postPrice, postMarketChange: postChange, postMarketChangePercent: postChangePct,
-        currency: meta.currency, marketState: state, time: Date.now(), source: 'yahoo'
-      };
-    } catch (e) {}
-  }));
-  updateLiveUI();
-}
-
-function updateLiveUI(error) {
-  const dot = document.getElementById('liveDot');
-  const text = document.getElementById('liveText');
-  const badge = document.getElementById('liveStatus');
-  if (!dot || !text || !badge) return;
-  const state = getMarketState();
-  if (error) {
-    dot.className = 'live-dot offline';
-    text.textContent = 'Live prices unavailable';
-    badge.className = 'live-badge error';
-    badge.textContent = 'EOD only';
-    return;
-  }
-  const liveCount = Object.values(live).filter(function(l) { return l.price != null || l.preMarketPrice != null || l.postMarketPrice != null; }).length;
-  const preCount = Object.values(live).filter(function(l) { return l.preMarketPrice != null; }).length;
-  const postCount = Object.values(live).filter(function(l) { return l.postMarketPrice != null; }).length;
-  const stateLabels = { REGULAR: 'Market Open', PRE: 'Pre-Market', POST: 'After Hours', CLOSED: 'Market Closed' };
-  const stateClasses = { REGULAR: 'live-badge', PRE: 'live-badge pre', POST: 'live-badge post', CLOSED: 'live-badge closed' };
-  let extra = '';
-  if (state === 'PRE' && preCount > 0) extra = ' - ' + preCount + ' pre-mkt';
-  else if (state === 'POST' && postCount > 0) extra = ' - ' + postCount + ' post-mkt';
-  else if (liveCount > 0) extra = ' - ' + liveCount + ' live';
-  dot.className = state === 'REGULAR' ? 'live-dot' : state === 'CLOSED' ? 'live-dot offline' : 'live-dot stale';
-  text.textContent = (stateLabels[state] || state) + extra;
-  badge.className = stateClasses[state] || 'live-badge closed';
-  badge.textContent = stateLabels[state] || state;
-}
-
-function startCountdown() {
-  nextRefreshIn = REFRESH_EVERY;
-  const el = document.getElementById('countdown');
-  if (countdownInterval) clearInterval(countdownInterval);
-  countdownInterval = setInterval(function() {
-    nextRefreshIn--;
-    if (nextRefreshIn <= 0) nextRefreshIn = REFRESH_EVERY;
-    if (el) el.textContent = shouldAutoRefresh() ? 'next refresh in ' + nextRefreshIn + 's' : '';
-  }, 1000);
-}
-
-async function refreshLive() {
-  const tickers = visibleTickers();
-  if (!tickers.length) return;
-  const ok = await fetchLiveQuotes(tickers);
-  if (!ok) await fetchLiveQuotesFallback(tickers);
-  render();
-}
-
-function forceRefresh() {
-  refreshLive();
-  nextRefreshIn = REFRESH_EVERY;
-}
-
-function startLiveLoop() {
-  refreshLive();
-  startCountdown();
-  if (liveInterval) clearInterval(liveInterval);
-  liveInterval = setInterval(function() {
-    if (shouldAutoRefresh()) {
-      refreshLive();
-      nextRefreshIn = REFRESH_EVERY;
-    }
-  }, REFRESH_EVERY * 1000);
-}
-
-/* --- MOMENTUM SCORE (0-100) --- */
-function momentumScore(t, spyDaily) {
-  const d = data[t];
-  if (!d || d.error) return null;
-  const f = fund[t] || {};
-  let s1 = 50;
-  if (d.d20 != null) s1 = Math.min(100, Math.max(0, 50 + d.d20 * 5));
-  let s2 = 50;
-  if (d.d5 != null && spyDaily != null) {
-    const rel5 = d.daily - spyDaily;
-    s2 = Math.min(100, Math.max(0, 50 + rel5 * 10));
-  }
-  let s3 = 50;
-  if (d.avgVol && d.avgVol > 0) {
-    const volRatio = d.vol / d.avgVol;
-    s3 = Math.min(100, volRatio * 50);
-  }
-  let s4 = 50;
-  if (d.rsi14 != null) {
-    if (d.rsi14 >= 50 && d.rsi14 <= 70) s4 = 100 - Math.abs(d.rsi14 - 60) * 2;
-    else if (d.rsi14 < 50) s4 = d.rsi14 * 1.5;
-    else s4 = Math.max(0, 100 - (d.rsi14 - 70) * 3);
-  }
-  let s5 = 50;
-  if (d.ma20 != null) {
-    s5 = d.price > d.ma20 ? Math.min(100, 50 + (d.price / d.ma20 - 1) * 500) : Math.max(0, 50 - (1 - d.price / d.ma20) * 500);
-  }
-  let s6 = 50;
-  if (d.hi52 != null && d.lo52 != null && d.hi52 > d.lo52) {
-    const pos = (d.price - d.lo52) / (d.hi52 - d.lo52);
-    s6 = pos >= 0.3 && pos <= 0.7 ? 100 - Math.abs(pos - 0.5) * 200 : Math.max(0, 100 - Math.abs(pos - 0.5) * 300);
-  }
-  let s7 = 50;
-  if (f.beta != null) s7 = f.beta <= 1.0 ? 100 - f.beta * 30 : Math.max(0, 70 - (f.beta - 1) * 40);
-  return Math.round(s1 * 0.25 + s2 * 0.20 + s3 * 0.15 + s4 * 0.15 + s5 * 0.10 + s6 * 0.10 + s7 * 0.05);
-}
-
-function momentumGrade(score) {
-  if (score >= 80) return { label: 'Strong', cls: 'up' };
-  if (score >= 60) return { label: 'Moderate', cls: 'up' };
-  if (score >= 40) return { label: 'Neutral', cls: 'flat' };
-  if (score >= 20) return { label: 'Weak', cls: 'down' };
-  return { label: 'Poor', cls: 'down' };
-}
-
-/* --- PERSISTENCE SCORE (0-100) --- */
-function persistenceScore(t, spyDaily) {
-  const d = data[t];
-  if (!d || d.error) return null;
-  const f = fund[t] || {};
-  let s1 = 50;
-  if (d.ma20 != null && d.ma50 != null) {
-    if (d.price > d.ma20 && d.ma20 > d.ma50) s1 = 100;
-    else if (d.price > d.ma20 && d.price > d.ma50) s1 = 75;
-    else if (d.price > d.ma20) s1 = 60;
-    else if (d.price > d.ma50) s1 = 40;
-    else s1 = 20;
-  } else if (d.ma20 != null) {
-    s1 = d.price > d.ma20 ? 70 : 30;
-  }
-  let s2 = 50;
-  if (d.avgVol5 != null && d.avgVol10 != null && d.avgVol != null && d.avgVol > 0) {
-    const v5v10 = d.avgVol5 / d.avgVol10;
-    const v10v20 = d.avgVol10 / d.avgVol;
-    if (v5v10 > 1.1 && v10v20 > 1.05) s2 = 100;
-    else if (v5v10 > 1.0 && v10v20 > 1.0) s2 = 80;
-    else if (v5v10 > 1.0 || v10v20 > 1.0) s2 = 65;
-    else if (v5v10 < 0.9 && v10v20 < 0.95) s2 = 20;
-    else s2 = 40;
-  }
-  let s3 = 50;
-  if (d.atrTrend != null && d.daily != null) {
-    if (d.daily > 0 && d.atrTrend < -5) s3 = 100;
-    else if (d.daily > 0 && d.atrTrend < 0) s3 = 80;
-    else if (d.daily > 0 && d.atrTrend < 5) s3 = 60;
-    else if (d.daily > 0) s3 = 40;
-    else if (d.atrTrend < -5) s3 = 70;
-    else s3 = 30;
-  }
-  let s4 = 50;
-  if (d.higherLows != null) s4 = Math.min(100, Math.max(0, d.higherLows * 5));
-  let s5 = 50;
-  if (d.rsiTraj != null) {
-    if (d.rsiTraj > 5 && d.rsi14 < 70) s5 = 100;
-    else if (d.rsiTraj > 0 && d.rsi14 < 70) s5 = 80;
-    else if (d.rsiTraj > 0) s5 = 60;
-    else if (d.rsiTraj > -3) s5 = 50;
-    else s5 = Math.max(0, 50 + d.rsiTraj * 5);
-  }
-  let s6 = 50;
-  if (f.sector) {
-    const sectorEtfs = { 'Technology': 'XLK', 'Healthcare': 'XLV', 'Financials': 'XLF',
-      'Consumer Discretionary': 'XLY', 'Industrials': 'XLI', 'Energy': 'XLE',
-      'Materials': 'XLB', 'Real Estate': 'XLRE', 'Utilities': 'XLU',
-      'Communication Services': 'XLC', 'Consumer Staples': 'XLP' };
-    const etf = sectorEtfs[f.sector];
-    if (etf && data[etf] && !data[etf].error) {
-      const secDaily = data[etf].daily;
-      const secD20 = data[etf].d20;
-      if (secDaily > 0 && secD20 > 0) s6 = 100;
-      else if (secDaily > 0 || secD20 > 0) s6 = 70;
-      else if (secDaily < -1) s6 = 20;
-      else s6 = 50;
-    }
-  }
-  return Math.round(s1 * 0.25 + s2 * 0.20 + s3 * 0.15 + s4 * 0.15 + s5 * 0.15 + s6 * 0.10);
-}
-
-function persistenceGrade(score) {
-  if (score >= 80) return { label: 'High', cls: 'up' };
-  if (score >= 60) return { label: 'Good', cls: 'up' };
-  if (score >= 40) return { label: 'Mixed', cls: 'flat' };
-  if (score >= 20) return { label: 'Low', cls: 'down' };
-  return { label: 'Poor', cls: 'down' };
-}
-
-function combinedSignal(mom, per) {
-  if (mom == null || per == null) return { label: '-', cls: 'flat', tip: 'Insufficient data' };
-  if (mom >= 70 && per >= 70) return { label: 'STRONG BUY', cls: 'up', tip: 'Strong momentum + high persistence. Best setup.' };
-  if (mom >= 70 && per >= 50) return { label: 'BUY', cls: 'up', tip: 'Strong momentum with decent persistence. Favorable.' };
-  if (mom >= 70 && per < 50) return { label: 'CAUTION', cls: 'flat', tip: 'Strong momentum but low persistence. Possible trap.' };
-  if (mom >= 50 && per >= 70) return { label: 'ACCUMULATE', cls: 'up', tip: 'Moderate momentum building with strong persistence. Early entry.' };
-  if (mom >= 50 && per >= 50) return { label: 'HOLD', cls: 'flat', tip: 'Moderate momentum and persistence. Neutral.' };
-  if (mom >= 50 && per < 50) return { label: 'WEAKENING', cls: 'down', tip: 'Momentum fading. Consider reducing.' };
-  if (mom < 50 && per >= 70) return { label: 'WATCH', cls: 'flat', tip: 'Weak now but high persistence. Potential reversal setup.' };
-  if (mom < 50 && per >= 50) return { label: 'AVOID', cls: 'down', tip: 'Weak momentum with mixed persistence. Stay away.' };
-  return { label: 'SELL', cls: 'down', tip: 'Poor momentum and persistence. Avoid or exit.' };
-}
-
 function statCard(label, big, small) {
   return '<div class="stat"><div class="label">' + label + '</div><div class="big">' + big + '</div><div class="small">' + small + '</div></div>';
 }
@@ -1057,251 +257,133 @@ function retChip(label, v, maxAbs) {
 
 function render() {
   const tickers = visibleTickers();
-  const spySession = getSession('SPY');
-  const spyDaily = spySession.changePct != null ? spySession.changePct : (data['SPY'] && !data['SPY'].error ? data['SPY'].daily : null);
+  const spy = data['SPY'] && !data['SPY'].error ? data['SPY'] : null;
   const loaded = tickers.filter(t => data[t] && !data[t].error);
   const stocks = loaded.filter(t => !BENCHMARKS.has(t));
 
   let asOf = null;
   for (const t of loaded) if (data[t].asOf && (!asOf || data[t].asOf > asOf)) asOf = data[t].asOf;
-  const liveCount = tickers.filter(t => isLive(t)).length;
-  const preCount = tickers.filter(t => getSession(t).type === 'pre').length;
-  const postCount = tickers.filter(t => getSession(t).type === 'post').length;
-  let liveSuffix = '';
-  if (preCount > 0) liveSuffix = ' - ' + preCount + ' pre-market';
-  else if (postCount > 0) liveSuffix = ' - ' + postCount + ' after-hours';
-  else if (liveCount > 0) liveSuffix = ' - ' + liveCount + ' live now';
-
   document.getElementById('subtitle').textContent =
     'End-of-day coverage across ' + tickers.length + ' tickers.' +
     (asOf ? ' Prices as of ' + asOf.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'}) + ' close.' : '') +
-    liveSuffix +
     (asofStr ? ' Data refreshed ' + new Date(asofStr).toLocaleString() + '.' : '');
 
   document.getElementById('benchChips').innerHTML = ['SPY','QQQ','IWM']
     .filter(b => tickers.includes(b))
     .map(b => {
-      const s = getSession(b);
       const d = data[b];
-      let inner;
-      if (s.price != null) inner = pctHtml(s.changePct);
-      else if (d && !d.error) inner = pctHtml(d.daily);
-      else inner = '<span class="flat">...</span>';
-      const badge = s.type === 'pre' ? '<span class="premkt-badge">PRE</span>' : s.type === 'post' ? '<span class="postmkt-badge">POST</span>' : '';
-      return '<span class="chip">' + b + badge + ' ' + inner + '</span>';
+      const inner = d && !d.error ? pctHtml(d.daily) : '<span class="flat">…</span>';
+      return '<span class="chip">' + b + ' ' + inner + '</span>';
     }).join('');
 
   let statsHtml = '';
   if (stocks.length) {
-    const sorted = [...stocks].sort((a, b) => effectiveDaily(b) - effectiveDaily(a));
+    const sorted = [...stocks].sort((a, b) => data[b].daily - data[a].daily);
     const best = sorted[0], worst = sorted[sorted.length - 1];
-    const avg = stocks.reduce((s, t) => s + (effectiveDaily(t) || 0), 0) / stocks.length;
-    const movers = stocks.filter(t => Math.abs(effectiveDaily(t) || 0) >= 3)
-      .sort((a, b) => Math.abs((effectiveDaily(b) || 0)) - Math.abs((effectiveDaily(a) || 0)));
+    const avg = stocks.reduce((s, t) => s + data[t].daily, 0) / stocks.length;
+    const movers = stocks.filter(t => Math.abs(data[t].daily) >= 3)
+      .sort((a, b) => Math.abs(data[b].daily) - Math.abs(data[a].daily));
     const moverNames = movers.length
-      ? movers.map(t => '<b>' + t + '</b> ' + pctHtml(effectiveDaily(t), {arrow:false, sign:true, dp:1})).join(' - ')
+      ? movers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1})).join(' · ')
       : 'None today (' + stocks.length + ' stocks tracked)';
-
+    // Weekly stats
     const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
     const wkBest = wkSorted[0], wkWorst = wkSorted[wkSorted.length - 1];
     const wkAvg = stocks.reduce((s, t) => s + (data[t].wtd || 0), 0) / stocks.length;
     const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 3)
       .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
     const wkMoverNames = wkMovers.length
-      ? wkMovers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1})).join(' - ')
+      ? wkMovers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1})).join(' · ')
       : 'None this week (' + stocks.length + ' stocks)';
 
-    const momScores = stocks.map(t => ({ sym: t, score: momentumScore(t, spyDaily) }))
-      .filter(x => x.score != null).sort((a, b) => b.score - a.score);
-    const momLeaders = momScores.slice(0, 3);
-    const momHtml = momLeaders.length
-      ? momLeaders.map(x => '<b>' + x.sym + '</b> <span class="' + momentumGrade(x.score).cls + '">' + x.score + '</span>').join(' - ')
-      : 'Not enough data';
-
-    const perScores = stocks.map(t => ({ sym: t, score: persistenceScore(t, spyDaily) }))
-      .filter(x => x.score != null).sort((a, b) => b.score - a.score);
-    const perLeaders = perScores.slice(0, 3);
-    const perHtml = perLeaders.length
-      ? perLeaders.map(x => '<b>' + x.sym + '</b> <span class="' + persistenceGrade(x.score).cls + '">' + x.score + '</span>').join(' - ')
-      : 'Not enough data';
-
-    const combined = stocks.map(t => {
-      const m = momentumScore(t, spyDaily);
-      const p = persistenceScore(t, spyDaily);
-      return { sym: t, m: m, p: p, sig: combinedSignal(m, p) };
-    }).filter(x => x.m != null && x.p != null).sort((a, b) => {
-      const rank = { 'STRONG BUY': 6, 'BUY': 5, 'ACCUMULATE': 4, 'HOLD': 3, 'WATCH': 2, 'CAUTION': 2, 'WEAKENING': 1, 'AVOID': 0, 'SELL': 0 };
-      return (rank[b.sig.label] || 0) - (rank[a.sig.label] || 0);
-    });
-    const bestSig = combined.slice(0, 3);
-    const sigHtml = bestSig.length
-      ? bestSig.map(x => '<b>' + x.sym + '</b> <span class="' + x.sig.cls + '">' + x.sig.label + '</span>').join(' - ')
-      : 'Not enough data';
-
     statsHtml =
-      statCard('Best daily move', '<b>' + best + '</b> ' + pctHtml(effectiveDaily(best), {dp:2}), fmtPrice(effectivePrice(best))) +
-      statCard('Weakest daily move', '<b>' + worst + '</b> ' + pctHtml(effectiveDaily(worst), {dp:2}), fmtPrice(effectivePrice(worst))) +
-      statCard('Basket daily return', pctHtml(avg, {dp:2}), spyDaily != null ? 'vs SPY ' + pctHtml(avg - spyDaily, {sign:true, arrow:false, dp:2}) : '') +
-      statCard('Big movers (daily +-3%+)', '<span class="big">' + movers.length + '</span>', moverNames) +
+      statCard('Best daily move', '<b>' + best + '</b> ' + pctHtml(data[best].daily, {dp:2}), fmtPrice(data[best].price)) +
+      statCard('Weakest daily move', '<b>' + worst + '</b> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)) +
+      statCard('Basket daily return', pctHtml(avg, {dp:2}), spy ? 'vs SPY ' + pctHtml(avg - spy.daily, {sign:true, arrow:false, dp:2}) : '') +
+      statCard('Big movers (±3%+)', '<span class="big">' + movers.length + '</span>', moverNames) +
       statCard('Best weekly move', '<b>' + wkBest + '</b> ' + pctHtml(data[wkBest].wtd, {dp:2}), fmtPrice(data[wkBest].price)) +
       statCard('Weakest weekly move', '<b>' + wkWorst + '</b> ' + pctHtml(data[wkWorst].wtd, {dp:2}), fmtPrice(data[wkWorst].price)) +
-      statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), data['SPY'] && !data['SPY'].error ? 'vs SPY ' + pctHtml(wkAvg - data['SPY'].wtd, {sign:true, arrow:false, dp:2}) : '') +
-      statCard('Weekly big movers (+-3%+)', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames) +
-      statCard('Momentum leaders', '<span class="big">' + (momScores.length ? momScores[0].score : '-') + '</span>', momHtml) +
-      statCard('Persistence leaders', '<span class="big">' + (perScores.length ? perScores[0].score : '-') + '</span>', perHtml) +
-      statCard('Best setups', '<span class="big">' + (combined.length ? combined[0].sig.label : '-') + '</span>', sigHtml);
+      statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), spy ? 'vs SPY ' + pctHtml(wkAvg - spy.wtd, {sign:true, arrow:false, dp:2}) : '') +
+      statCard('Weekly big movers (±3%+)', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames);
   }
   document.getElementById('stats').innerHTML = statsHtml;
 
   document.getElementById('cards').innerHTML = tickers.length ? tickers.map(t => {
     const d = data[t];
-    const l = live[t];
-    const s = getSession(t);
     const isB = BENCHMARKS.has(t);
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">x</button>';
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
     let body;
-    if (!d && !l) body = '<div class="price">no data</div>';
-    else if (d && d.error && !l) body = '<div class="errmsg">' + esc(d.error).slice(0, 60) + '</div>';
+    if (!d) body = '<div class="price">no data</div>';
+    else if (d.error) body = '<div class="errmsg">' + esc(d.error).slice(0, 60) + '</div>';
     else {
-      const price = effectivePrice(t);
-      const daily = effectiveDaily(t);
-      const vsSpy = spyDaily != null && t !== 'SPY' ? daily - spyDaily : (t === 'SPY' ? 0 : null);
-      const sessLabel = sessionLabel(t);
-      const sessClass = sessionClass(t);
-      const badge = sessLabel !== 'EOD' ? '<span class="' + sessClass + '-badge">' + sessLabel + '</span>' : '';
-      const dot = isLive(t) ? '<span class="live-dot" style="width:5px;height:5px;margin:0 3px 0 0;animation:none"></span>' : '';
-      body = '<div class="price">' + dot + fmtPrice(price) + badge + ' <span class="chg">' + pctHtml(daily) + '</span></div>' +
-             '<div class="vs"><span>vs SPY</span>' + (vsSpy == null ? '-' : pctHtml(vsSpy, {sign:true, arrow:false})) + '</div>';
-      if (l) {
-        if (s.type === 'pre' && l.price != null) {
-          body += '<div class="premkt-row"><span>Prev close</span><span>' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-        } else if (s.type === 'post' && l.price != null) {
-          body += '<div class="postmkt-row"><span>Regular close</span><span>' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-        }
-        if (isLive(t) && l.time) {
-          const ago = Math.round((Date.now() - l.time) / 1000);
-          body += '<div class="last-updated">updated ' + (ago < 60 ? ago + 's ago' : Math.floor(ago/60) + 'm ago') + '</div>';
-        }
-      }
+      const vsSpy = spy && t !== 'SPY' ? d.daily - spy.daily : (t === 'SPY' ? 0 : null);
+      body = '<div class="price">' + fmtPrice(d.price) + ' <span class="chg">' + pctHtml(d.daily) + '</span></div>' +
+             '<div class="vs"><span>vs SPY</span>' + (vsSpy == null ? '—' : pctHtml(vsSpy, {sign:true, arrow:false})) + '</div>';
     }
     return '<div class="card' + (isB ? ' benchmark' : '') + '">' +
       rm + '<div class="tick">' + t + (isB ? ' <span class="etf">BENCH</span>' : '') + '</div>' + body + '</div>';
   }).join('') : '<div class="empty">No data yet. Run the "Update market data" workflow in GitHub Actions once, then reload.</div>';
 
-  renderDetailed(spyDaily, tickers);
-  renderTable(spyDaily, tickers);
+  renderDetailed(spy, tickers);
+  renderTable(spy, tickers);
 }
 
-function renderDetailed(spyDaily, tickers) {
+function renderDetailed(spy, tickers) {
   document.getElementById('dcards').innerHTML = tickers.map(t => {
     const d = data[t];
-    const l = live[t];
     const f = fund[t] || {};
-    const s = getSession(t);
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">x</button>';
-
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
     const head = (body, err) =>
       '<div class="dcard">' + rm +
       '<div class="dcard-head">' +
         '<span class="logo" style="background:' + logoColor(t) + '">' + esc(t.slice(0, 2)) + '</span>' +
         '<div class="idblock"><div class="tk">' + esc(t) + '</div><div class="ind" title="' + esc(f.name || '') + '">' +
           esc(f.industry || f.name || '') + '</div></div>' +
-        '<div class="pxblock">' + 
-          (d && !d.error || l ? '<div class="px' + (isLive(t) ? ' ' + sessionClass(t) + '-price' + (effectiveDaily(t) < 0 ? ' down' : '') : '') + '">' + fmtPrice(effectivePrice(t)) + '</div><div class="dchg">' + pctHtml(effectiveDaily(t), {dp:2}) + '</div>' : '') + 
-        '</div>' +
+        '<div class="pxblock">' + (d && !d.error ? '<div class="px">' + fmtPrice(d.price) + '</div><div class="dchg">' + pctHtml(d.daily, {dp:2}) + '</div>' : '') + '</div>' +
       '</div>' + body + '</div>';
 
-    if (!d && !l) return head('<div class="dcard-sector" style="border:none;padding-top:20px">No data</div>', false);
-    if (d && d.error && !l) return head('<div class="errmsg" style="margin-top:8px">' + esc(d.error).slice(0, 80) + '</div>', true);
+    if (!d) return head('<div class="dcard-sector" style="border:none;padding-top:20px">No data</div>', false);
+    if (d.error) return head('<div class="errmsg" style="margin-top:8px">' + esc(d.error).slice(0, 80) + '</div>', true);
 
     const maxAbs = Math.max(Math.abs(d.m1 || 0), Math.abs(d.m3 || 0), Math.abs(d.y1 || 0), 1);
-    const rangePos = d.hi52 && d.hi52 > d.lo52 ? (effectivePrice(t) - d.lo52) / (d.hi52 - d.lo52) * 100 : null;
-    const vsSpy = spyDaily != null && t !== 'SPY' ? effectiveDaily(t) - spyDaily : (t === 'SPY' ? 0 : null);
+    const rangePos = d.hi52 && d.hi52 > d.lo52 ? (d.price - d.lo52) / (d.hi52 - d.lo52) * 100 : null;
+    const vsSpy = spy && t !== 'SPY' ? d.daily - spy.daily : (t === 'SPY' ? 0 : null);
 
-    let body = '';
-    if (l && (l.preMarketPrice != null || l.postMarketPrice != null || l.price != null)) {
-      body += '<div class="session-divider">';
-      if (s.type === 'pre') {
-        body += '<div class="session-label">Pre-Market</div>';
-        body += '<div class="premkt-stat"><span class="k">Price</span><span class="v">' + fmtPrice(l.preMarketPrice) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change</span><span class="v">' + (l.preMarketChange != null ? (l.preMarketChange >= 0 ? '+' : '') + l.preMarketChange.toFixed(2) : '-') + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change %</span><span class="v">' + pctHtml(l.preMarketChangePercent, {sign:true, dp:2}) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Prev close</span><span class="v">' + fmtPrice(l.prevClose) + '</span></div>';
-        if (l.price != null) body += '<div class="premkt-stat"><span class="k">Last regular</span><span class="v">' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-      } else if (s.type === 'post') {
-        body += '<div class="session-label">After Hours</div>';
-        body += '<div class="premkt-stat"><span class="k">Price</span><span class="v">' + fmtPrice(l.postMarketPrice) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change</span><span class="v">' + (l.postMarketChange != null ? (l.postMarketChange >= 0 ? '+' : '') + l.postMarketChange.toFixed(2) : '-') + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change %</span><span class="v">' + pctHtml(l.postMarketChangePercent, {sign:true, dp:2}) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Regular close</span><span class="v">' + fmtPrice(l.price) + ' ' + pctHtml(l.changePercent, {arrow:false, dp:1}) + '</span></div>';
-      } else if (s.type === 'regular') {
-        body += '<div class="session-label">Regular Hours</div>';
-        body += '<div class="premkt-stat"><span class="k">Price</span><span class="v">' + fmtPrice(l.price) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change</span><span class="v">' + (l.change != null ? (l.change >= 0 ? '+' : '') + l.change.toFixed(2) : '-') + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Change %</span><span class="v">' + pctHtml(l.changePercent, {sign:true, dp:2}) + '</span></div>';
-        body += '<div class="premkt-stat"><span class="k">Prev close</span><span class="v">' + fmtPrice(l.prevClose) + '</span></div>';
-        if (l.preMarketPrice != null) body += '<div class="premkt-stat"><span class="k">Pre-market</span><span class="v">' + fmtPrice(l.preMarketPrice) + ' ' + pctHtml(l.preMarketChangePercent, {arrow:false, dp:1}) + '</span></div>';
-      }
-      body += '</div>';
-    }
-
-    body += sparkSvg(d.spark);
+    let body = sparkSvg(d.spark);
     body += '<div class="chips3">' + retChip('1M', d.m1, maxAbs) + retChip('3M', d.m3, maxAbs) + retChip('1Y', d.y1, maxAbs) + '</div>';
     if (d.hi52 != null && rangePos != null) {
       body += '<div class="range-row"><b>' + fmtPrice(d.lo52) + '</b><span>52W range</span><b>' + fmtPrice(d.hi52) + '</b></div>' +
         '<div class="range-track"><i style="left:calc(' + Math.max(0, Math.min(100, rangePos)).toFixed(1) + '% - 4px)"></i></div>';
     }
-
-    const mom = momentumScore(t, spyDaily);
-    const per = persistenceScore(t, spyDaily);
-    const sig = combinedSignal(mom, per);
-    const mg = mom != null ? momentumGrade(mom) : { label: '-', cls: 'flat' };
-    const pg = per != null ? persistenceGrade(per) : { label: '-', cls: 'flat' };
-
     body += '<div class="dstats">' +
       '<div><div class="k">Market cap</div><div class="v">' + fmtMcap(f.mcap) + '</div></div>' +
       '<div><div class="k">Volume</div><div class="v">' + fmtVol(d.vol) + '</div></div>' +
-      '<div><div class="k">Beta</div><div class="v">' + (f.beta != null ? Number(f.beta).toFixed(2) : '-') + '</div></div>' +
+      '<div><div class="k">Beta</div><div class="v">' + (f.beta != null ? Number(f.beta).toFixed(2) : '—') + '</div></div>' +
       '<div><div class="k">Avg volume (20D)</div><div class="v">' + fmtVol(d.avgVol) + '</div></div>' +
       '<div><div class="k">Off 52W high</div><div class="v">' + pctHtml(d.offHigh, {arrow:false, dp:1}) + '</div></div>' +
-      '<div><div class="k">vs SPY (daily)</div><div class="v">' + (vsSpy == null ? '-' : pctHtml(vsSpy, {sign:true, arrow:false, dp:2})) + '</div></div>' +
+      '<div><div class="k">vs SPY (daily)</div><div class="v">' + (vsSpy == null ? '—' : pctHtml(vsSpy, {sign:true, arrow:false, dp:2})) + '</div></div>' +
       '</div>';
-    body += '<div class="dcard-sector">Momentum<b class="' + mg.cls + '">' + (mom != null ? mom + ' - ' + mg.label : '-') + '</b></div>';
-    body += '<div class="dcard-sector">Persistence<b class="' + pg.cls + '">' + (per != null ? per + ' - ' + pg.label : '-') + '</b></div>';
-    body += '<div class="dcard-sector">Signal<b class="' + sig.cls + '" title="' + esc(sig.tip || '') + '">' + sig.label + '</b></div>';
-    body += '<div class="dcard-sector">Sector<b>' + esc(f.sector || '-') + '</b></div>';
+    body += '<div class="dcard-sector">Sector<b>' + esc(f.sector || '—') + '</b></div>';
     return head(body, false);
   }).join('');
 }
 
 const COLS = [
   ['sym', 'Ticker'], ['price', 'Price'], ['daily', 'Daily'], ['wtd', 'WTD'], ['mtd', 'MTD'],
-  ['ytd', 'YTD'], ['y1', '1Y'], ['vsSpy', 'vs SPY'], ['mom', 'Momentum'], ['per', 'Persist'], ['sig', 'Signal'], ['mcap', 'Market cap'], ['vol', 'Volume']
+  ['ytd', 'YTD'], ['y1', '1Y'], ['vsSpy', 'vs SPY'], ['mcap', 'Market cap'], ['vol', 'Volume']
 ];
 
-function renderTable(spyDaily, tickers) {
+function renderTable(spy, tickers) {
   document.getElementById('theadRow').innerHTML = COLS.map(c =>
-    '<th onclick="setSort('' + c[0] + '')">' + c[1] +
+    '<th onclick="setSort(\'' + c[0] + '\')">' + c[1] +
     (sortCol === c[0] ? ' <span class="arrow">' + (sortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
   ).join('');
 
   const rows = tickers.filter(t => data[t] && !data[t].error).map(t => {
     const d = data[t];
     const f = fund[t] || {};
-    const m = momentumScore(t, spyDaily);
-    const p = persistenceScore(t, spyDaily);
-    return { 
-      sym: t, 
-      price: effectivePrice(t), 
-      daily: effectiveDaily(t), 
-      wtd: d.wtd, mtd: d.mtd, ytd: d.ytd, y1: d.y1,
-      vsSpy: spyDaily != null ? effectiveDaily(t) - spyDaily : null,
-      mom: m,
-      per: p,
-      sig: combinedSignal(m, p),
-      mcap: f.mcap != null ? f.mcap : null, 
-      vol: d.vol 
-    };
+    return { sym: t, price: d.price, daily: d.daily, wtd: d.wtd, mtd: d.mtd, ytd: d.ytd, y1: d.y1,
+             vsSpy: spy ? d.daily - spy.daily : null, mcap: f.mcap != null ? f.mcap : null, vol: d.vol };
   });
   rows.sort((a, b) => {
     const x = a[sortCol], y = b[sortCol];
@@ -1310,15 +392,12 @@ function renderTable(spyDaily, tickers) {
   });
 
   const extraRows = tickers.filter(t => data[t] && data[t].error).map(t =>
-    '<tr><td>' + t + '</td><td colspan="12" style="text-align:left"><span class="down">no data: ' +
+    '<tr><td>' + t + '</td><td colspan="9" style="text-align:left"><span class="down">no data: ' +
     esc(data[t].error).slice(0, 40) + '</span></td></tr>'
   ).join('');
 
-  document.getElementById('tbody').innerHTML = rows.map(r => {
-    const mg = r.mom != null ? momentumGrade(r.mom) : { label: '-', cls: 'flat' };
-    const pg = r.per != null ? persistenceGrade(r.per) : { label: '-', cls: 'flat' };
-    const sg = r.sig || { label: '-', cls: 'flat', tip: '' };
-    return '<tr><td>' + r.sym + (BENCHMARKS.has(r.sym) ? '<span class="bench-badge">Benchmark</span>' : '') + '</td>' +
+  document.getElementById('tbody').innerHTML = rows.map(r =>
+    '<tr><td>' + r.sym + (BENCHMARKS.has(r.sym) ? '<span class="bench-badge">Benchmark</span>' : '') + '</td>' +
     '<td>' + fmtPrice(r.price) + '</td>' +
     '<td>' + pctHtml(r.daily, {dp:2}) + '</td>' +
     '<td>' + pctHtml(r.wtd) + '</td>' +
@@ -1326,12 +405,9 @@ function renderTable(spyDaily, tickers) {
     '<td>' + pctHtml(r.ytd) + '</td>' +
     '<td>' + pctHtml(r.y1) + '</td>' +
     '<td>' + pctHtml(r.vsSpy, {sign:true, arrow:false, dp:2}) + '</td>' +
-    '<td><span class="' + mg.cls + '"><b>' + (r.mom != null ? r.mom : '-') + '</b> ' + mg.label + '</span></td>' +
-    '<td><span class="' + pg.cls + '"><b>' + (r.per != null ? r.per : '-') + '</b> ' + pg.label + '</span></td>' +
-    '<td><span class="' + sg.cls + '" title="' + esc(sg.tip || '') + '"><b>' + sg.label + '</b></span></td>' +
     '<td>' + fmtMcap(r.mcap) + '</td>' +
-    '<td>' + fmtVol(r.vol) + '</td></tr>';
-  }).join('') + extraRows;
+    '<td>' + fmtVol(r.vol) + '</td></tr>'
+  ).join('') + extraRows;
 }
 
 function setSort(col) {
@@ -1357,7 +433,6 @@ function showTicker() {
     saveHidden();
     notice.style.display = 'none';
     render();
-    fetchLiveQuotesFallback([sym]);
   } else {
     notice.style.display = 'block';
     notice.innerHTML = '<b>' + esc(sym) + '</b> is not in the data yet. Add it to <b>tickers.txt</b> in your GitHub repo — the update workflow runs automatically and the site will show it within a few minutes.';
@@ -1388,7 +463,6 @@ document.getElementById('showAllBtn').addEventListener('click', () => { hidden =
     return;
   }
   render();
-  startLiveLoop();
 })();
 </script>
 </body>
