@@ -86,6 +86,7 @@
   .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
   .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
   .nowrap-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; }
+  .mover-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; font-size: 13px; }
   .tklink { color: inherit; text-decoration: none; }
   .tklink:hover { text-decoration: underline; }
 </style>
@@ -429,7 +430,7 @@ function render() {
     const movers = stocks.filter(t => Math.abs(data[t].daily) >= 3)
       .sort((a, b) => Math.abs(data[b].daily) - Math.abs(data[a].daily));
     const moverNames = movers.length
-      ? movers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + fmtPrice(data[t].price) + ' ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
+      ? movers.map(t => '<span class="mover-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + fmtPrice(data[t].price) + ' ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None today (' + stocks.length + ' stocks tracked)';
     // Weekly stats
     const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
@@ -438,7 +439,7 @@ function render() {
     const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 8)
       .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
     const wkMoverNames = wkMovers.length
-      ? wkMovers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + fmtPrice(data[t].price) + ' ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
+      ? wkMovers.map(t => '<span class="mover-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + fmtPrice(data[t].price) + ' ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None this week (' + stocks.length + ' stocks)';
 
     // Momentum leaders (top 3 by score, displayed alphabetically - score badge still shows rank)
@@ -460,7 +461,7 @@ function render() {
         statCard('Weakest daily move', '<a class="tklink" href="' + rallyLink(worst) + '" target="_blank" rel="noopener noreferrer"><b>' + worst + '</b></a> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)),
         statCard('Basket daily return', pctHtml(avg, {dp:2}), spy ? 'vs SPY ' + pctHtml(avg - spy.daily, {sign:true, arrow:false, dp:2}) : '')
       ) +
-      statCard('Big movers (daily ±3%'+')', '<span class="big">' + movers.length + '</span>', moverNames) +
+      statCard('Big Daily Movers (±3%'+')', '<span class="big">' + movers.length + '</span>', moverNames) +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
       statCardTrio(
@@ -468,7 +469,7 @@ function render() {
         statCard('Weakest weekly move', '<a class="tklink" href="' + rallyLink(wkWorst) + '" target="_blank" rel="noopener noreferrer"><b>' + wkWorst + '</b></a> ' + pctHtml(data[wkWorst].wtd, {dp:2}), fmtPrice(data[wkWorst].price)),
         statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), spy ? 'vs SPY ' + pctHtml(wkAvg - spy.wtd, {sign:true, arrow:false, dp:2}) : '')
       ) +
-      statCard('Weekly big movers (±8%'+')', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames) +
+      statCard('Weekly Big Movers (±8%'+')', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames) +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">' +
       statCard('Momentum leaders', '<span class="big">Top 5</span>', momHtml) +
