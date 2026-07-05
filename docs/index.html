@@ -104,7 +104,7 @@
   <div class="desc" id="reboundCaption">Stocks below MA200 with at least 1.5R reward for 1R risked. Stop = lowest low of last 12 bars (floored at 0.5x ATR14). Feasibility is a distance-vs-3-week-volatility heuristic, not a predicted probability - it does not account for trend direction.</div>
   <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>Ticker</th><th>Price</th><th>MA200</th><th>Distance</th><th>Stop (12D low)</th><th>R:R</th><th>Feasibility</th><th>Analyst target</th></tr></thead>
+      <thead><tr id="reboundTheadRow"></tr></thead>
       <tbody id="reboundBody"></tbody>
     </table>
   </div>
@@ -115,7 +115,7 @@
   <div class="desc" id="reboundMA50Caption">Stocks that have reclaimed MA200 (price above it) with MA20 above MA50 (stacked averages, confirms trend rather than a single-day poke above MA200), still below MA50, and at least 1.5R reward for 1R risked to reach it. Same stop/feasibility methodology as the MA200 table.</div>
   <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>Ticker</th><th>Price</th><th>MA50</th><th>Distance</th><th>Stop (12D low)</th><th>R:R</th><th>Feasibility</th><th>Analyst target</th></tr></thead>
+      <thead><tr id="reboundMA50TheadRow"></tr></thead>
       <tbody id="reboundMA50Body"></tbody>
     </table>
   </div>
@@ -162,6 +162,8 @@ const data = {};       // sym -> metrics or {error}
 const fund = {};       // sym -> {mcap, beta, sector, industry, name}
 let asofStr = null;
 let sortCol = 'sig', sortDir = -1;
+let reboundSortCol = 'rr', reboundSortDir = -1;
+let reboundMA50SortCol = 'rr', reboundMA50SortDir = -1;
 
 function loadHidden() {
   try { const a = JSON.parse(localStorage.getItem(LS_HIDDEN) || '[]'); return new Set(Array.isArray(a) ? a : []); }
@@ -342,11 +344,12 @@ function fmtMcap(v) {
   if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
   return '$' + Math.round(v).toLocaleString();
 }
-function targetHtml(f, price) {
+function targetHtml(t, f, price) {
   if (!f || f.targetMean == null || price == null) return '<span style="color:#6b7280">—</span>';
   const upside = pct(f.targetMean, price);
   const n = f.numAnalysts != null ? f.numAnalysts + ' analyst' + (f.numAnalysts === 1 ? '' : 's') : 'analyst count unknown';
-  return '<span title="' + n + '">' + fmtPrice(f.targetMean) + ' ' + pctHtml(upside, {sign:true, arrow:false, dp:1}) + '</span>';
+  const yUrl = 'https://finance.yahoo.com/quote/' + encodeURIComponent(t) + '/analyst-insights/';
+  return '<span title="' + n + '"><a class="tklink" href="' + yUrl + '" target="_blank" rel="noopener noreferrer">' + fmtPrice(f.targetMean) + '</a> ' + pctHtml(upside, {sign:true, arrow:false, dp:1}) + '</span>';
 }
 const LOGO_COLORS = ['#1f2937','#4c7dfc','#0a9e5c','#d97706','#7c3aed','#db2777','#0891b2','#e5484d'];
 function logoColor(t) { let h = 0; for (const c of t) h = (h * 31 + c.charCodeAt(0)) >>> 0; return LOGO_COLORS[h % LOGO_COLORS.length]; }
@@ -748,7 +751,7 @@ function renderDetailed(spy, tickers) {
 const COLS = [
   ['sym', 'Ticker'], ['price', 'Price'], ['daily', 'Daily'], ['wtd', 'WTD'], ['mtd', 'MTD'],
   ['ytd', 'YTD'], ['y1', '1Y'], ['vsSpy', 'vs SPY'], ['mom', 'Momentum'], ['per', 'Persist'], ['sig', 'Signal'],
-  ['target', 'Target'], ['mcap', 'Market cap'], ['vol', 'Volume']
+  ['target', 'Analyst Target'], ['mcap', 'Market cap'], ['vol', 'Volume']
 ];
 function renderTable(spy, tickers) {
   document.getElementById('theadRow').innerHTML = COLS.map(c =>
@@ -792,7 +795,7 @@ function renderTable(spy, tickers) {
     '<td>' + scoreBadge(r.mom) + '</td>' +
     '<td>' + scoreBadge(r.per) + '</td>' +
     '<td>' + signalBadge(r.sig) + '</td>' +
-    '<td>' + targetHtml(r.f, r.price) + '</td>' +
+    '<td>' + targetHtml(r.sym, r.f, r.price) + '</td>' +
     '<td>' + fmtMcap(r.mcap) + '</td>' +
     '<td>' + fmtVol(r.vol) + '</td></tr>'
   ).join('') + extraRows;
@@ -807,18 +810,38 @@ function feasBadge(f) {
   const color = f >= 66 ? '#0a9e5c' : f >= 33 ? '#f59e0b' : '#e5484d';
   return '<span style="color:' + color + ';font-weight:700">' + Math.round(f) + '</span>';
 }
+const REBOUND_COLS = [
+  ['sym','Ticker'], ['price','Price'], ['ma','MA200'], ['dist','Distance'],
+  ['stop','Stop (12D low)'], ['rr','R:R'], ['feas','Feasibility'], ['target','Analyst Target']
+];
 function renderRebound(stocks) {
   const el = document.getElementById('reboundBody');
   if (!el) return;
+  const theadEl = document.getElementById('reboundTheadRow');
+  if (theadEl) {
+    theadEl.innerHTML = REBOUND_COLS.map(c =>
+      '<th onclick="setReboundSort(\'' + c[0] + '\')">' + c[1] +
+      (reboundSortCol === c[0] ? ' <span class="arrow">' + (reboundSortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
+    ).join('');
+  }
+
   const belowMA200 = stocks.filter(t => data[t] && data[t].rebound && !data[t].rebound.none);
-  const rows = belowMA200
-    .filter(t => data[t].rebound.rr != null && data[t].rebound.rr >= MIN_RR)
-    .map(t => ({ t: t, d: data[t], r: data[t].rebound }));
-  const skippedWeakRR = belowMA200.length - rows.length;
+  const eligible = belowMA200.filter(t => data[t].rebound.rr != null && data[t].rebound.rr >= MIN_RR);
+  const skippedWeakRR = belowMA200.length - eligible.length;
   const skippedNoTarget = stocks.filter(t => data[t] && data[t].rebound && data[t].rebound.none).length;
   const skippedNoData = stocks.filter(t => data[t] && !data[t].rebound).length;
 
-  rows.sort((a, b) => (b.r.rr || 0) - (a.r.rr || 0));
+  const rows = eligible.map(t => {
+    const d = data[t], r = data[t].rebound, f = fund[t] || {};
+    const targetUpside = (f.targetMean != null && d.price != null) ? pct(f.targetMean, d.price) : null;
+    return { sym: t, price: d.price, ma: r.target, dist: pct(r.target, d.price), stop: r.swingLow,
+             rr: r.rr, feas: r.feasibility, target: targetUpside, _r: r };
+  });
+  rows.sort((a, b) => {
+    const x = a[reboundSortCol], y = b[reboundSortCol];
+    if (reboundSortCol === 'sym') return reboundSortDir * String(x).localeCompare(String(y));
+    return reboundSortDir * ((x == null ? -Infinity : x) - (y == null ? -Infinity : y));
+  });
 
   const caption = document.getElementById('reboundCaption');
   if (caption) {
@@ -829,30 +852,54 @@ function renderRebound(stocks) {
       ' Feasibility is a distance-vs-volatility heuristic, not a probability - it ignores trend direction.';
   }
 
-  el.innerHTML = rows.length ? rows.map(({t, d, r}) => {
-    const distPct = pct(r.target, d.price);
-    return '<tr><td>' + t + '</td>' +
-      '<td>' + fmtPrice(d.price) + '</td>' +
-      '<td>' + fmtPrice(r.target) + '</td>' +
-      '<td>' + pctHtml(distPct, {arrow:false, sign:true, dp:1}) + '</td>' +
-      '<td>' + fmtPrice(r.swingLow) + (r.tightStop ? ' <span title="Swing low was tighter than 0.5x ATR - floored to avoid an inflated R:R" style="color:#92400e">*</span>' : '') + '</td>' +
-      '<td>' + rrBadge(r.rr) + '</td>' +
-      '<td>' + feasBadge(r.feasibility) + '</td>' +
-      '<td>' + targetHtml(fund[t], d.price) + '</td></tr>';
+  el.innerHTML = rows.length ? rows.map(row => {
+    const r = row._r;
+    return '<tr><td>' + row.sym + '</td>' +
+      '<td>' + fmtPrice(row.price) + '</td>' +
+      '<td>' + fmtPrice(row.ma) + '</td>' +
+      '<td>' + pctHtml(row.dist, {arrow:false, sign:true, dp:1}) + '</td>' +
+      '<td>' + fmtPrice(row.stop) + (r.tightStop ? ' <span title="Swing low was tighter than 0.5x ATR - floored to avoid an inflated R:R" style="color:#92400e">*</span>' : '') + '</td>' +
+      '<td>' + rrBadge(row.rr) + '</td>' +
+      '<td>' + feasBadge(row.feas) + '</td>' +
+      '<td>' + targetHtml(row.sym, fund[row.sym], row.price) + '</td></tr>';
   }).join('') : '<tr><td colspan="8" class="empty">No stocks below MA200 currently clear an R:R of ' + MIN_RR + '+.</td></tr>';
 }
+function setReboundSort(col) {
+  if (reboundSortCol === col) reboundSortDir = -reboundSortDir; else { reboundSortCol = col; reboundSortDir = col === 'sym' ? 1 : -1; }
+  render();
+}
+const REBOUND_MA50_COLS = [
+  ['sym','Ticker'], ['price','Price'], ['ma','MA50'], ['dist','Distance'],
+  ['stop','Stop (12D low)'], ['rr','R:R'], ['feas','Feasibility'], ['target','Analyst Target']
+];
 function renderReboundMA50(stocks) {
   const el = document.getElementById('reboundMA50Body');
   if (!el) return;
+  const theadEl = document.getElementById('reboundMA50TheadRow');
+  if (theadEl) {
+    theadEl.innerHTML = REBOUND_MA50_COLS.map(c =>
+      '<th onclick="setReboundMA50Sort(\'' + c[0] + '\')">' + c[1] +
+      (reboundMA50SortCol === c[0] ? ' <span class="arrow">' + (reboundMA50SortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
+    ).join('');
+  }
+
   const confirmed = stocks.filter(t => data[t] && data[t].reboundMA50 && !data[t].reboundMA50.none);
-  const rows = confirmed
-    .filter(t => data[t].reboundMA50.rr != null && data[t].reboundMA50.rr >= MIN_RR_MA50)
-    .map(t => ({ t: t, d: data[t], r: data[t].reboundMA50 }));
-  const skippedWeakRR = confirmed.length - rows.length;
+  const eligible = confirmed.filter(t => data[t].reboundMA50.rr != null && data[t].reboundMA50.rr >= MIN_RR_MA50);
+  const skippedWeakRR = confirmed.length - eligible.length;
   const skippedNotConfirmed = stocks.filter(t => data[t] && data[t].reboundMA50 && data[t].reboundMA50.none).length;
   const skippedNoData = stocks.filter(t => data[t] && !data[t].reboundMA50).length;
 
-  rows.sort((a, b) => (b.r.rr || 0) - (a.r.rr || 0));
+  const rows = eligible.map(t => {
+    const d = data[t], r = data[t].reboundMA50, f = fund[t] || {};
+    const targetUpside = (f.targetMean != null && d.price != null) ? pct(f.targetMean, d.price) : null;
+    return { sym: t, price: d.price, ma: r.target, dist: pct(r.target, d.price), stop: r.swingLow,
+             rr: r.rr, feas: r.feasibility, target: targetUpside, _r: r };
+  });
+  rows.sort((a, b) => {
+    const x = a[reboundMA50SortCol], y = b[reboundMA50SortCol];
+    if (reboundMA50SortCol === 'sym') return reboundMA50SortDir * String(x).localeCompare(String(y));
+    return reboundMA50SortDir * ((x == null ? -Infinity : x) - (y == null ? -Infinity : y));
+  });
 
   const caption = document.getElementById('reboundMA50Caption');
   if (caption) {
@@ -863,17 +910,21 @@ function renderReboundMA50(stocks) {
       ' Feasibility is a distance-vs-volatility heuristic, not a probability.';
   }
 
-  el.innerHTML = rows.length ? rows.map(({t, d, r}) => {
-    const distPct = pct(r.target, d.price);
-    return '<tr><td>' + t + '</td>' +
-      '<td>' + fmtPrice(d.price) + '</td>' +
-      '<td>' + fmtPrice(r.target) + '</td>' +
-      '<td>' + pctHtml(distPct, {arrow:false, sign:true, dp:1}) + '</td>' +
-      '<td>' + fmtPrice(r.swingLow) + (r.tightStop ? ' <span title="Swing low was tighter than 0.5x ATR - floored to avoid an inflated R:R" style="color:#92400e">*</span>' : '') + '</td>' +
-      '<td>' + rrBadge(r.rr) + '</td>' +
-      '<td>' + feasBadge(r.feasibility) + '</td>' +
-      '<td>' + targetHtml(fund[t], d.price) + '</td></tr>';
+  el.innerHTML = rows.length ? rows.map(row => {
+    const r = row._r;
+    return '<tr><td>' + row.sym + '</td>' +
+      '<td>' + fmtPrice(row.price) + '</td>' +
+      '<td>' + fmtPrice(row.ma) + '</td>' +
+      '<td>' + pctHtml(row.dist, {arrow:false, sign:true, dp:1}) + '</td>' +
+      '<td>' + fmtPrice(row.stop) + (r.tightStop ? ' <span title="Swing low was tighter than 0.5x ATR - floored to avoid an inflated R:R" style="color:#92400e">*</span>' : '') + '</td>' +
+      '<td>' + rrBadge(row.rr) + '</td>' +
+      '<td>' + feasBadge(row.feas) + '</td>' +
+      '<td>' + targetHtml(row.sym, fund[row.sym], row.price) + '</td></tr>';
   }).join('') : '<tr><td colspan="8" class="empty">No trend-confirmed (MA200 reclaimed, MA20>MA50) stocks currently clear an R:R of ' + MIN_RR_MA50 + '+ to MA50.</td></tr>';
+}
+function setReboundMA50Sort(col) {
+  if (reboundMA50SortCol === col) reboundMA50SortDir = -reboundMA50SortDir; else { reboundMA50SortCol = col; reboundMA50SortDir = col === 'sym' ? 1 : -1; }
+  render();
 }
 function setSort(col) {
   if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = col === 'sym' ? 1 : -1; }
