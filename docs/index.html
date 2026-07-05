@@ -186,6 +186,76 @@ function computeMetrics(rawBars) {
   if (!isFinite(hi52)) { hi52 = null; lo52 = null; }
   const v20 = bars.slice(-20);
   const avgVol = v20.reduce((s, b) => s + (b.volume || 0), 0) / v20.length;
+
+  // RSI 14
+  function rsi14(closes) {
+    if (closes.length < 15) return null;
+    let gains = 0, losses = 0;
+    for (let i = 1; i <= 14; i++) {
+      const ch = closes[closes.length - i] - closes[closes.length - i - 1];
+      if (ch > 0) gains += ch; else losses -= ch;
+    }
+    const avgGain = gains / 14, avgLoss = losses / 14;
+    if (avgLoss === 0) return 100;
+    const rs = avgGain / avgLoss;
+    return 100 - (100 / (1 + rs));
+  }
+  const closes = bars.map(b => b.close);
+  const rsi = rsi14(closes);
+
+  // Moving averages
+  function sma(n) {
+    if (closes.length < n) return null;
+    const slice = closes.slice(-n);
+    return slice.reduce((a, b) => a + b, 0) / n;
+  }
+  const ma20 = sma(20);
+  const ma50 = sma(50);
+
+  // ATR 14
+  function atr14() {
+    if (bars.length < 15) return null;
+    let sum = 0;
+    for (let i = bars.length - 14; i < bars.length; i++) {
+      const tr = Math.max(bars[i].high - bars[i].low, Math.abs(bars[i].high - bars[i-1].close), Math.abs(bars[i].low - bars[i-1].close));
+      sum += tr;
+    }
+    return sum / 14;
+  }
+  const atr = atr14();
+  // ATR 5 days ago for trend
+  let atrPrev = null;
+  if (bars.length >= 19) {
+    let sum = 0;
+    for (let i = bars.length - 19; i < bars.length - 5; i++) {
+      const tr = Math.max(bars[i].high - bars[i].low, Math.abs(bars[i].high - bars[i-1].close), Math.abs(bars[i].low - bars[i-1].close));
+      sum += tr;
+    }
+    atrPrev = sum / 14;
+  }
+
+  // Volume trends
+  const v5 = bars.slice(-5);
+  const v10 = bars.slice(-10);
+  const avgVol5 = v5.reduce((s, b) => s + (b.volume || 0), 0) / v5.length;
+  const avgVol10 = v10.reduce((s, b) => s + (b.volume || 0), 0) / v10.length;
+
+  // Higher lows pattern (last 20 days)
+  let higherLows = 0;
+  let totalLows = 0;
+  const last20 = bars.slice(-20);
+  for (let i = 2; i < last20.length; i++) {
+    if (last20[i].low > last20[i-2].low) higherLows++;
+    totalLows++;
+  }
+
+  // RSI trajectory (5 days)
+  let rsiPrev = null;
+  if (bars.length >= 19) {
+    const prevCloses = closes.slice(0, -5);
+    rsiPrev = rsi14(prevCloses);
+  }
+
   return {
     price: last.close,
     daily: pct(last.close, prev.close),
@@ -196,13 +266,22 @@ function computeMetrics(rawBars) {
     m1:  m1Ref  != null ? pct(last.close, m1Ref)  : null,
     m3:  m3Ref  != null ? pct(last.close, m3Ref)  : null,
     vol: last.volume, avgVol: avgVol,
+    avgVol5: avgVol5, avgVol10: avgVol10,
     hi52: hi52, lo52: lo52,
     offHigh: hi52 ? pct(last.close, hi52) : null,
     spark: bars.slice(-63).map(b => b.close),
-    asOf: lastDate
+    asOf: lastDate,
+    // New fields for scoring
+    rsi: rsi,
+    ma20: ma20,
+    ma50: ma50,
+    atr: atr,
+    atrPrev: atrPrev,
+    higherLows: totalLows > 0 ? higherLows / totalLows : null,
+    rsiPrev: rsiPrev,
+    closes: closes
   };
 }
-
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function pctHtml(v, opts) {
   opts = opts || {};
@@ -266,7 +345,7 @@ function render() {
   document.getElementById('subtitle').textContent =
     'End-of-day coverage across ' + tickers.length + ' tickers.' +
     (asOf ? ' Prices as of ' + asOf.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'}) + ' close.' : '') +
-    (asofStr ? ' Data refreshed ' + new Date(asofStr).toLocaleString() + '.' : '');
+    (asofStr ? ' Data refreshed ' + new Date(asofStr).toLocaleString() + '.' : ' Data refreshed automatically.');
 
   document.getElementById('benchChips').innerHTML = ['SPY','QQQ','IWM']
     .filter(b => tickers.includes(b))
@@ -275,6 +354,9 @@ function render() {
       const inner = d && !d.error ? pctHtml(d.daily) : '<span class="flat">…</span>';
       return '<span class="chip">' + b + ' ' + inner + '</span>';
     }).join('');
+
+  // Compute scores for all stocks
+  computeScores(stocks);
 
   let statsHtml = '';
   if (stocks.length) {
@@ -290,28 +372,49 @@ function render() {
     const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
     const wkBest = wkSorted[0], wkWorst = wkSorted[wkSorted.length - 1];
     const wkAvg = stocks.reduce((s, t) => s + (data[t].wtd || 0), 0) / stocks.length;
-    const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 3)
+    const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 8)
       .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
     const wkMoverNames = wkMovers.length
       ? wkMovers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1})).join(' · ')
       : 'None this week (' + stocks.length + ' stocks)';
 
+    // Momentum leaders (top 3)
+    const momLeaders = [...stocks].sort((a, b) => (data[b].momScore || 0) - (data[a].momScore || 0)).slice(0, 3);
+    const momHtml = momLeaders.map(t => '<b>' + t + '</b> ' + scoreBadge(data[t].momScore)).join(' · ');
+
+    // Persistence leaders (top 3)
+    const perLeaders = [...stocks].sort((a, b) => (data[b].perScore || 0) - (data[a].perScore || 0)).slice(0, 3);
+    const perHtml = perLeaders.map(t => '<b>' + t + '</b> ' + scoreBadge(data[t].perScore)).join(' · ');
+
+    // Best setups (combined signal)
+    const setups = [...stocks].sort((a, b) => (data[b].combinedRank || 0) - (data[a].combinedRank || 0)).slice(0, 3);
+    const setupHtml = setups.map(t => '<b>' + t + '</b> ' + signalBadge(data[t].signal)).join(' · ');
+
     statsHtml =
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">' +
       statCard('Best daily move', '<b>' + best + '</b> ' + pctHtml(data[best].daily, {dp:2}), fmtPrice(data[best].price)) +
       statCard('Weakest daily move', '<b>' + worst + '</b> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)) +
       statCard('Basket daily return', pctHtml(avg, {dp:2}), spy ? 'vs SPY ' + pctHtml(avg - spy.daily, {sign:true, arrow:false, dp:2}) : '') +
-      statCard('Big movers (±3%+)', '<span class="big">' + movers.length + '</span>', moverNames) +
+      statCard('Big movers (daily ±3%'+')', '<span class="big">' + movers.length + '</span>', moverNames) +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">' +
       statCard('Best weekly move', '<b>' + wkBest + '</b> ' + pctHtml(data[wkBest].wtd, {dp:2}), fmtPrice(data[wkBest].price)) +
       statCard('Weakest weekly move', '<b>' + wkWorst + '</b> ' + pctHtml(data[wkWorst].wtd, {dp:2}), fmtPrice(data[wkWorst].price)) +
       statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), spy ? 'vs SPY ' + pctHtml(wkAvg - spy.wtd, {sign:true, arrow:false, dp:2}) : '') +
-      statCard('Weekly big movers (±8%+)', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames);
+      statCard('Weekly big movers (±8%'+')', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames) +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">' +
+      statCard('Momentum leaders', '<span class="big">Top 3</span>', momHtml) +
+      statCard('Persistence leaders', '<span class="big">Top 3</span>', perHtml) +
+      statCard('Best setups (combined)', '<span class="big">Top 3</span>', setupHtml) +
+      '</div>';
   }
   document.getElementById('stats').innerHTML = statsHtml;
 
   document.getElementById('cards').innerHTML = tickers.length ? tickers.map(t => {
     const d = data[t];
     const isB = BENCHMARKS.has(t);
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">×</button>';
     let body;
     if (!d) body = '<div class="price">no data</div>';
     else if (d.error) body = '<div class="errmsg">' + esc(d.error).slice(0, 60) + '</div>';
@@ -327,12 +430,149 @@ function render() {
   renderDetailed(spy, tickers);
   renderTable(spy, tickers);
 }
+function scoreBadge(score) {
+  if (score == null) return '<span style="color:#6b7280">—</span>';
+  let color = score >= 70 ? '#0a9e5c' : score >= 50 ? '#6b7280' : '#e5484d';
+  return '<span style="color:' + color + ';font-weight:700">' + Math.round(score) + '</span>';
+}
+
+function signalBadge(signal) {
+  const colors = {
+    'STRONG BUY': '#0a9e5c', 'BUY': '#22c55e', 'ACCUMULATE': '#3b82f6',
+    'HOLD': '#6b7280', 'CAUTION': '#f59e0b', 'WEAKENING': '#f97316',
+    'WATCH': '#8b5cf6', 'AVOID': '#9ca3af', 'SELL': '#e5484d'
+  };
+  const c = colors[signal] || '#6b7280';
+  return '<span style="color:' + c + ';font-weight:700;font-size:11px">' + (signal || '—') + '</span>';
+}
+
+function combinedSignal(mom, per) {
+  if (mom == null || per == null) return 'HOLD';
+  if (mom >= 70 && per >= 70) return 'STRONG BUY';
+  if (mom >= 70 && per >= 50) return 'BUY';
+  if (mom >= 70 && per < 50) return 'CAUTION';
+  if (mom >= 50 && per >= 70) return 'ACCUMULATE';
+  if (mom >= 50 && per >= 50) return 'HOLD';
+  if (mom >= 50 && per < 50) return 'WEAKENING';
+  if (mom < 50 && per >= 70) return 'WATCH';
+  if (mom < 50 && per >= 50) return 'AVOID';
+  return 'SELL';
+}
+
+function computeScores(stocks) {
+  if (!stocks.length) return;
+  const spy = data['SPY'] && !data['SPY'].error ? data['SPY'] : null;
+
+  // Collect values for ranking
+  const vals = {
+    ret20: [], vsSpy5: [], volSurge: [], rsi: [],
+    trendAlign: [], volTrend: [], volCompress: [], higherLows: [], rsiTraj: []
+  };
+
+  for (const t of stocks) {
+    const d = data[t];
+    if (!d || d.error) continue;
+
+    // 20D return
+    if (d.closes && d.closes.length >= 21) {
+      const r20 = (d.closes[d.closes.length - 1] - d.closes[d.closes.length - 21]) / d.closes[d.closes.length - 21] * 100;
+      vals.ret20.push({t: t, v: r20});
+    }
+
+    // vs SPY 5D
+    if (spy && spy.closes && spy.closes.length >= 6 && d.closes && d.closes.length >= 6) {
+      const sym5 = (d.closes[d.closes.length - 1] - d.closes[d.closes.length - 6]) / d.closes[d.closes.length - 6] * 100;
+      const spy5 = (spy.closes[spy.closes.length - 1] - spy.closes[spy.closes.length - 6]) / spy.closes[spy.closes.length - 6] * 100;
+      vals.vsSpy5.push({t: t, v: sym5 - spy5});
+    }
+
+    // Volume surge
+    if (d.vol && d.avgVol && d.avgVol > 0) {
+      vals.volSurge.push({t: t, v: d.vol / d.avgVol});
+    }
+
+    // RSI
+    if (d.rsi != null) vals.rsi.push({t: t, v: d.rsi});
+
+    // Trend alignment (price > 20MA > 50MA)
+    if (d.price && d.ma20 && d.ma50) {
+      const aligned = d.price > d.ma20 && d.ma20 > d.ma50 ? 1 : 0;
+      vals.trendAlign.push({t: t, v: aligned});
+    }
+
+    // Volume trend (5D avg > 10D avg > 20D avg)
+    if (d.avgVol5 && d.avgVol10 && d.avgVol && d.avgVol10 > 0 && d.avgVol > 0) {
+      const vt = d.avgVol5 > d.avgVol10 && d.avgVol10 > d.avgVol ? 1 : 0;
+      vals.volTrend.push({t: t, v: vt});
+    }
+
+    // Volatility compression (ATR falling while price rising)
+    if (d.atr != null && d.atrPrev != null && d.closes && d.closes.length >= 6) {
+      const priceRising = d.closes[d.closes.length - 1] > d.closes[d.closes.length - 6];
+      const atrFalling = d.atr < d.atrPrev;
+      vals.volCompress.push({t: t, v: (priceRising && atrFalling) ? 1 : 0});
+    }
+
+    // Higher lows
+    if (d.higherLows != null) vals.higherLows.push({t: t, v: d.higherLows});
+
+    // RSI trajectory
+    if (d.rsi != null && d.rsiPrev != null) {
+      vals.rsiTraj.push({t: t, v: d.rsi > d.rsiPrev ? 1 : 0});
+    }
+  }
+
+  // Rank helpers
+  function rankScore(items, t, higherIsBetter) {
+    const item = items.find(x => x.t === t);
+    if (!item) return 50; // neutral if missing
+    const sorted = [...items].sort((a, b) => higherIsBetter ? b.v - a.v : a.v - b.v);
+    const idx = sorted.findIndex(x => x.t === t);
+    return (1 - idx / (sorted.length - 1 || 1)) * 100;
+  }
+
+  function boundedScore(val, min, max) {
+    if (val == null) return 50;
+    return Math.max(0, Math.min(100, (val - min) / (max - min) * 100));
+  }
+
+  // Compute for each stock
+  for (const t of stocks) {
+    const d = data[t];
+    if (!d || d.error) { d.momScore = null; d.perScore = null; d.signal = 'HOLD'; continue; }
+
+    // Momentum Score (0-100)
+    const s1 = rankScore(vals.ret20, t, true);
+    const s2 = rankScore(vals.vsSpy5, t, true);
+    const s3 = boundedScore((d.vol / (d.avgVol || 1)), 0.5, 3);
+    const s4 = d.rsi != null ? (d.rsi >= 50 && d.rsi <= 70 ? 100 - Math.abs(d.rsi - 60) * 5 : 20) : 50;
+    const s5 = (d.price && d.ma20) ? (d.price > d.ma20 ? 100 : 0) : 50;
+    const s6 = (d.hi52 && d.lo52 && d.hi52 > d.lo52) ? boundedScore((d.price - d.lo52) / (d.hi52 - d.lo52) * 100, 0, 100) : 50;
+    const s7 = (fund[t] && fund[t].beta != null) ? (fund[t].beta < 1.2 ? 100 : 30) : 50;
+
+    d.momScore = s1 * 0.25 + s2 * 0.20 + s3 * 0.15 + s4 * 0.15 + s5 * 0.10 + s6 * 0.10 + s7 * 0.05;
+
+    // Persistence Score (0-100)
+    const p1 = rankScore(vals.trendAlign, t, true);
+    const p2 = rankScore(vals.volTrend, t, true);
+    const p3 = rankScore(vals.volCompress, t, true);
+    const p4 = rankScore(vals.higherLows, t, true);
+    const p5 = rankScore(vals.rsiTraj, t, true);
+    // Sector relative strength - use vs SPY daily as proxy
+    const p6 = spy ? (d.daily > spy.daily ? 80 : 30) : 50;
+
+    d.perScore = p1 * 0.25 + p2 * 0.20 + p3 * 0.15 + p4 * 0.15 + p5 * 0.15 + p6 * 0.10;
+
+    d.signal = combinedSignal(d.momScore, d.perScore);
+    d.combinedRank = (d.momScore || 0) * 0.5 + (d.perScore || 0) * 0.5;
+  }
+}
 
 function renderDetailed(spy, tickers) {
   document.getElementById('dcards').innerHTML = tickers.map(t => {
     const d = data[t];
     const f = fund[t] || {};
-    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker(\'' + t + '\')">×</button>';
+    const rm = PINNED.has(t) ? '' : '<button class="rm" title="Hide ' + t + '" onclick="hideTicker('' + t + '')">×</button>';
     const head = (body, err) =>
       '<div class="dcard">' + rm +
       '<div class="dcard-head">' +
@@ -363,19 +603,24 @@ function renderDetailed(spy, tickers) {
       '<div><div class="k">Off 52W high</div><div class="v">' + pctHtml(d.offHigh, {arrow:false, dp:1}) + '</div></div>' +
       '<div><div class="k">vs SPY (daily)</div><div class="v">' + (vsSpy == null ? '—' : pctHtml(vsSpy, {sign:true, arrow:false, dp:2})) + '</div></div>' +
       '</div>';
+    // Add momentum/persistence/signal row
+    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;border-top:1px solid #f3f4f6;padding-top:10px">' +
+      '<div><div class="k">Momentum</div><div class="v">' + (d.momScore != null ? Math.round(d.momScore) + '/100' : '—') + '</div></div>' +
+      '<div><div class="k">Persistence</div><div class="v">' + (d.perScore != null ? Math.round(d.perScore) + '/100' : '—') + '</div></div>' +
+      '<div><div class="k">Signal</div><div class="v">' + signalBadge(d.signal) + '</div></div>' +
+      '</div>';
     body += '<div class="dcard-sector">Sector<b>' + esc(f.sector || '—') + '</b></div>';
     return head(body, false);
   }).join('');
 }
-
 const COLS = [
   ['sym', 'Ticker'], ['price', 'Price'], ['daily', 'Daily'], ['wtd', 'WTD'], ['mtd', 'MTD'],
-  ['ytd', 'YTD'], ['y1', '1Y'], ['vsSpy', 'vs SPY'], ['mcap', 'Market cap'], ['vol', 'Volume']
+  ['ytd', 'YTD'], ['y1', '1Y'], ['vsSpy', 'vs SPY'], ['mom', 'Momentum'], ['per', 'Persist'], ['sig', 'Signal'],
+  ['mcap', 'Market cap'], ['vol', 'Volume']
 ];
-
 function renderTable(spy, tickers) {
   document.getElementById('theadRow').innerHTML = COLS.map(c =>
-    '<th onclick="setSort(\'' + c[0] + '\')">' + c[1] +
+    '<th onclick="setSort('' + c[0] + '')">' + c[1] +
     (sortCol === c[0] ? ' <span class="arrow">' + (sortDir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>'
   ).join('');
 
@@ -383,16 +628,21 @@ function renderTable(spy, tickers) {
     const d = data[t];
     const f = fund[t] || {};
     return { sym: t, price: d.price, daily: d.daily, wtd: d.wtd, mtd: d.mtd, ytd: d.ytd, y1: d.y1,
-             vsSpy: spy ? d.daily - spy.daily : null, mcap: f.mcap != null ? f.mcap : null, vol: d.vol };
+             vsSpy: spy ? d.daily - spy.daily : null, mom: d.momScore, per: d.perScore, sig: d.signal,
+             mcap: f.mcap != null ? f.mcap : null, vol: d.vol };
   });
   rows.sort((a, b) => {
     const x = a[sortCol], y = b[sortCol];
     if (sortCol === 'sym') return sortDir * String(x).localeCompare(String(y));
+    if (sortCol === 'sig') {
+      const rank = {'STRONG BUY':9, 'BUY':8, 'ACCUMULATE':7, 'HOLD':6, 'CAUTION':5, 'WEAKENING':4, 'WATCH':3, 'AVOID':2, 'SELL':1};
+      return sortDir * ((rank[x] || 0) - (rank[y] || 0));
+    }
     return sortDir * ((x == null ? -Infinity : x) - (y == null ? -Infinity : y));
   });
 
   const extraRows = tickers.filter(t => data[t] && data[t].error).map(t =>
-    '<tr><td>' + t + '</td><td colspan="9" style="text-align:left"><span class="down">no data: ' +
+    '<tr><td>' + t + '</td><td colspan="12" style="text-align:left"><span class="down">no data: ' +
     esc(data[t].error).slice(0, 40) + '</span></td></tr>'
   ).join('');
 
@@ -405,11 +655,13 @@ function renderTable(spy, tickers) {
     '<td>' + pctHtml(r.ytd) + '</td>' +
     '<td>' + pctHtml(r.y1) + '</td>' +
     '<td>' + pctHtml(r.vsSpy, {sign:true, arrow:false, dp:2}) + '</td>' +
+    '<td>' + scoreBadge(r.mom) + '</td>' +
+    '<td>' + scoreBadge(r.per) + '</td>' +
+    '<td>' + signalBadge(r.sig) + '</td>' +
     '<td>' + fmtMcap(r.mcap) + '</td>' +
     '<td>' + fmtVol(r.vol) + '</td></tr>'
   ).join('') + extraRows;
 }
-
 function setSort(col) {
   if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = col === 'sym' ? 1 : -1; }
   render();
