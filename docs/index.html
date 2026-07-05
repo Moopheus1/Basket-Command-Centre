@@ -81,7 +81,7 @@
   td:first-child { text-align: left; font-weight: 700; }
   .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
   .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
-  .nowrap-pill { white-space: nowrap; display: inline-block; }
+  .nowrap-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; }
 </style>
 </head>
 <body>
@@ -137,6 +137,17 @@
   </div>
 </div>
 
+<div class="panel">
+  <h2>Uptrend continuation to MA50, R:R 1.5+ (2-3 week view)</h2>
+  <div class="desc" id="reboundMA50Caption">Stocks that have reclaimed MA200 (price above it) with MA20 above MA50 (stacked averages, confirms trend rather than a single-day poke above MA200), still below MA50, and at least 1.5R reward for 1R risked to reach it. Same stop/feasibility methodology as the MA200 table.</div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Ticker</th><th>Price</th><th>MA50</th><th>Distance</th><th>Stop (12D low)</th><th>R:R</th><th>Feasibility</th></tr></thead>
+      <tbody id="reboundMA50Body"></tbody>
+    </table>
+  </div>
+</div>
+
 <script>
 'use strict';
 const LS_HIDDEN = 'basket-hidden-tickers-v1';
@@ -148,7 +159,7 @@ let hidden = loadHidden();
 const data = {};       // sym -> metrics or {error}
 const fund = {};       // sym -> {mcap, beta, sector, industry, name}
 let asofStr = null;
-let sortCol = 'ytd', sortDir = -1;
+let sortCol = 'sig', sortDir = -1;
 
 function loadHidden() {
   try { const a = JSON.parse(localStorage.getItem(LS_HIDDEN) || '[]'); return new Set(Array.isArray(a) ? a : []); }
@@ -378,6 +389,7 @@ function render() {
   // Compute scores for all stocks
   computeScores(stocks);
   computeRebound(stocks);
+  computeReboundMA50(stocks);
 
   let statsHtml = '';
   if (stocks.length) {
@@ -387,7 +399,7 @@ function render() {
     const movers = stocks.filter(t => Math.abs(data[t].daily) >= 3)
       .sort((a, b) => Math.abs(data[b].daily) - Math.abs(data[a].daily));
     const moverNames = movers.length
-      ? movers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' · ')
+      ? movers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None today (' + stocks.length + ' stocks tracked)';
     // Weekly stats
     const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
@@ -396,20 +408,20 @@ function render() {
     const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 8)
       .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
     const wkMoverNames = wkMovers.length
-      ? wkMovers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' · ')
+      ? wkMovers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None this week (' + stocks.length + ' stocks)';
 
-    // Momentum leaders (top 3)
+    // Momentum leaders (top 3 by score, displayed alphabetically - score badge still shows rank)
     const momLeaders = [...stocks].sort((a, b) => (data[b].momScore || 0) - (data[a].momScore || 0)).slice(0, 3);
-    const momHtml = momLeaders.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + scoreBadge(data[t].momScore) + '</span>').join(' · ');
+    const momHtml = [...momLeaders].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + scoreBadge(data[t].momScore) + '</span>').join(' ');
 
-    // Persistence leaders (top 3)
+    // Persistence leaders (top 3 by score, displayed alphabetically)
     const perLeaders = [...stocks].sort((a, b) => (data[b].perScore || 0) - (data[a].perScore || 0)).slice(0, 3);
-    const perHtml = perLeaders.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + scoreBadge(data[t].perScore) + '</span>').join(' · ');
+    const perHtml = [...perLeaders].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + scoreBadge(data[t].perScore) + '</span>').join(' ');
 
-    // Best setups (combined signal)
+    // Best setups (combined signal, top 3 by rank, displayed alphabetically)
     const setups = [...stocks].sort((a, b) => (data[b].combinedRank || 0) - (data[a].combinedRank || 0)).slice(0, 3);
-    const setupHtml = setups.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + signalBadge(data[t].signal) + '</span>').join(' · ');
+    const setupHtml = [...setups].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + signalBadge(data[t].signal) + '</span>').join(' ');
 
     statsHtml =
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">' +
@@ -451,6 +463,7 @@ function render() {
   renderDetailed(spy, tickers);
   renderTable(spy, tickers);
   renderRebound(stocks);
+  renderReboundMA50(stocks);
 }
 function scoreBadge(score) {
   if (score == null) return '<span style="color:#6b7280">—</span>';
@@ -634,6 +647,48 @@ function computeRebound(stocks) {
   }
 }
 
+// --- Uptrend continuation to MA50: stock has already reclaimed MA200 (price > MA200)
+// AND has stacked averages (MA20 > MA50, the stronger trend-confirmation option -
+// simple price>MA200 was rejected because a single-day poke above a declining
+// 200-day average is a common fakeout, not a confirmed uptrend) AND is still
+// below MA50, so MA50 is the next target above price. Same stop/feasibility
+// methodology as the MA200 table for consistency.
+const MIN_RR_MA50 = 1.5;
+function computeReboundMA50(stocks) {
+  for (const t of stocks) {
+    const d = data[t];
+    if (!d || d.error) { d.reboundMA50 = null; continue; }
+    const price = d.price, atr = d.atr, swingLow = d.swingLow;
+    if (price == null || atr == null || swingLow == null || d.ma20 == null || d.ma50 == null || d.ma200 == null) {
+      d.reboundMA50 = null; continue;
+    }
+
+    const confirmedUptrend = price > d.ma200 && d.ma20 > d.ma50;
+    const needsToRise = d.ma50 > price;
+    if (!confirmedUptrend || !needsToRise) { d.reboundMA50 = { none: true }; continue; }
+
+    const reward = d.ma50 - price;
+    let risk = price - swingLow;
+    const minRisk = MIN_RISK_ATR_MULT * atr;
+    const tightStop = risk < minRisk;
+    if (tightStop) risk = minRisk;
+
+    const rr = risk > 0 ? reward / risk : null;
+    const expectedMove = atr * Math.sqrt(REBOUND_HORIZON_DAYS);
+    const feasibility = reward > 0 ? Math.max(0, Math.min(100, (expectedMove / reward) * 100)) : null;
+
+    d.reboundMA50 = {
+      target: d.ma50,
+      reward: reward,
+      risk: risk,
+      rr: rr,
+      feasibility: feasibility,
+      tightStop: tightStop,
+      swingLow: swingLow
+    };
+  }
+}
+
 function renderDetailed(spy, tickers) {
   document.getElementById('dcards').innerHTML = tickers.map(t => {
     const d = data[t];
@@ -770,6 +825,39 @@ function renderRebound(stocks) {
       '<td>' + rrBadge(r.rr) + '</td>' +
       '<td>' + feasBadge(r.feasibility) + '</td></tr>';
   }).join('') : '<tr><td colspan="7" class="empty">No stocks below MA200 currently clear an R:R of ' + MIN_RR + '+.</td></tr>';
+}
+function renderReboundMA50(stocks) {
+  const el = document.getElementById('reboundMA50Body');
+  if (!el) return;
+  const confirmed = stocks.filter(t => data[t] && data[t].reboundMA50 && !data[t].reboundMA50.none);
+  const rows = confirmed
+    .filter(t => data[t].reboundMA50.rr != null && data[t].reboundMA50.rr >= MIN_RR_MA50)
+    .map(t => ({ t: t, d: data[t], r: data[t].reboundMA50 }));
+  const skippedWeakRR = confirmed.length - rows.length;
+  const skippedNotConfirmed = stocks.filter(t => data[t] && data[t].reboundMA50 && data[t].reboundMA50.none).length;
+  const skippedNoData = stocks.filter(t => data[t] && !data[t].reboundMA50).length;
+
+  rows.sort((a, b) => (b.r.rr || 0) - (a.r.rr || 0));
+
+  const caption = document.getElementById('reboundMA50Caption');
+  if (caption) {
+    caption.textContent = rows.length + ' of ' + stocks.length + ' stocks have reclaimed MA200 with MA20 > MA50 (stacked, trend-confirmed) and R:R >= ' + MIN_RR_MA50 + ' to MA50. ' +
+      confirmed.length + ' total meet the trend confirmation, but ' + skippedWeakRR + ' were filtered out for R:R under ' + MIN_RR_MA50 + '. ' +
+      skippedNotConfirmed + ' do not meet the confirmation (below MA200, MA20 not above MA50, or already above MA50). ' +
+      (skippedNoData ? skippedNoData + ' skipped (insufficient bars for MA20/50/200/ATR).' : '') +
+      ' Feasibility is a distance-vs-volatility heuristic, not a probability.';
+  }
+
+  el.innerHTML = rows.length ? rows.map(({t, d, r}) => {
+    const distPct = pct(r.target, d.price);
+    return '<tr><td>' + t + '</td>' +
+      '<td>' + fmtPrice(d.price) + '</td>' +
+      '<td>' + fmtPrice(r.target) + '</td>' +
+      '<td>' + pctHtml(distPct, {arrow:false, sign:true, dp:1}) + '</td>' +
+      '<td>' + fmtPrice(r.swingLow) + (r.tightStop ? ' <span title="Swing low was tighter than 0.5x ATR - floored to avoid an inflated R:R" style="color:#92400e">*</span>' : '') + '</td>' +
+      '<td>' + rrBadge(r.rr) + '</td>' +
+      '<td>' + feasBadge(r.feasibility) + '</td></tr>';
+  }).join('') : '<tr><td colspan="7" class="empty">No trend-confirmed (MA200 reclaimed, MA20>MA50) stocks currently clear an R:R of ' + MIN_RR_MA50 + '+ to MA50.</td></tr>';
 }
 function setSort(col) {
   if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = col === 'sym' ? 1 : -1; }
