@@ -85,8 +85,8 @@
   td:first-child { text-align: left; font-weight: 700; }
   .bench-badge { font-size: 10px; background: #e5e7eb; color: #4b5563; border-radius: 5px; padding: 1px 6px; margin-left: 6px; font-weight: 600; }
   .empty { text-align: center; padding: 40px 16px; color: #6b7280; font-size: 13px; }
-  .nowrap-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; }
-  .mover-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; font-size: 13px; }
+  .nowrap-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; font-size: 13px; }
+  .mover-pill { white-space: nowrap; display: inline-block; margin: 0 10px 4px 0; font-size: 14px; }
   .tklink { color: inherit; text-decoration: none; }
   .tklink:hover { text-decoration: underline; }
 </style>
@@ -461,7 +461,7 @@ function render() {
         statCard('Weakest daily move', '<a class="tklink" href="' + rallyLink(worst) + '" target="_blank" rel="noopener noreferrer"><b>' + worst + '</b></a> ' + pctHtml(data[worst].daily, {dp:2}), fmtPrice(data[worst].price)),
         statCard('Basket daily return', pctHtml(avg, {dp:2}), spy ? 'vs SPY ' + pctHtml(avg - spy.daily, {sign:true, arrow:false, dp:2}) : '')
       ) +
-      statCard('Big Daily Movers (±3%'+')', '<span class="big">' + movers.length + '</span>', moverNames) +
+      statCard('Daily Big Movers (±3%'+')', '<span class="big">' + movers.length + '</span>', moverNames) +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
       statCardTrio(
