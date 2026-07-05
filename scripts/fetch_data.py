@@ -91,6 +91,10 @@ def fetch_full(symbol):
         "industry": info.get("industry"),
         "mcap": info.get("marketCap"),
         "beta": info.get("beta"),
+        "targetMean": info.get("targetMeanPrice"),
+        "targetHigh": info.get("targetHighPrice"),
+        "targetLow": info.get("targetLowPrice"),
+        "numAnalysts": info.get("numberOfAnalystOpinions"),
         "bars": bars,
     }
 
@@ -167,6 +171,10 @@ def run_intraday(tickers, existing):
                 "industry": prior.get("industry"),
                 "mcap": prior.get("mcap"),
                 "beta": prior.get("beta"),
+                "targetMean": prior.get("targetMean"),
+                "targetHigh": prior.get("targetHigh"),
+                "targetLow": prior.get("targetLow"),
+                "numAnalysts": prior.get("numAnalysts"),
                 "bars": merged_bars,
             }
             ok += 1
