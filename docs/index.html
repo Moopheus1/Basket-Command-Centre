@@ -413,7 +413,7 @@ function render() {
     const movers = stocks.filter(t => Math.abs(data[t].daily) >= 3)
       .sort((a, b) => Math.abs(data[b].daily) - Math.abs(data[a].daily));
     const moverNames = movers.length
-      ? movers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
+      ? movers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + pctHtml(data[t].daily, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None today (' + stocks.length + ' stocks tracked)';
     // Weekly stats
     const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
@@ -422,16 +422,16 @@ function render() {
     const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 8)
       .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
     const wkMoverNames = wkMovers.length
-      ? wkMovers.map(t => '<span class="nowrap-pill"><b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
+      ? wkMovers.map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1}) + '</span>').join(' ')
       : 'None this week (' + stocks.length + ' stocks)';
 
     // Momentum leaders (top 3 by score, displayed alphabetically - score badge still shows rank)
-    const momLeaders = [...stocks].sort((a, b) => (data[b].momScore || 0) - (data[a].momScore || 0)).slice(0, 3);
-    const momHtml = [...momLeaders].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + scoreBadge(data[t].momScore) + '</span>').join(' ');
+    const momLeaders = [...stocks].sort((a, b) => (data[b].momScore || 0) - (data[a].momScore || 0)).slice(0, 5);
+    const momHtml = [...momLeaders].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + scoreBadge(data[t].momScore) + '</span>').join('<br>');
 
     // Persistence leaders (top 3 by score, displayed alphabetically)
-    const perLeaders = [...stocks].sort((a, b) => (data[b].perScore || 0) - (data[a].perScore || 0)).slice(0, 3);
-    const perHtml = [...perLeaders].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + scoreBadge(data[t].perScore) + '</span>').join(' ');
+    const perLeaders = [...stocks].sort((a, b) => (data[b].perScore || 0) - (data[a].perScore || 0)).slice(0, 5);
+    const perHtml = [...perLeaders].sort((a, b) => a.localeCompare(b)).map(t => '<span class="nowrap-pill"><a class="tklink" href="' + rallyLink(t) + '" target="_blank" rel="noopener noreferrer"><b>' + t + '</b></a> ' + scoreBadge(data[t].perScore) + '</span>').join('<br>');
 
     // Best setups (combined signal, top 3 by rank, displayed alphabetically)
     const setups = [...stocks].sort((a, b) => (data[b].combinedRank || 0) - (data[a].combinedRank || 0)).slice(0, 3);
@@ -451,8 +451,8 @@ function render() {
       statCard('Weekly big movers (±8%'+')', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames) +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">' +
-      statCard('Momentum leaders', '<span class="big">Top 3</span>', momHtml) +
-      statCard('Persistence leaders', '<span class="big">Top 3</span>', perHtml) +
+      statCard('Momentum leaders', '<span class="big">Top 5</span>', momHtml) +
+      statCard('Persistence leaders', '<span class="big">Top 5</span>', perHtml) +
       statCard('Best setups (combined)', '<span class="big">Top 3</span>', setupHtml) +
       '</div>';
   }
@@ -854,7 +854,7 @@ function renderRebound(stocks) {
 
   el.innerHTML = rows.length ? rows.map(row => {
     const r = row._r;
-    return '<tr><td>' + row.sym + '</td>' +
+    return '<tr><td><a class="tklink" href="' + rallyLink(row.sym) + '" target="_blank" rel="noopener noreferrer">' + row.sym + '</a></td>' +
       '<td>' + fmtPrice(row.price) + '</td>' +
       '<td>' + fmtPrice(row.ma) + '</td>' +
       '<td>' + pctHtml(row.dist, {arrow:false, sign:true, dp:1}) + '</td>' +
@@ -912,7 +912,7 @@ function renderReboundMA50(stocks) {
 
   el.innerHTML = rows.length ? rows.map(row => {
     const r = row._r;
-    return '<tr><td>' + row.sym + '</td>' +
+    return '<tr><td><a class="tklink" href="' + rallyLink(row.sym) + '" target="_blank" rel="noopener noreferrer">' + row.sym + '</a></td>' +
       '<td>' + fmtPrice(row.price) + '</td>' +
       '<td>' + fmtPrice(row.ma) + '</td>' +
       '<td>' + pctHtml(row.dist, {arrow:false, sign:true, dp:1}) + '</td>' +
