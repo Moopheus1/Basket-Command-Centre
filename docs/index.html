@@ -161,6 +161,7 @@
   .premkt-stat .k { color: #9ca3af; }
   .premkt-stat .v { font-weight: 600; }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -941,6 +942,16 @@ function render() {
       ? movers.map(t => '<b>' + t + '</b> ' + pctHtml(effectiveDaily(t), {arrow:false, sign:true, dp:1})).join(' · ')
       : 'None today (' + stocks.length + ' stocks tracked)';
 
+    // Weekly stats
+    const wkSorted = [...stocks].sort((a, b) => (data[b].wtd || -Infinity) - (data[a].wtd || -Infinity));
+    const wkBest = wkSorted[0], wkWorst = wkSorted[wkSorted.length - 1];
+    const wkAvg = stocks.reduce((s, t) => s + (data[t].wtd || 0), 0) / stocks.length;
+    const wkMovers = stocks.filter(t => data[t].wtd != null && Math.abs(data[t].wtd) >= 3)
+      .sort((a, b) => Math.abs(data[b].wtd) - Math.abs(data[a].wtd));
+    const wkMoverNames = wkMovers.length
+      ? wkMovers.map(t => '<b>' + t + '</b> ' + pctHtml(data[t].wtd, {arrow:false, sign:true, dp:1})).join(' · ')
+      : 'None this week (' + stocks.length + ' stocks)';
+
     // Momentum leaders
     const momScores = stocks.map(t => ({ sym: t, score: momentumScore(t, spyDaily) }))
       .filter(x => x.score != null)
@@ -966,7 +977,6 @@ function render() {
       return { sym: t, m: m, p: p, sig: combinedSignal(m, p) };
     }).filter(x => x.m != null && x.p != null)
       .sort((a, b) => {
-        // Sort by signal quality: STRONG BUY > BUY > ACCUMULATE > etc
         const rank = { 'STRONG BUY': 6, 'BUY': 5, 'ACCUMULATE': 4, 'HOLD': 3, 'WATCH': 2, 'CAUTION': 2, 'WEAKENING': 1, 'AVOID': 0, 'SELL': 0 };
         return (rank[b.sig.label] || 0) - (rank[a.sig.label] || 0);
       });
@@ -980,6 +990,10 @@ function render() {
       statCard('Weakest daily move', '<b>' + worst + '</b> ' + pctHtml(effectiveDaily(worst), {dp:2}), fmtPrice(effectivePrice(worst))) +
       statCard('Basket daily return', pctHtml(avg, {dp:2}), spyDaily != null ? 'vs SPY ' + pctHtml(avg - spyDaily, {sign:true, arrow:false, dp:2}) : '') +
       statCard('Big movers (±3%+)', '<span class="big">' + movers.length + '</span>', moverNames) +
+      statCard('Best weekly move', '<b>' + wkBest + '</b> ' + pctHtml(data[wkBest].wtd, {dp:2}), fmtPrice(data[wkBest].price)) +
+      statCard('Weakest weekly move', '<b>' + wkWorst + '</b> ' + pctHtml(data[wkWorst].wtd, {dp:2}), fmtPrice(data[wkWorst].price)) +
+      statCard('Basket weekly return', pctHtml(wkAvg, {dp:2}), data['SPY'] && !data['SPY'].error ? 'vs SPY ' + pctHtml(wkAvg - data['SPY'].wtd, {sign:true, arrow:false, dp:2}) : '') +
+      statCard('Weekly big movers (±3%+)', '<span class="big">' + wkMovers.length + '</span>', wkMoverNames) +
       statCard('Momentum leaders', '<span class="big">' + (momScores.length ? momScores[0].score : '—') + '</span>', momHtml) +
       statCard('Persistence leaders', '<span class="big">' + (perScores.length ? perScores[0].score : '—') + '</span>', perHtml) +
       statCard('Best setups', '<span class="big">' + (combined.length ? combined[0].sig.label : '—') + '</span>', sigHtml);
