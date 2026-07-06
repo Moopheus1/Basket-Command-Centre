@@ -17,7 +17,16 @@ on:
     # --- EOD: single run at 4:30pm ET, after close settles ---
     - cron: "30 16 * * 1-5"
       timezone: "America/New_York"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Fetch mode for externally-dispatched runs (the Cloudflare dispatcher passes this explicitly, since github.event.schedule is always empty on workflow_dispatch)"
+        required: false
+        default: "eod"
+        type: choice
+        options:
+          - eod
+          - intraday
   push:
     paths:
       - "tickers.txt"
@@ -50,7 +59,12 @@ jobs:
       - name: Determine fetch mode
         id: mode
         run: |
-          if [ "${{ github.event.schedule }}" = "30 16 * * 1-5" ]; then
+          if [ -n "${{ github.event.inputs.mode }}" ]; then
+            # Externally dispatched (Cloudflare cron dispatcher, or a manual
+            # UI run) - trust the explicit input rather than guessing from
+            # github.event.schedule, which is always empty on workflow_dispatch.
+            echo "mode=${{ github.event.inputs.mode }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "30 16 * * 1-5" ]; then
             echo "mode=eod" >> "$GITHUB_OUTPUT"
           elif [ -z "${{ github.event.schedule }}" ]; then
             echo "mode=eod" >> "$GITHUB_OUTPUT"
@@ -73,7 +87,23 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "Update market data [skip ci]"
-            git push
+            # main can move between this job's checkout and this push (another
+            # trigger, a manual edit, anything) - the concurrency group above
+            # only serializes this workflow against itself, it does not protect
+            # against that. Retry with rebase instead of failing outright.
+            pushed=false
+            for i in 1 2 3 4 5; do
+              if git pull --rebase origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Push attempt $i failed (remote moved), retrying..."
+              sleep 3
+            done
+            if [ "$pushed" = false ]; then
+              echo "::error::Failed to push after 5 attempts - remote kept moving or rebase conflicted"
+              exit 1
+            fi
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Trigger Pages deploy
