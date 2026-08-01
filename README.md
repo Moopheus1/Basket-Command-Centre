@@ -1,46 +1,142 @@
-# Basket Command Center — self-hosted stock dashboard
+# HK / SGX Command Centre
 
-A static dashboard (watchlist cards, detailed ticker cards, performance table) that updates
-itself with end-of-day market data via GitHub Actions. No API keys, no server, no cost.
+A second, standalone dashboard alongside **Basket Command Centre 2**, built for
+a watchlist of Hong Kong and Singapore-listed instruments. Same pipeline
+pattern as the original: GitHub Actions → yfinance → `data.json` → static
+`index.html`, refreshed via an external cron-job.org dispatcher.
 
-## How it works
+## Genesis
 
-- `tickers.txt` — your watchlist, one ticker per line
-- `scripts/fetch_data.py` — fetches ~430 days of daily bars + market cap / beta / sector
-  per ticker from Yahoo Finance (yfinance) and writes `docs/data.json`
-- `.github/workflows/update-data.yml` — runs the fetch script every weekday at 21:45 UTC
-  (after the US close), and also any time you edit `tickers.txt`
-- `docs/index.html` — the dashboard; reads `data.json` and computes all returns client-side
+This started as a request to build a dashboard for "HK stocks and SEA unit
+trusts," modelled on Fundsupermart Singapore. That framing turned out to be
+wrong in a way that changed the whole build, so it's worth recording here
+rather than losing it in chat history:
 
-## Setup (one time, ~5 minutes)
+1. **The unit trust half was never buildable as originally scoped.**
+   Fundsupermart/FSM Global runs as a JS-rendered SPA with no static NAV
+   table, and — as a MAS-regulated brokerage — scraping it sits in ToS grey
+   territory that was never fully resolved. A public, scrapable alternative
+   was found (Maybank Singapore's unit trust price list, ~35 fund houses,
+   daily-updated static HTML), but it never got used because of point 3
+   below.
 
-1. Create a new repository on GitHub and upload everything in this folder
-   (keep the folder structure, including the hidden `.github` folder).
-2. Go to **Settings → Pages** → under "Build and deployment", set Source to
-   **Deploy from a branch**, branch **main**, folder **/docs**. Save.
-3. Go to the **Actions** tab → enable workflows if prompted → open
-   **Update market data** → click **Run workflow**. Wait ~2 minutes for it to finish.
-4. Your dashboard is live at `https://<your-username>.github.io/<repo-name>/`.
-   Bookmark it. Data refreshes automatically every weekday evening.
+2. **Insurer-run ILP fund centres are explicitly off the table.** Tokio
+   Marine's public Fund Centre carries a written prohibition on
+   redistributing or copying its Morningstar-sourced data in any form. That
+   is a hard stop, not a risk to weigh — no scraper was built against it or
+   any similarly licensed insurer fund centre (HSBC Life's fund prices page
+   was also left unresolved: it sits inside their authenticated app portal
+   and was never confirmed scrapable).
 
-## Adding / removing tickers
+3. **The actual watchlist supplied turned out to contain zero unit trusts.**
+   Every ticker submitted (`1211.HK`, `9618.HK`, `3067.HK`, and twenty
+   `.SI` tickers) is an exchange-traded instrument — HK stocks, two HSTECH
+   ETFs, and a set of SGX-listed REITs, Business Trusts, and one
+   preference share. All of it prices continuously on the exchange and
+   pulls directly from yfinance, identical in structure to the HK stock
+   half. The unit-trust research above turned out to be unnecessary for
+   this watchlist — kept here in case a genuine unit trust gets added
+   later, since the groundwork (and the dead ends) won't need repeating.
 
-Edit `tickers.txt` directly on github.com (pencil icon), add or delete a line, commit.
-The workflow runs automatically and the site reflects it within a few minutes.
-The × on a card only hides a ticker in your browser; the "Show" box brings it back.
+4. **GEX was requested, tested, and confirmed not currently possible.**
+   A live call to the FlashAlpha endpoint used in Basket Command Centre 2
+   returned `no_cached_data` for every HK/SGX ticker tested, against a
+   working response for a US ticker (AAPL) as baseline. Beyond that
+   provider gap, most SGX REITs have no listed single-stock options market
+   at all, so there may be no options chain to derive gamma exposure from
+   regardless of provider. GEX is not in this dashboard. If it's wanted
+   later, it needs its own research task to find and vet an HK-options
+   data source — not a retrofit of this build.
 
-## Privacy — read this
+5. **Benchmarks and scoring were built to replace, not imitate, what
+   Basket Command Centre 2 does with SPY/QQQ/IWM.** The US dashboard's
+   exact conviction/feasibility formula (built on GEX inputs) isn't
+   available here, so this dashboard uses a documented, price-only
+   substitute — see "Scoring methodology" below. It should be treated as a
+   different tool with a similar shape, not a port of the original logic.
 
-- **A GitHub Pages site is always publicly reachable by URL**, even if the repository is
-  private. Private repo + Pages also requires a paid GitHub plan (Pro).
-- If you need the site truly private, host these same files on **Cloudflare Pages** and put
-  **Cloudflare Access** (free tier) in front of it — that gates the URL behind a login.
-- Don't put anything in `tickers.txt` you wouldn't want public.
+## What's in the dashboard
 
-## Notes
+- **Benchmark strip** — `^STI` (SG Index), `^HSI` (HK Index), `3067.HK`
+  (iShares HSTECH ETF, used as the Tech Index proxy — Yahoo has no working
+  `^HSTECH` ticker). Direct index tickers were used over ETF proxies where
+  possible to avoid NAV tracking error and dividend drag.
+- **Sector rotation panel** — average 1D/1W/1M return per category, compared
+  against each category's assigned benchmark (HK-listed names vs `^HSI`,
+  SGX-listed names vs `^STI`).
+- **Per-instrument table** — grouped by category, sorted by conviction
+  score, with 1D/1W/1M change, relative strength vs benchmark, and both
+  scores below.
 
-- Data is end-of-day, not live. GitHub's cron is best-effort: the update usually runs within
-  ~15 minutes of the scheduled time, occasionally later.
-- Yahoo Finance is an unofficial data source; if a ticker fails, the dashboard shows the
-  error for that row and the rest keeps working.
-- Prices are unadjusted closes (auto_adjust=False), matching what a chart shows.
+## Scoring methodology
+
+Both scores are price-only. Neither uses options data. Formulas live in
+`fetch_data.py` and are repeated here so they don't require reading code to
+audit:
+
+**Conviction score (0–100)**
+- Trend alignment (40%): what fraction of the 1D/1W/1M changes share the
+  majority sign.
+- Magnitude (30%): average absolute change across 1D/1W/1M, capped at a 10%
+  average move.
+- Relative strength (30%): the instrument's 1M change minus its
+  benchmark's 1M change, mapped from a ±10% range onto 0–1.
+
+**Feasibility score (0–100)**
+- Position within the trailing 90-day price range. 100 = at the 90-day
+  low (maximum room before hitting recent resistance). 0 = at the 90-day
+  high (little room left, higher mean-reversion risk).
+- This is a range-position proxy, not a target-price model. It is
+  explicitly not the GEX-based feasibility score used in Basket Command
+  Centre 2, and shouldn't be read as carrying the same weight.
+
+Both are meant to be argued with, not trusted blindly — re-weight or
+replace them in `fetch_data.py` as conviction (no pun intended) develops
+about what's actually useful.
+
+## Known gaps and quirks
+
+- `MXNU.SI` (Elite UK REIT) prices in GBP and `CMOU.SI` (Keppel Pacific Oak
+  US REIT) prices in USD — both sit in the same table as SGD-denominated
+  instruments. Percentage changes are still valid per-instrument; absolute
+  price comparisons across rows are not.
+- No unit trusts are currently tracked. If any get added later, they will
+  need a different fetch path — see "Genesis," point 3 — since yfinance
+  does not reliably serve NAV-priced instruments (confirmed dead end: Yahoo
+  shows quote pages for some Morningstar-sourced fund identifiers but the
+  underlying data API returns empty history).
+- No GEX. See "Genesis," point 4.
+
+## Architecture
+
+```
+tickers.py              → watchlist + benchmark + category-benchmark config
+fetch_data.py            → pulls yfinance data, computes changes/scores/rotation,
+                            writes data.json (saves to /tmp first, then moves
+                            into place — same race-condition guard as
+                            Basket Command Centre 2)
+data.json                 → output consumed by the dashboard
+index.html               → static dashboard, fetches data.json client-side
+.github/workflows/update.yml → runs fetch_data.py on repository_dispatch
+                                 or manual workflow_dispatch
+requirements.txt         → yfinance
+```
+
+## Setup
+
+1. Create a new GitHub repo (e.g. `Basket-Command-Centre-HK-SGX`), public,
+   with GitHub Pages enabled (Settings → Pages → deploy from `main`, root).
+2. Push the contents of this folder as-is.
+3. Create a fine-grained PAT scoped to this repo only, `actions: write`
+   permission (Settings → Developer settings → Fine-grained tokens).
+4. Set up a cron-job.org job (same external-dispatcher pattern used for
+   Basket Command Centre 2, since native Actions scheduling has proven
+   unreliable):
+   - URL: `https://api.github.com/repos/YOUR_USERNAME/REPO_NAME/dispatches`
+   - Method: `POST`
+   - Headers: `Authorization: Bearer YOUR_PAT`,
+     `Accept: application/vnd.github+json`
+   - Body: `{"event_type": "update-data"}`
+   - Schedule: after SGX/HKEX close (~5pm SGT) or first thing in the
+     morning — there's no reason to run this on the US pre-market
+     schedule used for Basket Command Centre 2.
