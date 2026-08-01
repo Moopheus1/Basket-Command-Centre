@@ -134,6 +134,28 @@ ETFs, 1 preference share, 1 thin-coverage REIT), or `fetch_failed`
 (network issue on that run, not a real gap) — so the dashboard can show
 the right message instead of a misleading blank.
 
+## YTD column
+
+Calendar-year-to-date change, anchored to 1 January of the current year.
+Deliberately **not** fed into the momentum score, and not because it
+wasn't considered — two concrete reasons:
+
+1. YTD is a variable-length window (roughly 4 weeks in February, 11 months
+   in December), which makes it incomparable across tickers and across
+   the calendar year if baked into a fixed-weight formula.
+2. Blending short-term (1D/1W/1M) and long-term (YTD) signals into one
+   number obscures which horizon is actually driving the score. Keeping
+   them as separate columns lets both be read together instead of
+   collapsed into an ambiguous blend.
+
+If a medium-term score input is wanted later, a rolling 3-month (63
+trading day) window would be the better candidate than YTD specifically,
+since it stays a constant length year-round.
+
+Requires a full year of price history rather than the ~4 months needed
+for the rest of the dashboard, so `fetch_data.py` pulls `period="1y"` from
+yfinance for every ticker now.
+
 ## Known gaps and quirks
 
 - `MXNU.SI` (Elite UK REIT) prices in GBP and `CMOU.SI` (Keppel Pacific Oak
