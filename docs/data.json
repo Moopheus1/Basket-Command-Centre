@@ -1,6 +1,6 @@
 {
-  "last_updated_utc": "2026-08-01 10:41:02 UTC",
-  "instrument_count": 24,
+  "last_updated_utc": "2026-08-01 11:10:15 UTC",
+  "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
     "^STI": {
@@ -70,13 +70,13 @@
     },
     {
       "category": "SGX REIT",
-      "count": 18,
-      "avg_1d_pct": -0.56,
-      "avg_1w_pct": 0.83,
-      "avg_1m_pct": 2.53,
+      "count": 19,
+      "avg_1d_pct": -0.6,
+      "avg_1w_pct": 0.72,
+      "avg_1m_pct": 2.62,
       "benchmark": "^STI",
       "benchmark_1m_pct": 7.88,
-      "rel_to_benchmark_1m_pct": -5.35
+      "rel_to_benchmark_1m_pct": -5.26
     },
     {
       "category": "SGX Pref Share",
@@ -95,6 +95,7 @@
       "category": "HK Stock",
       "name": "BYD COMPANY",
       "currency": "HKD",
+      "yfinance_url": "https://finance.yahoo.com/quote/1211.HK",
       "last_price": 94.15,
       "last_date": "2026-07-31",
       "change_1d_pct": -0.69,
@@ -104,6 +105,12 @@
       "rel_strength_1m_pct": 7.97,
       "conviction_score": 80.8,
       "feasibility_score": 46.0,
+      "target_mean": 125.01566,
+      "target_high": 147.1821,
+      "target_low": 87.605576,
+      "num_analysts": 27,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 32.78,
       "history": [
         {
           "date": "2026-03-31",
@@ -440,6 +447,7 @@
       "category": "HK Stock",
       "name": "JD-SW",
       "currency": "HKD",
+      "yfinance_url": "https://finance.yahoo.com/quote/9618.HK",
       "last_price": 127.1,
       "last_date": "2026-07-31",
       "change_1d_pct": -1.24,
@@ -449,6 +457,12 @@
       "rel_strength_1m_pct": 11.37,
       "conviction_score": 86.7,
       "feasibility_score": 8.8,
+      "target_mean": 151.04419,
+      "target_high": 212.0,
+      "target_low": 90.0,
+      "num_analysts": 21,
+      "recommendation": "buy",
+      "upside_to_target_pct": 18.84,
       "history": [
         {
           "date": "2026-03-31",
@@ -785,6 +799,7 @@
       "category": "HK/SGX ETF",
       "name": "ISHARESHSTECH",
       "currency": "HKD",
+      "yfinance_url": "https://finance.yahoo.com/quote/3067.HK",
       "last_price": 10.19,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.49,
@@ -794,6 +809,12 @@
       "rel_strength_1m_pct": -3.63,
       "conviction_score": 63.1,
       "feasibility_score": 38.2,
+      "target_mean": null,
+      "target_high": null,
+      "target_low": null,
+      "num_analysts": null,
+      "recommendation": null,
+      "upside_to_target_pct": null,
       "history": [
         {
           "date": "2026-03-31",
@@ -1130,6 +1151,7 @@
       "category": "HK/SGX ETF",
       "name": "Lion-OCBC Sec HSTECH S$",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/HST.SI",
       "last_price": 0.774,
       "last_date": "2026-07-31",
       "change_1d_pct": -0.13,
@@ -1139,6 +1161,12 @@
       "rel_strength_1m_pct": -4.92,
       "conviction_score": 45.4,
       "feasibility_score": 39.3,
+      "target_mean": null,
+      "target_high": null,
+      "target_low": null,
+      "num_analysts": null,
+      "recommendation": null,
+      "upside_to_target_pct": null,
       "history": [
         {
           "date": "2026-03-31",
@@ -1499,6 +1527,7 @@
       "category": "SGX REIT",
       "name": "AIMS APAC Reit",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/O5RU.SI",
       "last_price": 1.6,
       "last_date": "2026-07-31",
       "change_1d_pct": -1.84,
@@ -1508,6 +1537,12 @@
       "rel_strength_1m_pct": -6.61,
       "conviction_score": 37.3,
       "feasibility_score": 26.5,
+      "target_mean": 1.68667,
+      "target_high": 1.72,
+      "target_low": 1.66,
+      "num_analysts": 3,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 5.42,
       "history": [
         {
           "date": "2026-03-31",
@@ -1860,6 +1895,7 @@
       "category": "SGX REIT",
       "name": "EliteUKREIT GBP",
       "currency": "GBP",
+      "yfinance_url": "https://finance.yahoo.com/quote/MXNU.SI",
       "last_price": 0.31,
       "last_date": "2026-07-31",
       "change_1d_pct": -1.59,
@@ -1869,6 +1905,12 @@
       "rel_strength_1m_pct": -7.88,
       "conviction_score": 18.1,
       "feasibility_score": 80.1,
+      "target_mean": 0.4125,
+      "target_high": 0.44,
+      "target_low": 0.39,
+      "num_analysts": 4,
+      "recommendation": "none",
+      "upside_to_target_pct": 33.06,
       "history": [
         {
           "date": "2026-03-31",
@@ -2221,6 +2263,7 @@
       "category": "SGX REIT",
       "name": "CapLand Ascendas REIT",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/A17U.SI",
       "last_price": 2.57,
       "last_date": "2026-07-31",
       "change_1d_pct": -0.39,
@@ -2230,6 +2273,12 @@
       "rel_strength_1m_pct": -4.25,
       "conviction_score": 42.5,
       "feasibility_score": 13.3,
+      "target_mean": 3.07812,
+      "target_high": 3.78,
+      "target_low": 2.77,
+      "num_analysts": 16,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 19.77,
       "history": [
         {
           "date": "2026-03-31",
@@ -2582,6 +2631,7 @@
       "category": "SGX REIT",
       "name": "CapLand Ascott T",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/HMN.SI",
       "last_price": 0.905,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.56,
@@ -2591,6 +2641,12 @@
       "rel_strength_1m_pct": -7.32,
       "conviction_score": 31.8,
       "feasibility_score": 37.5,
+      "target_mean": 1.05556,
+      "target_high": 1.42,
+      "target_low": 0.88,
+      "num_analysts": 9,
+      "recommendation": "buy",
+      "upside_to_target_pct": 16.64,
       "history": [
         {
           "date": "2026-03-31",
@@ -2943,6 +2999,7 @@
       "category": "SGX Real Estate",
       "name": "CapitaLandInvest",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/9CI.SI",
       "last_price": 2.66,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.38,
@@ -2952,6 +3009,12 @@
       "rel_strength_1m_pct": -0.62,
       "conviction_score": 68.5,
       "feasibility_score": 54.5,
+      "target_mean": 3.39867,
+      "target_high": 4.19,
+      "target_low": 3.0,
+      "num_analysts": 15,
+      "recommendation": "none",
+      "upside_to_target_pct": 27.77,
       "history": [
         {
           "date": "2026-03-31",
@@ -3304,6 +3367,7 @@
       "category": "SGX REIT",
       "name": "CapLand IntCom T",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/C38U.SI",
       "last_price": 2.49,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.0,
@@ -3313,6 +3377,12 @@
       "rel_strength_1m_pct": -3.7,
       "conviction_score": 42.3,
       "feasibility_score": 7.7,
+      "target_mean": 2.69,
+      "target_high": 3.06,
+      "target_low": 2.4,
+      "num_analysts": 16,
+      "recommendation": "buy",
+      "upside_to_target_pct": 8.03,
       "history": [
         {
           "date": "2026-03-31",
@@ -3665,6 +3735,7 @@
       "category": "SGX REIT",
       "name": "CDL HTrust",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/J85.SI",
       "last_price": 0.795,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.0,
@@ -3674,6 +3745,12 @@
       "rel_strength_1m_pct": -4.63,
       "conviction_score": 39.9,
       "feasibility_score": 53.3,
+      "target_mean": 0.85818,
+      "target_high": 0.98,
+      "target_low": 0.69,
+      "num_analysts": 11,
+      "recommendation": "hold",
+      "upside_to_target_pct": 7.95,
       "history": [
         {
           "date": "2026-03-31",
@@ -4026,6 +4103,7 @@
       "category": "SGX Pref Share",
       "name": "CITYDEV NCCPS",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/C70.SI",
       "last_price": 1.01,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.6,
@@ -4035,6 +4113,12 @@
       "rel_strength_1m_pct": -7.18,
       "conviction_score": 32.9,
       "feasibility_score": 46.9,
+      "target_mean": null,
+      "target_high": null,
+      "target_low": null,
+      "num_analysts": null,
+      "recommendation": null,
+      "upside_to_target_pct": null,
       "history": [
         {
           "date": "2026-03-31",
@@ -4395,6 +4479,7 @@
       "category": "SGX REIT",
       "name": "Far East HTrust",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/Q5T.SI",
       "last_price": 0.575,
       "last_date": "2026-07-31",
       "change_1d_pct": -1.71,
@@ -4404,6 +4489,12 @@
       "rel_strength_1m_pct": -7.0,
       "conviction_score": 36.3,
       "feasibility_score": 57.1,
+      "target_mean": 0.71,
+      "target_high": 0.85,
+      "target_low": 0.6,
+      "num_analysts": 5,
+      "recommendation": "none",
+      "upside_to_target_pct": 23.48,
       "history": [
         {
           "date": "2026-03-31",
@@ -4756,6 +4847,7 @@
       "category": "SGX REIT",
       "name": "Frasers Cpt Tr",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/J69U.SI",
       "last_price": 2.27,
       "last_date": "2026-07-31",
       "change_1d_pct": -0.44,
@@ -4765,6 +4857,12 @@
       "rel_strength_1m_pct": -5.63,
       "conviction_score": 22.6,
       "feasibility_score": 50.0,
+      "target_mean": 2.59941,
+      "target_high": 2.99,
+      "target_low": 2.2,
+      "num_analysts": 17,
+      "recommendation": "buy",
+      "upside_to_target_pct": 14.51,
       "history": [
         {
           "date": "2026-03-31",
@@ -5117,6 +5215,7 @@
       "category": "SGX REIT",
       "name": "Frasers L&C Tr",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/BUOU.SI",
       "last_price": 0.99,
       "last_date": "2026-07-31",
       "change_1d_pct": -1.0,
@@ -5126,6 +5225,12 @@
       "rel_strength_1m_pct": -4.22,
       "conviction_score": 40.5,
       "feasibility_score": 7.6,
+      "target_mean": 1.0846313,
+      "target_high": 1.307488,
+      "target_low": 0.93122596,
+      "num_analysts": 12,
+      "recommendation": "buy",
+      "upside_to_target_pct": 9.56,
       "history": [
         {
           "date": "2026-03-31",
@@ -5478,6 +5583,7 @@
       "category": "SGX REIT",
       "name": "Keppel DC Reit",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/AJBU.SI",
       "last_price": 2.23,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.0,
@@ -5487,6 +5593,12 @@
       "rel_strength_1m_pct": -6.23,
       "conviction_score": 35.6,
       "feasibility_score": 49.0,
+      "target_mean": 2.63688,
+      "target_high": 2.95,
+      "target_low": 2.3,
+      "num_analysts": 16,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 18.25,
       "history": [
         {
           "date": "2026-03-31",
@@ -5839,6 +5951,7 @@
       "category": "SGX REIT",
       "name": "Keppel Reit",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/K71U.SI",
       "last_price": 0.92,
       "last_date": "2026-07-31",
       "change_1d_pct": -0.54,
@@ -5848,6 +5961,12 @@
       "rel_strength_1m_pct": -0.9,
       "conviction_score": 52.4,
       "feasibility_score": 5.9,
+      "target_mean": 0.98875,
+      "target_high": 1.13,
+      "target_low": 0.88,
+      "num_analysts": 16,
+      "recommendation": "hold",
+      "upside_to_target_pct": 7.47,
       "history": [
         {
           "date": "2026-03-31",
@@ -6200,6 +6319,7 @@
       "category": "SGX REIT",
       "name": "KOREReitUSD",
       "currency": "USD",
+      "yfinance_url": "https://finance.yahoo.com/quote/CMOU.SI",
       "last_price": 0.179,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.0,
@@ -6209,6 +6329,12 @@
       "rel_strength_1m_pct": -7.88,
       "conviction_score": 17.1,
       "feasibility_score": 91.3,
+      "target_mean": 0.30333,
+      "target_high": 0.4,
+      "target_low": 0.25,
+      "num_analysts": 3,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 69.46,
       "history": [
         {
           "date": "2026-03-31",
@@ -6561,6 +6687,7 @@
       "category": "SGX REIT",
       "name": "Lendlease Reit",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/JYEU.SI",
       "last_price": 0.59,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.85,
@@ -6570,6 +6697,12 @@
       "rel_strength_1m_pct": -4.37,
       "conviction_score": 54.5,
       "feasibility_score": 0.0,
+      "target_mean": 0.71857,
+      "target_high": 0.78,
+      "target_low": 0.63,
+      "num_analysts": 7,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 21.79,
       "history": [
         {
           "date": "2026-03-31",
@@ -6922,6 +7055,7 @@
       "category": "SGX REIT",
       "name": "Mapletree Ind Tr",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/ME8U.SI",
       "last_price": 1.93,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.0,
@@ -6931,6 +7065,12 @@
       "rel_strength_1m_pct": -5.74,
       "conviction_score": 36.8,
       "feasibility_score": 59.8,
+      "target_mean": 2.00067,
+      "target_high": 2.22,
+      "target_low": 1.82,
+      "num_analysts": 15,
+      "recommendation": "hold",
+      "upside_to_target_pct": 3.66,
       "history": [
         {
           "date": "2026-03-31",
@@ -7283,6 +7423,7 @@
       "category": "SGX REIT",
       "name": "Mapletree PanAsia Com Tr",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/N2IU.SI",
       "last_price": 1.33,
       "last_date": "2026-07-31",
       "change_1d_pct": -2.21,
@@ -7292,6 +7433,12 @@
       "rel_strength_1m_pct": -3.97,
       "conviction_score": 28.5,
       "feasibility_score": 39.7,
+      "target_mean": 1.51867,
+      "target_high": 1.75,
+      "target_low": 1.35,
+      "num_analysts": 15,
+      "recommendation": "buy",
+      "upside_to_target_pct": 14.19,
       "history": [
         {
           "date": "2026-03-31",
@@ -7644,6 +7791,7 @@
       "category": "SGX REIT",
       "name": "Mapletree Log Tr",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/M44U.SI",
       "last_price": 1.24,
       "last_date": "2026-07-31",
       "change_1d_pct": -0.8,
@@ -7653,6 +7801,12 @@
       "rel_strength_1m_pct": -5.4,
       "conviction_score": 40.2,
       "feasibility_score": 9.4,
+      "target_mean": 1.386,
+      "target_high": 1.55,
+      "target_low": 1.2,
+      "num_analysts": 15,
+      "recommendation": "buy",
+      "upside_to_target_pct": 11.77,
       "history": [
         {
           "date": "2026-03-31",
@@ -8005,6 +8159,7 @@
       "category": "SGX REIT",
       "name": "OUEREIT",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/TS0U.SI",
       "last_price": 0.355,
       "last_date": "2026-07-31",
       "change_1d_pct": -1.39,
@@ -8014,6 +8169,12 @@
       "rel_strength_1m_pct": -4.35,
       "conviction_score": 42.1,
       "feasibility_score": 41.6,
+      "target_mean": 0.4425,
+      "target_high": 0.45,
+      "target_low": 0.43,
+      "num_analysts": 4,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 24.65,
       "history": [
         {
           "date": "2026-03-31",
@@ -8366,6 +8527,7 @@
       "category": "SGX REIT",
       "name": "Stoneweg EUTrust SGD",
       "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/SEB.SI",
       "last_price": 2.35,
       "last_date": "2026-07-31",
       "change_1d_pct": 0.43,
@@ -8375,6 +8537,12 @@
       "rel_strength_1m_pct": -6.15,
       "conviction_score": 48.8,
       "feasibility_score": 11.8,
+      "target_mean": null,
+      "target_high": null,
+      "target_low": null,
+      "num_analysts": null,
+      "recommendation": "none",
+      "upside_to_target_pct": null,
       "history": [
         {
           "date": "2026-03-31",
@@ -8719,6 +8887,374 @@
         {
           "date": "2026-07-31",
           "close": 2.35
+        }
+      ]
+    },
+    {
+      "ticker": "T82U.SI",
+      "category": "SGX REIT",
+      "name": "Suntec Reit",
+      "currency": "SGD",
+      "yfinance_url": "https://finance.yahoo.com/quote/T82U.SI",
+      "last_price": 1.48,
+      "last_date": "2026-07-31",
+      "change_1d_pct": -1.33,
+      "change_1w_pct": -1.33,
+      "change_1m_pct": 4.15,
+      "benchmark": "^STI",
+      "rel_strength_1m_pct": -3.73,
+      "conviction_score": 42.9,
+      "feasibility_score": 31.0,
+      "target_mean": 1.56867,
+      "target_high": 1.78,
+      "target_low": 1.2,
+      "num_analysts": 15,
+      "recommendation": "buy",
+      "upside_to_target_pct": 5.99,
+      "history": [
+        {
+          "date": "2026-03-31",
+          "close": 1.4222
+        },
+        {
+          "date": "2026-04-01",
+          "close": 1.4417
+        },
+        {
+          "date": "2026-04-02",
+          "close": 1.4319
+        },
+        {
+          "date": "2026-04-06",
+          "close": 1.4514
+        },
+        {
+          "date": "2026-04-07",
+          "close": 1.4514
+        },
+        {
+          "date": "2026-04-08",
+          "close": 1.4904
+        },
+        {
+          "date": "2026-04-09",
+          "close": 1.4709
+        },
+        {
+          "date": "2026-04-10",
+          "close": 1.4806
+        },
+        {
+          "date": "2026-04-13",
+          "close": 1.4612
+        },
+        {
+          "date": "2026-04-14",
+          "close": 1.4612
+        },
+        {
+          "date": "2026-04-15",
+          "close": 1.4806
+        },
+        {
+          "date": "2026-04-16",
+          "close": 1.4612
+        },
+        {
+          "date": "2026-04-17",
+          "close": 1.4514
+        },
+        {
+          "date": "2026-04-20",
+          "close": 1.4709
+        },
+        {
+          "date": "2026-04-21",
+          "close": 1.4709
+        },
+        {
+          "date": "2026-04-22",
+          "close": 1.4612
+        },
+        {
+          "date": "2026-04-23",
+          "close": 1.4514
+        },
+        {
+          "date": "2026-04-24",
+          "close": 1.4612
+        },
+        {
+          "date": "2026-04-27",
+          "close": 1.4319
+        },
+        {
+          "date": "2026-04-28",
+          "close": 1.4319
+        },
+        {
+          "date": "2026-04-29",
+          "close": 1.4612
+        },
+        {
+          "date": "2026-04-30",
+          "close": 1.4704
+        },
+        {
+          "date": "2026-05-04",
+          "close": 1.4803
+        },
+        {
+          "date": "2026-05-05",
+          "close": 1.4803
+        },
+        {
+          "date": "2026-05-06",
+          "close": 1.4704
+        },
+        {
+          "date": "2026-05-07",
+          "close": 1.4901
+        },
+        {
+          "date": "2026-05-08",
+          "close": 1.4605
+        },
+        {
+          "date": "2026-05-11",
+          "close": 1.4605
+        },
+        {
+          "date": "2026-05-12",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-05-13",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-05-14",
+          "close": 1.4309
+        },
+        {
+          "date": "2026-05-15",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-05-18",
+          "close": 1.4013
+        },
+        {
+          "date": "2026-05-19",
+          "close": 1.4309
+        },
+        {
+          "date": "2026-05-20",
+          "close": 1.4408
+        },
+        {
+          "date": "2026-05-21",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-05-22",
+          "close": 1.4408
+        },
+        {
+          "date": "2026-05-25",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-05-26",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-05-27",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-05-28",
+          "close": 1.4408
+        },
+        {
+          "date": "2026-05-29",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-06-02",
+          "close": 1.4309
+        },
+        {
+          "date": "2026-06-03",
+          "close": 1.4112
+        },
+        {
+          "date": "2026-06-04",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-06-05",
+          "close": 1.4309
+        },
+        {
+          "date": "2026-06-08",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-06-09",
+          "close": 1.4013
+        },
+        {
+          "date": "2026-06-10",
+          "close": 1.4013
+        },
+        {
+          "date": "2026-06-11",
+          "close": 1.4112
+        },
+        {
+          "date": "2026-06-12",
+          "close": 1.4309
+        },
+        {
+          "date": "2026-06-15",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-06-16",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-06-17",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-06-18",
+          "close": 1.3914
+        },
+        {
+          "date": "2026-06-19",
+          "close": 1.4013
+        },
+        {
+          "date": "2026-06-22",
+          "close": 1.4112
+        },
+        {
+          "date": "2026-06-23",
+          "close": 1.4013
+        },
+        {
+          "date": "2026-06-24",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-06-25",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-06-26",
+          "close": 1.4408
+        },
+        {
+          "date": "2026-06-29",
+          "close": 1.4408
+        },
+        {
+          "date": "2026-06-30",
+          "close": 1.4309
+        },
+        {
+          "date": "2026-07-01",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-07-02",
+          "close": 1.4211
+        },
+        {
+          "date": "2026-07-03",
+          "close": 1.4408
+        },
+        {
+          "date": "2026-07-06",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-07-07",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-07-08",
+          "close": 1.4605
+        },
+        {
+          "date": "2026-07-09",
+          "close": 1.4507
+        },
+        {
+          "date": "2026-07-10",
+          "close": 1.4605
+        },
+        {
+          "date": "2026-07-13",
+          "close": 1.4803
+        },
+        {
+          "date": "2026-07-14",
+          "close": 1.4803
+        },
+        {
+          "date": "2026-07-15",
+          "close": 1.4803
+        },
+        {
+          "date": "2026-07-16",
+          "close": 1.4901
+        },
+        {
+          "date": "2026-07-17",
+          "close": 1.5
+        },
+        {
+          "date": "2026-07-20",
+          "close": 1.5
+        },
+        {
+          "date": "2026-07-21",
+          "close": 1.5
+        },
+        {
+          "date": "2026-07-22",
+          "close": 1.5197
+        },
+        {
+          "date": "2026-07-23",
+          "close": 1.4901
+        },
+        {
+          "date": "2026-07-24",
+          "close": 1.5
+        },
+        {
+          "date": "2026-07-27",
+          "close": 1.4901
+        },
+        {
+          "date": "2026-07-28",
+          "close": 1.4803
+        },
+        {
+          "date": "2026-07-29",
+          "close": 1.5
+        },
+        {
+          "date": "2026-07-30",
+          "close": 1.5
+        },
+        {
+          "date": "2026-07-31",
+          "close": 1.48
         }
       ]
     }
