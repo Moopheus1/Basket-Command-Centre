@@ -1,9 +1,34 @@
 name: Update HK/SGX data
 
+# Refresh cadence: every 15 min during SGX trading hours (09:00-17:00 SGT,
+# Mon-Fri, excluding the 12:00-13:00 lunch break), plus one close-capture
+# run at 17:00 SGT. SGT = UTC+8 with no daylight saving, so this converts
+# to a fixed UTC offset year-round -- no seasonal adjustment needed.
+#   09:00-16:45 SGT -> 01:00-08:45 UTC  (*/15 1-3,5-8 * * 1-5)
+#   17:00 SGT       -> 09:00 UTC        (0 9 * * 1-5)
+# HKEX (9:30-12:00, 13:00-16:00 HKT -- same timezone as SGT) sits entirely
+# inside this window, so HK stocks/ETFs are covered by the same schedule;
+# no separate HK job needed. No unit trusts are tracked in this build (see
+# README "Genesis") -- if one gets added later, it needs its OWN, much
+# coarser schedule (once daily, evening) rather than joining this job:
+# unit trust NAV publishes once per day after close, so polling it every
+# 15 min during trading hours would just re-fetch the same stale NAV
+# repeatedly until the daily publish lands.
+#
+# NOTE: GitHub's native `schedule:` trigger has been unreliable in this
+# project's other dashboards (see Basket Command Centre 2's history) --
+# it can silently skip or delay runs under load. The `schedule:` entries
+# below are kept as a rule of record / best-effort backup. The reliable
+# trigger is `repository_dispatch`, fired by an external cron-job.org job
+# hitting this repo's /dispatches endpoint on the same cadence -- see
+# README "Setup" for the exact cron-job.org configuration.
 on:
   workflow_dispatch: {}
   repository_dispatch:
     types: [update-data]
+  schedule:
+    - cron: '*/15 1-3,5-8 * * 1-5'   # 09:00-16:45 SGT, 15-min cadence
+    - cron: '0 9 * * 1-5'            # 17:00 SGT, market-close capture
 
 permissions:
   contents: write
