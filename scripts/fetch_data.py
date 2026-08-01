@@ -56,6 +56,7 @@ from tickers import TICKERS, BENCHMARKS, CATEGORY_BENCHMARK
 
 YAHOO_QUOTE_URL = "https://finance.yahoo.com/quote/{ticker}"
 YAHOO_ANALYSIS_URL = "https://finance.yahoo.com/quote/{ticker}/analysis"
+YAHOO_KEYSTATS_URL = "https://finance.yahoo.com/quote/{ticker}/key-statistics"
 
 
 def pct_change(series, periods_back):
@@ -252,6 +253,7 @@ def main():
                 "currency": info["currency"],
                 "yfinance_url": YAHOO_QUOTE_URL.format(ticker=ticker),
                 "yfinance_analysis_url": YAHOO_ANALYSIS_URL.format(ticker=ticker),
+                "yfinance_keystats_url": YAHOO_KEYSTATS_URL.format(ticker=ticker),
                 "last_price": last_price,
                 "last_date": last_date,
                 "change_1d_pct": c1d,
