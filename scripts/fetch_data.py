@@ -2,7 +2,8 @@
 """
 Fetch daily prices for the HK/SGX watchlist plus SG/HK/Tech benchmarks,
 compute 1D/1W/1M change, relative strength vs benchmark, sector rotation
-aggregates, and a price-only conviction/feasibility score.
+aggregates, a price-only conviction/feasibility score, and analyst price
+targets where covered.
 
 No options data is used anywhere in this script. FlashAlpha/QuantWheel/
 MenthorQ do not cover HK/SGX names (confirmed: FlashAlpha returns
@@ -27,6 +28,13 @@ Feasibility score (0-100), methodology:
   This is a simple range-position proxy, not a target-price feasibility
   model like the GEX-based version in Basket Command Centre 2.
 
+Price targets: pulled from yfinance's `.info` (targetMeanPrice /
+targetHighPrice / targetLowPrice / numberOfAnalystOpinions /
+recommendationKey). Coverage is Yahoo's own aggregation of sell-side
+analyst estimates, not derived or computed here. ETFs and preference
+shares structurally have no analyst price targets and will show as
+uncovered -- that's expected, not a data error.
+
 Writes data.json. Saves to /tmp first, then moves into place (race
 condition guard, per the Basket Command Centre 2 pattern).
 """
@@ -41,6 +49,8 @@ from statistics import mean
 import yfinance as yf
 from tickers import TICKERS, BENCHMARKS, CATEGORY_BENCHMARK
 
+YAHOO_QUOTE_URL = "https://finance.yahoo.com/quote/{ticker}"
+
 
 def pct_change(series, periods_back):
     if len(series) <= periods_back:
@@ -52,20 +62,27 @@ def pct_change(series, periods_back):
     return round((latest - prior) / prior * 100, 2)
 
 
-def fetch_series(ticker):
+def fetch_series_and_info(ticker):
     tk = yf.Ticker(ticker)
     hist = tk.history(period="4mo", interval="1d")
     if hist.empty:
         return None, None
     close = hist["Close"].dropna()
-    name = ticker
-    currency = ""
+    info = {}
     try:
-        name = tk.info.get("shortName") or ticker
-        currency = tk.info.get("currency", "")
+        raw = tk.info
+        info = {
+            "name": raw.get("shortName") or ticker,
+            "currency": raw.get("currency", ""),
+            "target_mean": raw.get("targetMeanPrice"),
+            "target_high": raw.get("targetHighPrice"),
+            "target_low": raw.get("targetLowPrice"),
+            "num_analysts": raw.get("numberOfAnalystOpinions"),
+            "recommendation": raw.get("recommendationKey"),
+        }
     except Exception:
-        pass
-    return close, {"name": name, "currency": currency}
+        info = {"name": ticker, "currency": ""}
+    return close, info
 
 
 def conviction_score(c1d, c1w, c1m, rel_strength_1m):
@@ -102,7 +119,7 @@ def main():
     # 1. Fetch benchmarks first
     benchmark_data = {}
     for b_ticker, meta in BENCHMARKS.items():
-        close, info = fetch_series(b_ticker)
+        close, info = fetch_series_and_info(b_ticker)
         if close is None:
             benchmark_data[b_ticker] = {"error": "no data", **meta}
             print(f"ERR benchmark {b_ticker}: no data", file=sys.stderr)
@@ -124,7 +141,7 @@ def main():
     errors = []
     for ticker, category in TICKERS.items():
         try:
-            close, info = fetch_series(ticker)
+            close, info = fetch_series_and_info(ticker)
             if close is None:
                 errors.append(ticker)
                 results.append({"ticker": ticker, "category": category, "name": ticker, "error": "no data"})
@@ -150,11 +167,17 @@ def main():
                 for d, v in close.tail(90).items()
             ]
 
+            target_mean = info.get("target_mean")
+            upside_pct = None
+            if target_mean is not None and last_price:
+                upside_pct = round((target_mean - last_price) / last_price * 100, 2)
+
             results.append({
                 "ticker": ticker,
                 "category": category,
                 "name": info["name"],
                 "currency": info["currency"],
+                "yfinance_url": YAHOO_QUOTE_URL.format(ticker=ticker),
                 "last_price": last_price,
                 "last_date": last_date,
                 "change_1d_pct": c1d,
@@ -164,6 +187,12 @@ def main():
                 "rel_strength_1m_pct": rel_strength_1m,
                 "conviction_score": conviction_score(c1d, c1w, c1m, rel_strength_1m),
                 "feasibility_score": feasibility_score(close),
+                "target_mean": target_mean,
+                "target_high": info.get("target_high"),
+                "target_low": info.get("target_low"),
+                "num_analysts": info.get("num_analysts"),
+                "recommendation": info.get("recommendation"),
+                "upside_to_target_pct": upside_pct,
                 "history": history,
             })
             print(f"OK  {ticker:10} {info['name']}")
