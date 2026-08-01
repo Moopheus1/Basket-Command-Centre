@@ -2,7 +2,7 @@
 """
 Fetch daily prices for the HK/SGX watchlist plus SG/HK/Tech benchmarks,
 compute 1D/1W/1M change, relative strength vs benchmark, sector rotation
-aggregates, a price-only conviction/feasibility score, and analyst price
+aggregates, a price-only momentum/range score pair, and analyst price
 targets where covered.
 
 No options data is used anywhere in this script. FlashAlpha/QuantWheel/
@@ -10,18 +10,19 @@ MenthorQ do not cover HK/SGX names (confirmed: FlashAlpha returns
 "no_cached_data" for HK/SGX tickers) and SGX REITs mostly have no listed
 options market at all, so GEX is not computed here.
 
-Conviction score (0-100), methodology -- documented so it can be audited
-or replaced:
+Momentum score (0-100) -- formerly "conviction"; renamed because
+"conviction" implied more than a pure price-momentum read delivers.
+Methodology, documented so it can be audited or replaced:
   - Trend alignment: how many of 1D/1W/1M changes share the majority sign.
   - Magnitude: average absolute change across 1D/1W/1M, scaled (10%+
     average move maxes this component out).
   - Relative strength: instrument's 1M change minus its benchmark's 1M
     change (outperformance vs its own market).
   These three components are weighted 40/30/30 and mapped to 0-100.
-  This is a price-momentum score, not a fundamental or options-derived
-  signal.
 
-Feasibility score (0-100), methodology:
+Range score (0-100) -- formerly "feasibility"; renamed because
+"feasibility" implied a target-reachability model this dashboard doesn't
+have. Methodology:
   - Position within the trailing 90-day range: 100 = at the 90d low
     (maximum room to run before hitting recent resistance), 0 = at the
     90d high (little room left, mean-reversion risk).
@@ -30,10 +31,13 @@ Feasibility score (0-100), methodology:
 
 Price targets: pulled from yfinance's `.info` (targetMeanPrice /
 targetHighPrice / targetLowPrice / numberOfAnalystOpinions /
-recommendationKey). Coverage is Yahoo's own aggregation of sell-side
-analyst estimates, not derived or computed here. ETFs and preference
-shares structurally have no analyst price targets and will show as
-uncovered -- that's expected, not a data error.
+recommendationKey), with retry logic -- this call has been observed to
+intermittently fail with DNS resolution errors in this project's own
+testing, and a single-try fallback made transient failures indistinguishable
+from genuine "no analyst coverage." Each instrument now carries a
+target_status field: "covered", "no_coverage" (structurally expected for
+ETFs/preference shares, or genuinely thin-coverage names), or
+"fetch_failed" (network issue -- distinct from a real gap).
 
 Writes data.json. Saves to /tmp first, then moves into place (race
 condition guard, per the Basket Command Centre 2 pattern).
@@ -43,6 +47,7 @@ import os
 import sys
 import shutil
 import tempfile
+import time
 from datetime import datetime, timezone
 from statistics import mean
 
@@ -62,30 +67,60 @@ def pct_change(series, periods_back):
     return round((latest - prior) / prior * 100, 2)
 
 
+def fetch_info_with_retry(tk, ticker, retries=3, delay=2.0):
+    """
+    yfinance's .info call has been observed (in this project's own testing)
+    to intermittently fail with DNS resolution errors. A silent single-try
+    fallback makes a transient network blip indistinguishable from a
+    genuine "no analyst coverage" gap. Retry a few times before giving up,
+    and report the failure explicitly rather than masking it as "no data".
+    """
+    last_err = None
+    for attempt in range(retries):
+        try:
+            raw = tk.info
+            if raw and (raw.get("shortName") or raw.get("regularMarketPrice") is not None):
+                return raw, "ok"
+            last_err = "empty response"
+        except Exception as e:
+            last_err = str(e)
+        if attempt < retries - 1:
+            time.sleep(delay)
+    print(f"WARN {ticker}: .info fetch failed after {retries} attempts ({last_err})", file=sys.stderr)
+    return {}, "fetch_failed"
+
+
 def fetch_series_and_info(ticker):
     tk = yf.Ticker(ticker)
     hist = tk.history(period="4mo", interval="1d")
     if hist.empty:
-        return None, None
+        return None, None, None
     close = hist["Close"].dropna()
-    info = {}
-    try:
-        raw = tk.info
-        info = {
-            "name": raw.get("shortName") or ticker,
-            "currency": raw.get("currency", ""),
-            "target_mean": raw.get("targetMeanPrice"),
-            "target_high": raw.get("targetHighPrice"),
-            "target_low": raw.get("targetLowPrice"),
-            "num_analysts": raw.get("numberOfAnalystOpinions"),
-            "recommendation": raw.get("recommendationKey"),
-        }
-    except Exception:
-        info = {"name": ticker, "currency": ""}
-    return close, info
+
+    raw, info_status = fetch_info_with_retry(tk, ticker)
+    info = {
+        "name": raw.get("shortName") or ticker,
+        "currency": raw.get("currency", ""),
+        "target_mean": raw.get("targetMeanPrice"),
+        "target_high": raw.get("targetHighPrice"),
+        "target_low": raw.get("targetLowPrice"),
+        "num_analysts": raw.get("numberOfAnalystOpinions"),
+        "recommendation": raw.get("recommendationKey"),
+    }
+
+    if info_status == "fetch_failed":
+        target_status = "fetch_failed"
+    elif info["target_mean"] is not None:
+        target_status = "covered"
+    else:
+        target_status = "no_coverage"
+
+    return close, info, target_status
 
 
-def conviction_score(c1d, c1w, c1m, rel_strength_1m):
+def momentum_score(c1d, c1w, c1m, rel_strength_1m):
+    """Renamed from 'conviction' -- the name implied more than a pure
+    price-momentum read actually delivers. See docstring above."""
     vals = [v for v in (c1d, c1w, c1m) if v is not None]
     if not vals:
         return None
@@ -104,7 +139,10 @@ def conviction_score(c1d, c1w, c1m, rel_strength_1m):
     return round(composite * 100, 1)
 
 
-def feasibility_score(close_series):
+def range_score(close_series):
+    """Renamed from 'feasibility' -- the name implied a target-reachability
+    model this dashboard doesn't have. This is purely 90-day range
+    position. See docstring above."""
     if close_series is None or len(close_series) < 5:
         return None
     window = close_series.tail(90)
@@ -119,7 +157,7 @@ def main():
     # 1. Fetch benchmarks first
     benchmark_data = {}
     for b_ticker, meta in BENCHMARKS.items():
-        close, info = fetch_series_and_info(b_ticker)
+        close, info, _status = fetch_series_and_info(b_ticker)
         if close is None:
             benchmark_data[b_ticker] = {"error": "no data", **meta}
             print(f"ERR benchmark {b_ticker}: no data", file=sys.stderr)
@@ -141,7 +179,7 @@ def main():
     errors = []
     for ticker, category in TICKERS.items():
         try:
-            close, info = fetch_series_and_info(ticker)
+            close, info, target_status = fetch_series_and_info(ticker)
             if close is None:
                 errors.append(ticker)
                 results.append({"ticker": ticker, "category": category, "name": ticker, "error": "no data"})
@@ -185,17 +223,18 @@ def main():
                 "change_1m_pct": c1m,
                 "benchmark": bench_ticker,
                 "rel_strength_1m_pct": rel_strength_1m,
-                "conviction_score": conviction_score(c1d, c1w, c1m, rel_strength_1m),
-                "feasibility_score": feasibility_score(close),
+                "momentum_score": momentum_score(c1d, c1w, c1m, rel_strength_1m),
+                "range_score": range_score(close),
                 "target_mean": target_mean,
                 "target_high": info.get("target_high"),
                 "target_low": info.get("target_low"),
                 "num_analysts": info.get("num_analysts"),
                 "recommendation": info.get("recommendation"),
                 "upside_to_target_pct": upside_pct,
+                "target_status": target_status,
                 "history": history,
             })
-            print(f"OK  {ticker:10} {info['name']}")
+            print(f"OK  {ticker:10} {info['name']} (target: {target_status})")
         except Exception as e:
             errors.append(ticker)
             results.append({"ticker": ticker, "category": category, "name": ticker, "error": str(e)})
