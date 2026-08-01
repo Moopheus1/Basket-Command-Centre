@@ -92,7 +92,7 @@ def fetch_info_with_retry(tk, ticker, retries=3, delay=2.0):
 
 def fetch_series_and_info(ticker):
     tk = yf.Ticker(ticker)
-    hist = tk.history(period="4mo", interval="1d")
+    hist = tk.history(period="1y", interval="1d")
     if hist.empty:
         return None, None, None
     close = hist["Close"].dropna()
@@ -116,6 +116,26 @@ def fetch_series_and_info(ticker):
         target_status = "no_coverage"
 
     return close, info, target_status
+
+
+def ytd_change(close_series):
+    """
+    Calendar-year-to-date change, anchored to Jan 1 of the current year.
+    Deliberately NOT fed into momentum_score -- YTD is a variable-length
+    window (4 weeks in February, 11 months in December), which makes it
+    incomparable across tickers and across time if blended into a fixed
+    scoring formula. Display-only.
+    """
+    if close_series is None or len(close_series) == 0:
+        return None
+    current_year = close_series.index[-1].year
+    ytd_slice = close_series[close_series.index.year == current_year]
+    if len(ytd_slice) < 2:
+        return None
+    first, last = ytd_slice.iloc[0], ytd_slice.iloc[-1]
+    if first == 0:
+        return None
+    return round((last - first) / first * 100, 2)
 
 
 def momentum_score(c1d, c1w, c1m, rel_strength_1m):
@@ -171,6 +191,7 @@ def main():
             "change_1d_pct": pct_change(close, 1),
             "change_1w_pct": pct_change(close, 5),
             "change_1m_pct": pct_change(close, 21),
+            "change_ytd_pct": ytd_change(close),
         }
         print(f"OK  benchmark {b_ticker:10} {info['name']}")
 
@@ -221,6 +242,7 @@ def main():
                 "change_1d_pct": c1d,
                 "change_1w_pct": c1w,
                 "change_1m_pct": c1m,
+                "change_ytd_pct": ytd_change(close),
                 "benchmark": bench_ticker,
                 "rel_strength_1m_pct": rel_strength_1m,
                 "momentum_score": momentum_score(c1d, c1w, c1m, rel_strength_1m),
