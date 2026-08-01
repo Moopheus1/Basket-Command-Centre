@@ -104,8 +104,8 @@
   tr:hover td { background: var(--hover); }
   .ticker-link { font-weight: 600; color: var(--accent); text-decoration: none; }
   .ticker-link:hover { text-decoration: underline; }
-  .name { color: var(--text-dim); font-size: 12px; }
-  .pos { color: var(--green); }
+  .name { color: var(--text); font-size: 12px; }
+  .pos { color: var(--green); font-weight: 700; }
   .neg { color: var(--red); }
   .neu { color: var(--text-dim); }
   .err-row td { color: var(--red); font-style: italic; }
@@ -165,7 +165,7 @@
 
 <div class="controls">
   <input id="search" type="text" placeholder="Filter ticker or name&hellip;" oninput="renderAll()" />
-  <span class="hint">Click any column header to sort &middot; default: ticker, A&ndash;Z</span>
+  <span class="hint">Click any column header to sort &middot; default: name, A&ndash;Z</span>
 </div>
 
 <div id="app"><p style="color:var(--text-dim)">Loading data.json&hellip;</p></div>
@@ -184,6 +184,7 @@ const COLUMNS = [
   { key: 'change_1d_pct',         label: '1D' },
   { key: 'change_1w_pct',         label: '1W' },
   { key: 'change_1m_pct',         label: '1M' },
+  { key: 'change_ytd_pct',        label: 'YTD' },
   { key: 'rel_strength_1m_pct',   label: 'Rel.Strength(1M)' },
   { key: 'momentum_score',        label: 'Momentum' },
   { key: 'range_score',           label: 'Range' },
@@ -257,14 +258,16 @@ function renderBenchmarks() {
       strip.innerHTML += `<div class="bench-card"><div class="bench-label">${ticker}</div><div style="color:var(--red);font-size:13px">no data</div></div>`;
       continue;
     }
+    const dayCls = b.change_1d_pct > 0 ? 'pos' : b.change_1d_pct < 0 ? 'neg' : 'neu';
     strip.innerHTML += `
       <div class="bench-card">
         <div class="bench-label">${b.label}</div>
-        <div class="bench-price">${fmtBenchPrice(b.last_price)}</div>
+        <div class="bench-price ${dayCls}">${fmtBenchPrice(b.last_price)}</div>
         <div class="bench-changes">
           <span>1D ${fmtPct(b.change_1d_pct)}</span>
           <span>1W ${fmtPct(b.change_1w_pct)}</span>
           <span>1M ${fmtPct(b.change_1m_pct)}</span>
+          <span>YTD ${fmtPct(b.change_ytd_pct)}</span>
         </div>
       </div>`;
   }
@@ -317,7 +320,7 @@ function headerCell(col, cat) {
 }
 
 function onSortClick(cat, key) {
-  const current = sortState[cat] || { key: 'ticker', dir: 'asc' };
+  const current = sortState[cat] || { key: 'name', dir: 'asc' };
   if (current.key === key) {
     sortState[cat] = { key, dir: current.dir === 'asc' ? 'desc' : 'asc' };
   } else {
@@ -349,7 +352,7 @@ function renderAll() {
   }
 
   for (const cat of cats) {
-    if (!sortState[cat]) sortState[cat] = { key: 'ticker', dir: 'asc' };
+    if (!sortState[cat]) sortState[cat] = { key: 'name', dir: 'asc' };
     const state = sortState[cat];
     const block = document.createElement('div');
     block.className = 'category-block';
@@ -364,7 +367,7 @@ function renderAll() {
           ${rows.map(r => r.error ? `
             <tr class="err-row">
               <td class="ticker-link">${r.ticker}</td>
-              <td colspan="10">error: ${r.error}</td>
+              <td colspan="11">error: ${r.error}</td>
             </tr>` : `
             <tr>
               <td><a class="ticker-link" href="${r.yfinance_url}" target="_blank" rel="noopener">${r.ticker}</a></td>
@@ -374,6 +377,7 @@ function renderAll() {
               <td>${fmtPct(r.change_1d_pct)}</td>
               <td>${fmtPct(r.change_1w_pct)}</td>
               <td>${fmtPct(r.change_1m_pct)}</td>
+              <td>${fmtPct(r.change_ytd_pct)}</td>
               <td>${fmtPct(r.rel_strength_1m_pct)}</td>
               <td>${scoreBar(r.momentum_score)}</td>
               <td>${scoreBar(r.range_score)}</td>
