@@ -55,6 +55,7 @@ import yfinance as yf
 from tickers import TICKERS, BENCHMARKS, CATEGORY_BENCHMARK
 
 YAHOO_QUOTE_URL = "https://finance.yahoo.com/quote/{ticker}"
+YAHOO_ANALYSIS_URL = "https://finance.yahoo.com/quote/{ticker}/analysis"
 
 
 def pct_change(series, periods_back):
@@ -106,6 +107,11 @@ def fetch_series_and_info(ticker):
         "target_low": raw.get("targetLowPrice"),
         "num_analysts": raw.get("numberOfAnalystOpinions"),
         "recommendation": raw.get("recommendationKey"),
+        "dividend_yield": raw.get("dividendYield"),
+        "price_to_book": raw.get("priceToBook"),
+        "debt_to_equity": raw.get("debtToEquity"),
+        "payout_ratio": raw.get("payoutRatio"),
+        "next_earnings_ts": raw.get("earningsTimestamp"),
     }
 
     if info_status == "fetch_failed":
@@ -231,12 +237,21 @@ def main():
             if target_mean is not None and last_price:
                 upside_pct = round((target_mean - last_price) / last_price * 100, 2)
 
+            next_earnings_date = None
+            ts = info.get("next_earnings_ts")
+            if ts:
+                try:
+                    next_earnings_date = datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%d")
+                except Exception:
+                    next_earnings_date = None
+
             results.append({
                 "ticker": ticker,
                 "category": category,
                 "name": info["name"],
                 "currency": info["currency"],
                 "yfinance_url": YAHOO_QUOTE_URL.format(ticker=ticker),
+                "yfinance_analysis_url": YAHOO_ANALYSIS_URL.format(ticker=ticker),
                 "last_price": last_price,
                 "last_date": last_date,
                 "change_1d_pct": c1d,
@@ -247,6 +262,11 @@ def main():
                 "rel_strength_1m_pct": rel_strength_1m,
                 "momentum_score": momentum_score(c1d, c1w, c1m, rel_strength_1m),
                 "range_score": range_score(close),
+                "dividend_yield_pct": info.get("dividend_yield"),
+                "price_to_book": info.get("price_to_book"),
+                "debt_to_equity": info.get("debt_to_equity"),
+                "payout_ratio": info.get("payout_ratio"),
+                "next_earnings_date": next_earnings_date,
                 "target_mean": target_mean,
                 "target_high": info.get("target_high"),
                 "target_low": info.get("target_low"),
