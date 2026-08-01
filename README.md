@@ -245,14 +245,54 @@ requirements.txt         → yfinance
 2. Push the contents of this folder as-is.
 3. Create a fine-grained PAT scoped to this repo only, `actions: write`
    permission (Settings → Developer settings → Fine-grained tokens).
-4. Set up a cron-job.org job (same external-dispatcher pattern used for
-   Basket Command Centre 2, since native Actions scheduling has proven
-   unreliable):
+4. Set up **two** cron-job.org jobs (same external-dispatcher pattern used
+   for Basket Command Centre 2, since native GitHub Actions scheduling has
+   proven unreliable — see the note in `.github/workflows/update.yml`).
+   Both point at the same dispatch endpoint:
    - URL: `https://api.github.com/repos/YOUR_USERNAME/REPO_NAME/dispatches`
    - Method: `POST`
    - Headers: `Authorization: Bearer YOUR_PAT`,
      `Accept: application/vnd.github+json`
    - Body: `{"event_type": "update-data"}`
-   - Schedule: after SGX/HKEX close (~5pm SGT) or first thing in the
-     morning — there's no reason to run this on the US pre-market
-     schedule used for Basket Command Centre 2.
+
+   **Job 1 — intraday refresh, every 15 min during trading:**
+   `*/15 9-11,13-16 * * 1-5`, timezone set to `Asia/Singapore` in
+   cron-job.org's job settings. Fires at :00/:15/:30/:45 across
+   9:00am–4:45pm SGT, Mon–Fri, skipping the 12:00–1:00pm lunch break
+   (SGX doesn't trade then, so a fetch would just be wasted).
+
+   **Job 2 — market close capture:** `0 17 * * 1-5`, same timezone. One
+   run at exactly 5:00pm SGT, since Job 1's last run is 4:45pm and
+   otherwise the closing print is never captured.
+
+   If cron-job.org's timezone setting isn't available on your account
+   tier, use the UTC equivalents instead (SGT is UTC+8 with no daylight
+   saving, so this is a fixed offset year-round): Job 1 →
+   `*/15 1-3,5-8 * * 1-5`, Job 2 → `0 9 * * 1-5`.
+
+### Why this covers HK but not a unit trust schedule
+
+**HK tickers are already covered — no separate job needed.** HKEX trading
+hours (9:30am–12:00pm, 1:00pm–4:00pm HKT) sit in the same timezone as SGT
+(both UTC+8) and entirely inside the SGX window above. Job 1's 4:00pm run
+lands exactly on HKEX's close, so `1211.HK` and `9618.HK` get the same
+15-minute cadence and their closing price gets captured by the same job.
+
+**There is currently no unit trust ticker in this build** (see "Genesis,"
+point 3 — every instrument tracked is exchange-traded). If one gets added
+later, it should **not** join this 15-minute job: unit trust NAV publishes
+once per day, after market close, not continuously like an exchange
+price. Polling it every 15 minutes during trading hours would just
+re-fetch the same stale NAV repeatedly until the daily publish lands —
+wasted Actions minutes for zero new data. A future unit trust would need
+its own, much coarser schedule (once daily, in the evening) as a separate
+workflow or a separate schedule entry, not folded into this one.
+
+**Two known trade-offs, left as-is deliberately:**
+- Singapore public holidays aren't excluded from the cron schedule. It
+  will still fire on a market holiday; the fetch just re-pulls the same
+  last-close price yfinance already had. Harmless, just wasted Actions
+  minutes on those days — not worth building holiday-calendar logic for
+  the marginal cost involved.
+- No exclusion for HKEX-specific holidays that don't align with SG
+  holidays either, for the same reason.
