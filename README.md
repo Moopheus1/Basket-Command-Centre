@@ -64,9 +64,14 @@ rather than losing it in chat history:
 - **Sector rotation panel** — average 1D/1W/1M return per category, compared
   against each category's assigned benchmark (HK-listed names vs `^HSI`,
   SGX-listed names vs `^STI`).
-- **Per-instrument table** — grouped by category, sorted by conviction
-  score, with 1D/1W/1M change, relative strength vs benchmark, and both
-  scores below.
+- **Per-instrument table** — grouped by category, alphabetical by ticker
+  by default, with every column clickable to sort (click again to
+  reverse). Sort state is independent per category table.
+- **Light/dark theme toggle** — centered above the benchmark strip,
+  preference persisted via `localStorage`.
+- **Analyst price targets** — see "Price targets and yfinance links"
+  below, including the `target_status` field that distinguishes genuine
+  no-coverage instruments from transient fetch failures.
 
 ## Scoring methodology
 
@@ -74,7 +79,7 @@ Both scores are price-only. Neither uses options data. Formulas live in
 `fetch_data.py` and are repeated here so they don't require reading code to
 audit:
 
-**Conviction score (0–100)**
+**Momentum score (0–100)**
 - Trend alignment (40%): what fraction of the 1D/1W/1M changes share the
   majority sign.
 - Magnitude (30%): average absolute change across 1D/1W/1M, capped at a 10%
@@ -82,7 +87,7 @@ audit:
 - Relative strength (30%): the instrument's 1M change minus its
   benchmark's 1M change, mapped from a ±10% range onto 0–1.
 
-**Feasibility score (0–100)**
+**Range score (0–100)**
 - Position within the trailing 90-day price range. 100 = at the 90-day
   low (maximum room before hitting recent resistance). 0 = at the 90-day
   high (little room left, higher mean-reversion risk).
@@ -91,7 +96,7 @@ audit:
   Centre 2, and shouldn't be read as carrying the same weight.
 
 Both are meant to be argued with, not trusted blindly — re-weight or
-replace them in `fetch_data.py` as conviction (no pun intended) develops
+replace them in `fetch_data.py` as clarity about scoring develops
 about what's actually useful.
 
 A collapsible guidance panel with this same explanation lives directly in
@@ -118,6 +123,16 @@ There are still no unit trusts tracked (see Genesis, point 3), so no price
 targets apply to that category — analyst price targets are a sell-side
 equity coverage concept and don't exist for open-ended NAV-priced funds
 even where unit trusts do get added later.
+
+**Reliability note:** the yfinance `.info` call (which carries the target
+data) was observed during this project's own testing to intermittently
+fail with DNS resolution errors. A single-try fetch made those transient
+failures indistinguishable from genuine "no analyst coverage." The fetch
+script now retries a few times before giving up, and every instrument
+carries a `target_status` field — `covered`, `no_coverage` (structural: 2
+ETFs, 1 preference share, 1 thin-coverage REIT), or `fetch_failed`
+(network issue on that run, not a real gap) — so the dashboard can show
+the right message instead of a misleading blank.
 
 ## Known gaps and quirks
 
