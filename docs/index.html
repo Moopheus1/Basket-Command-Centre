@@ -15,6 +15,21 @@
     --red: #e5484d;
     --amber: #d9a441;
     --accent: #4a86e8;
+    --hover: rgba(255,255,255,0.02);
+    --input-bg: #121821;
+  }
+  body[data-theme="light"] {
+    --bg: #f5f6f8;
+    --panel: #ffffff;
+    --panel-border: #dde2e8;
+    --text: #16202b;
+    --text-dim: #5b6b7a;
+    --green: #1c8a54;
+    --red: #c73a3f;
+    --amber: #a5720f;
+    --accent: #2f5fc7;
+    --hover: rgba(0,0,0,0.03);
+    --input-bg: #ffffff;
   }
   * { box-sizing: border-box; }
   body {
@@ -23,76 +38,78 @@
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     padding: 24px;
+    transition: background 0.15s ease, color 0.15s ease;
   }
   header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 12px;
     margin-bottom: 16px;
     border-bottom: 1px solid var(--panel-border);
     padding-bottom: 16px;
   }
   h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
   h1 span { color: var(--text-dim); font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 14px; }
   #meta { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
-  .bench-strip {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
+  #theme-toggle {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
   }
-  .bench-card {
+  #theme-toggle:hover { border-color: var(--accent); }
+
+  .bench-strip { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .bench-card { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px; padding: 14px 18px; flex: 1; min-width: 200px; }
+  .bench-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 6px; }
+  .bench-price { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bench-changes { font-size: 14px; margin-top: 6px; display: flex; gap: 14px; }
+
+  details.guidance {
     background: var(--panel);
     border: 1px solid var(--panel-border);
     border-radius: 8px;
-    padding: 12px 16px;
-    flex: 1;
-    min-width: 180px;
-  }
-  .bench-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 4px; }
-  .bench-price { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .bench-changes { font-size: 12px; margin-top: 4px; display: flex; gap: 10px; }
-
-  .section-title {
+    padding: 14px 16px;
+    margin-bottom: 20px;
     font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    line-height: 1.6;
     color: var(--text-dim);
-    margin: 0 0 8px 2px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
+  details.guidance summary { cursor: pointer; color: var(--text); font-weight: 600; font-size: 13px; list-style: none; }
+  details.guidance summary::-webkit-details-marker { display: none; }
+  details.guidance summary::before { content: "▸ "; color: var(--accent); }
+  details.guidance[open] summary::before { content: "▾ "; }
+  details.guidance .g-block { margin-top: 12px; }
+  details.guidance .g-title { color: var(--text); font-weight: 600; margin-bottom: 4px; }
+  details.guidance code { background: var(--hover); padding: 1px 5px; border-radius: 4px; color: var(--amber); }
+  details.guidance .g-warn { color: var(--red); }
+
+  .section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin: 0 0 8px 2px; display: flex; align-items: center; gap: 8px; }
   .section-title .note { text-transform: none; letter-spacing: normal; font-size: 11px; color: var(--text-dim); font-style: italic; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  th, td {
-    padding: 10px 14px;
-    text-align: right;
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
-    border-bottom: 1px solid var(--panel-border);
-  }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px; overflow: hidden; }
+  th, td { padding: 10px 14px; text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--panel-border); }
   th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
-  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); font-weight: 600; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); font-weight: 600; cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: var(--text); }
+  th .arrow { font-size: 9px; margin-left: 3px; color: var(--accent); }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(255,255,255,0.02); }
-  .ticker { font-weight: 600; color: var(--text); }
+  tr:hover td { background: var(--hover); }
+  .ticker-link { font-weight: 600; color: var(--accent); text-decoration: none; }
+  .ticker-link:hover { text-decoration: underline; }
   .name { color: var(--text-dim); font-size: 12px; }
   .pos { color: var(--green); }
   .neg { color: var(--red); }
   .neu { color: var(--text-dim); }
   .err-row td { color: var(--red); font-style: italic; }
+  .no-cov { color: var(--text-dim); font-size: 11px; font-style: italic; }
 
   .score-bar { display: inline-block; width: 46px; height: 6px; border-radius: 3px; background: var(--panel-border); position: relative; vertical-align: middle; margin-right: 6px; }
   .score-fill { position: absolute; top:0; left:0; height: 100%; border-radius: 3px; }
@@ -101,38 +118,91 @@
   #rotation-block { margin-bottom: 28px; }
   .category-block { margin-bottom: 28px; }
 
-  #search {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    color: var(--text);
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    width: 220px;
-  }
+  #search { background: var(--input-bg); border: 1px solid var(--panel-border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 13px; width: 220px; }
   #search::placeholder { color: var(--text-dim); }
-  .controls { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+  .controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .controls .hint { font-size: 11px; color: var(--text-dim); font-style: italic; }
 </style>
 </head>
-<body>
+<body data-theme="dark">
 
 <header>
   <h1>HK / SGX Command Centre <span>&mdash; live prices via yfinance</span></h1>
-  <div id="meta">loading&hellip;</div>
+  <div class="header-right">
+    <div id="meta">loading&hellip;</div>
+    <button id="theme-toggle" onclick="toggleTheme()">&#9788; Light mode</button>
+  </div>
 </header>
 
 <div id="bench-strip" class="bench-strip"></div>
+
+<details class="guidance">
+  <summary>What do Conviction and Feasibility mean?</summary>
+  <div class="g-block">
+    <div class="g-title">Conviction score (0&ndash;100)</div>
+    A price-momentum read on how aligned and strong the recent move is &mdash; not a signal derived from options flow or fundamentals. Three components, weighted:
+    <ul style="margin:6px 0 0 18px; padding:0;">
+      <li><b>Trend alignment (40%)</b> &mdash; how many of the 1D / 1W / 1M changes agree on direction. All three moving the same way scores higher than a choppy mix.</li>
+      <li><b>Magnitude (30%)</b> &mdash; the average size of those moves. A flat, directionless instrument scores low here regardless of alignment.</li>
+      <li><b>Relative strength (30%)</b> &mdash; the 1M return versus the instrument's own benchmark (<code>^HSI</code> for HK names, <code>^STI</code> for SGX names). Beating the market counts for more than a move that's just the whole market drifting.</li>
+    </ul>
+    High conviction means the recent move is consistent, sizeable, and outperforming its market &mdash; not that the instrument is a good buy. A stock can have high conviction on the way down.
+  </div>
+  <div class="g-block">
+    <div class="g-title">Feasibility score (0&ndash;100)</div>
+    Where the price sits in its own trailing 90-day range. <b>100</b> = at the 90-day low, maximum room before hitting recent resistance. <b>0</b> = at the 90-day high, little room left before likely mean-reversion.
+    <span class="g-warn">This is a range-position proxy only</span> &mdash; it is not the GEX-based feasibility model used in Basket Command Centre 2 (options-derived gamma walls, call/put walls, max pain). That model needs an options chain; HK/SGX GEX coverage was checked and is not currently available &mdash; most SGX REITs have no listed options market at all. Treat this score as "room to move," not "probability of reaching a target."
+  </div>
+  <div class="g-block">
+    <div class="g-title">Analyst price target &amp; upside</div>
+    Sourced from Yahoo Finance's own aggregation of sell-side analyst estimates (<code>targetMeanPrice</code>, high/low range, analyst count, consensus recommendation) &mdash; not calculated by this dashboard. ETFs and preference shares structurally don't get analyst price targets and will show <span class="no-cov">no coverage</span>; that's expected, not a data gap. Coverage on thinly-covered REITs can be as few as 3&ndash;4 analysts &mdash; check the analyst count before weighting the target, a 3-analyst consensus moves a lot more on one revision than a 20-analyst one.
+  </div>
+</details>
 
 <div id="rotation-block"></div>
 
 <div class="controls">
   <input id="search" type="text" placeholder="Filter ticker or name&hellip;" oninput="renderAll()" />
+  <span class="hint">Click any column header to sort &middot; default: ticker, A&ndash;Z</span>
 </div>
 
 <div id="app"><p style="color:var(--text-dim)">Loading data.json&hellip;</p></div>
 
 <script>
 let DATA = null;
+
+// Sort state per category (keyed by category name), default alphabetical by ticker asc.
+const sortState = {};
+
+const COLUMNS = [
+  { key: 'ticker',                label: 'Ticker' },
+  { key: 'name',                  label: 'Name' },
+  { key: 'last_price',            label: 'Last' },
+  { key: 'last_date',             label: 'As of' },
+  { key: 'change_1d_pct',         label: '1D' },
+  { key: 'change_1w_pct',         label: '1W' },
+  { key: 'change_1m_pct',         label: '1M' },
+  { key: 'rel_strength_1m_pct',   label: 'Rel.Strength(1M)' },
+  { key: 'conviction_score',      label: 'Conviction' },
+  { key: 'feasibility_score',     label: 'Feasibility' },
+  { key: 'upside_to_target_pct',  label: 'Analyst Target (Upside)' },
+];
+
+function toggleTheme() {
+  const body = document.body;
+  const isLight = body.getAttribute('data-theme') === 'light';
+  const next = isLight ? 'dark' : 'light';
+  body.setAttribute('data-theme', next);
+  document.getElementById('theme-toggle').innerHTML = isLight ? '&#9788; Light mode' : '&#9789; Dark mode';
+  try { localStorage.setItem('hksgx-theme', next); } catch(e) {}
+}
+
+function initTheme() {
+  let saved = 'dark';
+  try { saved = localStorage.getItem('hksgx-theme') || 'dark'; } catch(e) {}
+  document.body.setAttribute('data-theme', saved);
+  document.getElementById('theme-toggle').innerHTML = saved === 'light' ? '&#9789; Dark mode' : '&#9788; Light mode';
+}
 
 function fmtPct(v) {
   if (v === null || v === undefined) return '<span class="neu">&mdash;</span>';
@@ -144,6 +214,16 @@ function fmtPct(v) {
 function fmtPrice(row) {
   if (row.last_price === undefined) return '&mdash;';
   return `${row.currency || ''} ${row.last_price}`;
+}
+
+function fmtTarget(r) {
+  if (r.target_mean === null || r.target_mean === undefined) {
+    return '<span class="no-cov">no coverage</span>';
+  }
+  const up = fmtPct(r.upside_to_target_pct);
+  const n = r.num_analysts !== null && r.num_analysts !== undefined ? r.num_analysts : '?';
+  const rec = r.recommendation ? r.recommendation.replace('_',' ') : '';
+  return `${r.currency || ''} ${r.target_mean.toFixed(4).replace(/0+$/,'').replace(/\\.$/,'')} (${up}) &middot; <span class="no-cov">${n} analysts, ${rec}</span>`;
 }
 
 function scoreColor(v) {
@@ -164,7 +244,7 @@ function renderBenchmarks() {
   strip.innerHTML = '';
   for (const [ticker, b] of Object.entries(DATA.benchmarks)) {
     if (b.error) {
-      strip.innerHTML += `<div class="bench-card"><div class="bench-label">${ticker}</div><div style="color:var(--red);font-size:12px">no data</div></div>`;
+      strip.innerHTML += `<div class="bench-card"><div class="bench-label">${ticker}</div><div style="color:var(--red);font-size:13px">no data</div></div>`;
       continue;
     }
     strip.innerHTML += `
@@ -192,7 +272,7 @@ function renderRotation() {
       <tbody>
         ${rows.map(r => `
           <tr>
-            <td class="ticker">${r.category}</td>
+            <td class="name" style="font-weight:600;color:var(--text)">${r.category}</td>
             <td class="neu">${r.count}</td>
             <td>${fmtPct(r.avg_1d_pct)}</td>
             <td>${fmtPct(r.avg_1w_pct)}</td>
@@ -203,6 +283,37 @@ function renderRotation() {
       </tbody>
     </table>
   `;
+}
+
+function sortRows(rows, key, dir) {
+  const sorted = [...rows].sort((a, b) => {
+    let av = a[key], bv = b[key];
+    if (av === null || av === undefined) av = (typeof bv === 'number') ? -Infinity : '';
+    if (bv === null || bv === undefined) bv = (typeof av === 'number') ? -Infinity : '';
+    if (typeof av === 'string' || typeof bv === 'string') {
+      av = String(av).toLowerCase(); bv = String(bv).toLowerCase();
+      return av < bv ? -1 : av > bv ? 1 : 0;
+    }
+    return av - bv;
+  });
+  return dir === 'desc' ? sorted.reverse() : sorted;
+}
+
+function headerCell(col, cat) {
+  const state = sortState[cat];
+  const active = state && state.key === col.key;
+  const arrow = active ? (state.dir === 'asc' ? '&#9650;' : '&#9660;') : '';
+  return `<th onclick="onSortClick('${cat.replace(/'/g,"\\'")}','${col.key}')">${col.label}${active ? `<span class="arrow">${arrow}</span>` : ''}</th>`;
+}
+
+function onSortClick(cat, key) {
+  const current = sortState[cat] || { key: 'ticker', dir: 'asc' };
+  if (current.key === key) {
+    sortState[cat] = { key, dir: current.dir === 'asc' ? 'desc' : 'asc' };
+  } else {
+    sortState[cat] = { key, dir: 'asc' };
+  }
+  renderAll();
 }
 
 function renderAll() {
@@ -228,27 +339,25 @@ function renderAll() {
   }
 
   for (const cat of cats) {
+    if (!sortState[cat]) sortState[cat] = { key: 'ticker', dir: 'asc' };
+    const state = sortState[cat];
     const block = document.createElement('div');
     block.className = 'category-block';
-    const rows = byCategory[cat].sort((a,b) => (b.conviction_score||0) - (a.conviction_score||0));
+    const rows = sortRows(byCategory[cat], state.key, state.dir);
     block.innerHTML = `
-      <div class="section-title">${cat} <span class="note">${rows.length} instruments &middot; sorted by conviction</span></div>
+      <div class="section-title">${cat} <span class="note">${rows.length} instruments</span></div>
       <table>
         <thead>
-          <tr>
-            <th>Ticker</th><th>Name</th><th>Last</th><th>As of</th>
-            <th>1D</th><th>1W</th><th>1M</th><th>Rel.Strength(1M)</th>
-            <th>Conviction</th><th>Feasibility</th>
-          </tr>
+          <tr>${COLUMNS.map(c => headerCell(c, cat)).join('')}</tr>
         </thead>
         <tbody>
           ${rows.map(r => r.error ? `
             <tr class="err-row">
-              <td class="ticker">${r.ticker}</td>
-              <td colspan="9">error: ${r.error}</td>
+              <td class="ticker-link">${r.ticker}</td>
+              <td colspan="10">error: ${r.error}</td>
             </tr>` : `
             <tr>
-              <td class="ticker">${r.ticker}</td>
+              <td><a class="ticker-link" href="${r.yfinance_url}" target="_blank" rel="noopener">${r.ticker}</a></td>
               <td class="name">${r.name}</td>
               <td>${fmtPrice(r)}</td>
               <td class="neu">${r.last_date || ''}</td>
@@ -258,6 +367,7 @@ function renderAll() {
               <td>${fmtPct(r.rel_strength_1m_pct)}</td>
               <td>${scoreBar(r.conviction_score)}</td>
               <td>${scoreBar(r.feasibility_score)}</td>
+              <td>${fmtTarget(r)}</td>
             </tr>`).join('')}
         </tbody>
       </table>
@@ -265,6 +375,8 @@ function renderAll() {
     app.appendChild(block);
   }
 }
+
+initTheme();
 
 fetch('data.json?_=' + Date.now())
   .then(r => r.json())
