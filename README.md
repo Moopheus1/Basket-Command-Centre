@@ -156,6 +156,60 @@ Requires a full year of price history rather than the ~4 months needed
 for the rest of the dashboard, so `fetch_data.py` pulls `period="1y"` from
 yfinance for every ticker now.
 
+## Column changes: trims and additions
+
+The table was getting crowded, so three columns were cut to make room for
+four higher-value ones:
+
+**Removed:**
+- **"As of"** — nearly identical across every row (last trading day),
+  already stated once in the section header. Replaced with a small ⚠
+  flag that only appears on a row if its date is stale relative to the
+  rest of its category — so a genuinely broken fetch still gets caught
+  without 25 rows of duplicate dates.
+- **"Rel. Strength (1M)"** — already one of the three inputs baked into
+  the momentum score (30% weight). Showing it again as its own column
+  duplicated a signal already visible in Momentum.
+- **"1W" change** — of the four %-change columns, the least distinct:
+  too short to read as a trend, too long to read as "today." Trimmed
+  down to 1D / 1M / YTD for short/medium/long horizons without the
+  redundant middle step.
+
+**Added** (sourced from yfinance, not computed here):
+- **Yield** — trailing dividend/distribution yield. REITs are income
+  vehicles; total return is price change plus distributions, and price-only
+  momentum/range scores say nothing about the income component.
+- **P/B** — price-to-book, the standard proxy for trading above or below
+  NAV, which is how SGX REIT valuations are normally discussed.
+- **Debt/Eq** — gearing proxy. SGX REITs carry a regulatory gearing cap;
+  this flags balance-sheet and interest-rate sensitivity.
+- **Next Earnings** — next scheduled results date where available.
+
+`payout_ratio` is also pulled and present in `data.json` but was left off
+the table itself to avoid re-crowding it — available if wanted later.
+
+## Analyst target link
+
+The analyst target price now links to Yahoo Finance's analyst breakdown
+page (`/analysis`) — target range, recommendation trend, estimate history.
+**This is not analyst thesis text.** Free data sources don't carry
+brokerage report narratives, only the numeric consensus. If actual
+research write-ups are wanted, that requires a different (likely paid)
+source — not something this build currently has access to.
+
+## Navigation and headers
+
+- Every category section (HK Stock, HK/SGX ETF, SGX REIT, SGX Real Estate,
+  SGX Pref Share) is now an anchor target. Clicking a category name in the
+  Sector Rotation table jumps straight down to that category's table.
+- A jump-button bar sits at the bottom of the page — one button per
+  category (jumps back up to it) plus a "Top" button, so a page that's
+  grown long with all these sections stays easy to navigate without
+  scrolling back up manually.
+- Section headers (category titles, Sector Rotation) are now bold and
+  full-contrast text (white in dark mode, black in light mode) instead
+  of the dim grey used before.
+
 ## Known gaps and quirks
 
 - `MXNU.SI` (Elite UK REIT) prices in GBP and `CMOU.SI` (Keppel Pacific Oak
