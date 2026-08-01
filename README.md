@@ -94,6 +94,31 @@ Both are meant to be argued with, not trusted blindly — re-weight or
 replace them in `fetch_data.py` as conviction (no pun intended) develops
 about what's actually useful.
 
+A collapsible guidance panel with this same explanation lives directly in
+`index.html` now, so it doesn't require opening this file to understand
+what the scores mean. Note: that panel's wording was written fresh for
+this dashboard — it is not a copy of whatever guidance text exists in
+Basket Command Centre 2, which wasn't visible to reference directly.
+
+## Price targets and yfinance links
+
+Each ticker links directly to its Yahoo Finance quote page for deeper
+research. Analyst price targets (mean/high/low, analyst count, consensus
+recommendation) are pulled from yfinance's own aggregation of sell-side
+estimates — not computed by this dashboard. Coverage was checked before
+building this: 21 of 25 instruments have target data, and the 4 without it
+are structurally expected gaps, not errors — `3067.HK` and `HST.SI` are
+ETFs, `C70.SI` is a preference share (none of these get analyst equity
+targets by definition), and `SEB.SI` is a thinly-covered REIT with zero
+analysts. Where coverage exists, analyst counts run as low as 3 — check the
+count before weighting a target; a 3-analyst consensus swings hard on a
+single revision.
+
+There are still no unit trusts tracked (see Genesis, point 3), so no price
+targets apply to that category — analyst price targets are a sell-side
+equity coverage concept and don't exist for open-ended NAV-priced funds
+even where unit trusts do get added later.
+
 ## Known gaps and quirks
 
 - `MXNU.SI` (Elite UK REIT) prices in GBP and `CMOU.SI` (Keppel Pacific Oak
