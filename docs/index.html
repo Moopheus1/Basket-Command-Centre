@@ -41,36 +41,35 @@
     transition: background 0.15s ease, color 0.15s ease;
   }
   header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
     border-bottom: 1px solid var(--panel-border);
     padding-bottom: 16px;
   }
-  h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
+  header .meta-wrap { justify-self: end; }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
   h1 span { color: var(--text-dim); font-weight: 400; }
-  #meta { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  #meta { font-size: 14px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
-  .toggle-row { display: flex; justify-content: center; margin-bottom: 20px; }
   #theme-toggle {
     background: var(--panel);
     border: 1px solid var(--panel-border);
     color: var(--text);
     padding: 7px 16px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 14px;
     cursor: pointer;
   }
   #theme-toggle:hover { border-color: var(--accent); }
 
   .bench-strip { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
   .bench-card { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px; padding: 14px 18px; flex: 1; min-width: 200px; }
-  .bench-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 6px; }
-  .bench-price { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .bench-changes { font-size: 14px; margin-top: 6px; display: flex; gap: 14px; }
+  .bench-label { font-size: 15px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 6px; }
+  .bench-price { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bench-changes { font-size: 16px; margin-top: 6px; display: flex; gap: 14px; }
 
   details.guidance {
     background: var(--panel);
@@ -78,11 +77,11 @@
     border-radius: 8px;
     padding: 14px 16px;
     margin-bottom: 20px;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.6;
     color: var(--text-dim);
   }
-  details.guidance summary { cursor: pointer; color: var(--text); font-weight: 600; font-size: 13px; list-style: none; }
+  details.guidance summary { cursor: pointer; color: var(--text); font-weight: 600; font-size: 15px; list-style: none; }
   details.guidance summary::-webkit-details-marker { display: none; }
   details.guidance summary::before { content: "▸ "; color: var(--accent); }
   details.guidance[open] summary::before { content: "▾ "; }
@@ -91,50 +90,71 @@
   details.guidance code { background: var(--hover); padding: 1px 5px; border-radius: 4px; color: var(--amber); }
   details.guidance .g-warn { color: var(--red); }
 
-  .section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin: 0 0 8px 2px; display: flex; align-items: center; gap: 8px; }
-  .section-title .note { text-transform: none; letter-spacing: normal; font-size: 11px; color: var(--text-dim); font-style: italic; }
+  .section-title { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); margin: 0 0 8px 2px; display: flex; align-items: center; gap: 8px; }
+  .section-title .note { text-transform: none; letter-spacing: normal; font-size: 13px; font-weight: 400; color: var(--text-dim); font-style: italic; }
+  .section-title a.jump-link { color: inherit; text-decoration: none; cursor: pointer; }
+  .section-title a.jump-link:hover { color: var(--accent); text-decoration: underline; }
 
   table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px; overflow: hidden; }
-  th, td { padding: 10px 14px; text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--panel-border); }
+  th, td { padding: 10px 14px; text-align: right; font-size: 15px; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--panel-border); }
   th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
-  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); font-weight: 600; cursor: pointer; user-select: none; white-space: nowrap; }
+  th { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); font-weight: 600; cursor: pointer; user-select: none; white-space: nowrap; }
   th:hover { color: var(--text); }
-  th .arrow { font-size: 9px; margin-left: 3px; color: var(--accent); }
+  th .arrow { font-size: 11px; margin-left: 3px; color: var(--accent); }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--hover); }
   .ticker-link { font-weight: 600; color: var(--accent); text-decoration: none; }
   .ticker-link:hover { text-decoration: underline; }
-  .name { color: var(--text); font-size: 12px; }
+  .name { color: var(--text); font-size: 14px; }
   .pos { color: var(--green); font-weight: 700; }
   .neg { color: var(--red); }
   .neu { color: var(--text-dim); }
   .err-row td { color: var(--red); font-style: italic; }
-  .no-cov { color: var(--text-dim); font-size: 11px; font-style: italic; }
-  .fetch-fail { color: var(--amber); font-size: 11px; font-style: italic; }
+  .no-cov { color: var(--text-dim); font-size: 13px; font-style: italic; }
+  .fetch-fail { color: var(--amber); font-size: 13px; font-style: italic; }
 
   .score-bar { display: inline-block; width: 46px; height: 6px; border-radius: 3px; background: var(--panel-border); position: relative; vertical-align: middle; margin-right: 6px; }
   .score-fill { position: absolute; top:0; left:0; height: 100%; border-radius: 3px; }
-  .score-num { font-size: 11px; color: var(--text-dim); }
+  .score-num { font-size: 13px; color: var(--text-dim); }
 
   #rotation-block { margin-bottom: 28px; }
   .category-block { margin-bottom: 28px; }
 
-  #search { background: var(--input-bg); border: 1px solid var(--panel-border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 13px; width: 220px; }
+  #search { background: var(--input-bg); border: 1px solid var(--panel-border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 15px; width: 220px; }
   #search::placeholder { color: var(--text-dim); }
   .controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .controls .hint { font-size: 11px; color: var(--text-dim); font-style: italic; }
+  .controls .hint { font-size: 13px; color: var(--text-dim); font-style: italic; }
+
+  #bottom-nav {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--panel-border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  #bottom-nav .nav-label { width: 100%; text-align: center; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 4px; }
+  .jump-btn {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .jump-btn:hover { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body data-theme="dark">
 
 <header>
   <h1>HK / SGX Command Centre <span>&mdash; live prices via yfinance</span></h1>
-  <div id="meta">loading&hellip;</div>
-</header>
-
-<div class="toggle-row">
   <button id="theme-toggle" onclick="toggleTheme()">&#9788; Light mode</button>
-</div>
+  <div class="meta-wrap" id="meta">loading&hellip;</div>
+</header>
 
 <div id="bench-strip" class="bench-strip"></div>
 
@@ -157,7 +177,11 @@
   </div>
   <div class="g-block">
     <div class="g-title">Analyst price target &amp; upside</div>
-    Sourced from Yahoo Finance's own aggregation of sell-side analyst estimates (<code>targetMeanPrice</code>, high/low range, analyst count, consensus recommendation) &mdash; not calculated by this dashboard. ETFs and preference shares structurally don't get analyst price targets and will show <span class="no-cov">no analyst coverage</span>; that's expected, not a data gap. A separate <span class="fetch-fail">fetch failed</span> status means Yahoo's data call itself failed on the last run (a known intermittent issue) &mdash; that's a network hiccup to retry, not a real absence of coverage. Where coverage exists, analyst counts can run as low as 3&ndash;4 &mdash; check the count before weighting the target.
+    Sourced from Yahoo Finance's own aggregation of sell-side analyst estimates (<code>targetMeanPrice</code>, high/low range, analyst count, consensus recommendation) &mdash; not calculated by this dashboard. The target price links to Yahoo's analyst breakdown page (target range, recommendation trend, estimate history) &mdash; note this is <b>not</b> full analyst thesis text; free data sources don't carry brokerage report narratives, only the numeric consensus. ETFs and preference shares structurally don't get analyst price targets and will show <span class="no-cov">no analyst coverage</span>; that's expected, not a data gap. A separate <span class="fetch-fail">fetch failed</span> status means Yahoo's data call itself failed on the last run (a known intermittent issue) &mdash; that's a network hiccup to retry, not a real absence of coverage. Where coverage exists, analyst counts can run as low as 3&ndash;4 &mdash; check the count before weighting the target.
+  </div>
+  <div class="g-block">
+    <div class="g-title">Yield / P/B / Debt-Eq / Next Earnings</div>
+    Fundamental and valuation fields, sourced from yfinance, not derived here. <b>Yield</b> is trailing dividend/distribution yield. <b>P/B</b> is price-to-book &mdash; for REITs this is the standard proxy for trading above or below net asset value. <b>Debt/Eq</b> is a gearing proxy; SGX REITs carry a regulatory gearing cap, so this flags balance-sheet and rate sensitivity. <b>Next Earnings</b> is the next scheduled results date where available. None of these predict a future price &mdash; they describe the underlying business and valuation, which momentum and range scores don't capture at all.
   </div>
 </details>
 
@@ -170,8 +194,14 @@
 
 <div id="app"><p style="color:var(--text-dim)">Loading data.json&hellip;</p></div>
 
+<div id="bottom-nav"></div>
+
 <script>
 let DATA = null;
+
+function slugify(cat) {
+  return 'cat-' + cat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
 
 // Sort state per category (keyed by category name), default alphabetical by ticker asc.
 const sortState = {};
@@ -180,14 +210,15 @@ const COLUMNS = [
   { key: 'ticker',                label: 'Ticker' },
   { key: 'name',                  label: 'Name' },
   { key: 'last_price',            label: 'Last' },
-  { key: 'last_date',             label: 'As of' },
   { key: 'change_1d_pct',         label: '1D' },
-  { key: 'change_1w_pct',         label: '1W' },
   { key: 'change_1m_pct',         label: '1M' },
   { key: 'change_ytd_pct',        label: 'YTD' },
-  { key: 'rel_strength_1m_pct',   label: 'Rel.Strength(1M)' },
   { key: 'momentum_score',        label: 'Momentum' },
   { key: 'range_score',           label: 'Range' },
+  { key: 'dividend_yield_pct',    label: 'Yield' },
+  { key: 'price_to_book',         label: 'P/B' },
+  { key: 'debt_to_equity',        label: 'Debt/Eq' },
+  { key: 'next_earnings_date',    label: 'Next Earnings' },
   { key: 'upside_to_target_pct',  label: 'Analyst Target (Upside)' },
 ];
 
@@ -224,6 +255,26 @@ function fmtBenchPrice(v) {
   return v.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
 
+function fmtYield(v) {
+  if (v === null || v === undefined) return '<span class="neu">&mdash;</span>';
+  return `${v.toFixed(2)}%`;
+}
+
+function fmtRatio(v) {
+  if (v === null || v === undefined) return '<span class="neu">&mdash;</span>';
+  return `${v.toFixed(2)}x`;
+}
+
+function fmtDebtEq(v) {
+  if (v === null || v === undefined) return '<span class="neu">&mdash;</span>';
+  return `${v.toFixed(1)}%`;
+}
+
+function fmtEarnings(v) {
+  if (!v) return '<span class="neu">&mdash;</span>';
+  return v;
+}
+
 function fmtTarget(r) {
   if (r.target_status === 'fetch_failed') {
     return '<span class="fetch-fail">fetch failed &mdash; retry next run</span>';
@@ -234,7 +285,8 @@ function fmtTarget(r) {
   const up = fmtPct(r.upside_to_target_pct);
   const n = r.num_analysts !== null && r.num_analysts !== undefined ? r.num_analysts : '?';
   const rec = r.recommendation ? r.recommendation.replace('_',' ') : '';
-  return `${r.currency || ''} ${r.target_mean.toFixed(4).replace(/0+$/,'').replace(/\\.$/,'')} (${up}) &middot; <span class="no-cov">${n} analysts, ${rec}</span>`;
+  const priceText = `${r.currency || ''} ${r.target_mean.toFixed(4).replace(/0+$/,'').replace(/\\.$/,'')}`;
+  return `<a class="ticker-link" href="${r.yfinance_analysis_url}" target="_blank" rel="noopener">${priceText}</a> (${up}) &middot; <span class="no-cov">${n} analysts, ${rec}</span>`;
 }
 
 function scoreColor(v) {
@@ -255,7 +307,7 @@ function renderBenchmarks() {
   strip.innerHTML = '';
   for (const [ticker, b] of Object.entries(DATA.benchmarks)) {
     if (b.error) {
-      strip.innerHTML += `<div class="bench-card"><div class="bench-label">${ticker}</div><div style="color:var(--red);font-size:13px">no data</div></div>`;
+      strip.innerHTML += `<div class="bench-card"><div class="bench-label">${ticker}</div><div style="color:var(--red);font-size:15px">no data</div></div>`;
       continue;
     }
     const dayCls = b.change_1d_pct > 0 ? 'pos' : b.change_1d_pct < 0 ? 'neg' : 'neu';
@@ -285,7 +337,9 @@ function renderRotation() {
       <tbody>
         ${rows.map(r => `
           <tr>
-            <td class="name" style="font-weight:600;color:var(--text)">${r.category}</td>
+            <td>
+              <a class="jump-link" style="font-weight:600;color:var(--text);cursor:pointer" onclick="jumpTo('${slugify(r.category)}')">${r.category}</a>
+            </td>
             <td class="neu">${r.count}</td>
             <td>${fmtPct(r.avg_1d_pct)}</td>
             <td>${fmtPct(r.avg_1w_pct)}</td>
@@ -329,6 +383,25 @@ function onSortClick(cat, key) {
   renderAll();
 }
 
+function jumpTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderBottomNav() {
+  const nav = document.getElementById('bottom-nav');
+  const categoryOrder = ["HK Stock", "HK/SGX ETF", "SGX REIT", "SGX Real Estate", "SGX Pref Share"];
+  const cats = [...new Set(DATA.instruments.map(r => r.category))].sort((a,b) => {
+    const ia = categoryOrder.indexOf(a), ib = categoryOrder.indexOf(b);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  });
+  nav.innerHTML = `
+    <div class="nav-label">Jump to dashboard</div>
+    ${cats.map(c => `<button class="jump-btn" onclick="jumpTo('${slugify(c)}')">${c}</button>`).join('')}
+    <button class="jump-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593; Top</button>
+  `;
+}
+
 function renderAll() {
   const q = document.getElementById('search').value.trim().toLowerCase();
   const app = document.getElementById('app');
@@ -356,9 +429,16 @@ function renderAll() {
     const state = sortState[cat];
     const block = document.createElement('div');
     block.className = 'category-block';
+    block.id = slugify(cat);
     const rows = sortRows(byCategory[cat], state.key, state.dir);
+
+    // Freshness flag: most common last_date in this category = expected date.
+    const dateCounts = {};
+    rows.forEach(r => { if (r.last_date) dateCounts[r.last_date] = (dateCounts[r.last_date]||0)+1; });
+    const modeDate = Object.keys(dateCounts).sort((a,b) => dateCounts[b]-dateCounts[a])[0];
+
     block.innerHTML = `
-      <div class="section-title">${cat} <span class="note">${rows.length} instruments</span></div>
+      <div class="section-title">${cat} <span class="note">${rows.length} instruments &middot; as of ${modeDate || '—'}</span></div>
       <table>
         <thead>
           <tr>${COLUMNS.map(c => headerCell(c, cat)).join('')}</tr>
@@ -367,20 +447,24 @@ function renderAll() {
           ${rows.map(r => r.error ? `
             <tr class="err-row">
               <td class="ticker-link">${r.ticker}</td>
-              <td colspan="11">error: ${r.error}</td>
+              <td colspan="${COLUMNS.length - 1}">error: ${r.error}</td>
             </tr>` : `
             <tr>
-              <td><a class="ticker-link" href="${r.yfinance_url}" target="_blank" rel="noopener">${r.ticker}</a></td>
+              <td>
+                <a class="ticker-link" href="${r.yfinance_url}" target="_blank" rel="noopener">${r.ticker}</a>
+                ${r.last_date && r.last_date !== modeDate ? `<span title="Stale: last priced ${r.last_date}, others as of ${modeDate}" style="color:var(--amber);cursor:help">&nbsp;&#9888;</span>` : ''}
+              </td>
               <td class="name">${r.name}</td>
               <td>${fmtPrice(r)}</td>
-              <td class="neu">${r.last_date || ''}</td>
               <td>${fmtPct(r.change_1d_pct)}</td>
-              <td>${fmtPct(r.change_1w_pct)}</td>
               <td>${fmtPct(r.change_1m_pct)}</td>
               <td>${fmtPct(r.change_ytd_pct)}</td>
-              <td>${fmtPct(r.rel_strength_1m_pct)}</td>
               <td>${scoreBar(r.momentum_score)}</td>
               <td>${scoreBar(r.range_score)}</td>
+              <td>${fmtYield(r.dividend_yield_pct)}</td>
+              <td>${fmtRatio(r.price_to_book)}</td>
+              <td>${fmtDebtEq(r.debt_to_equity)}</td>
+              <td>${fmtEarnings(r.next_earnings_date)}</td>
               <td>${fmtTarget(r)}</td>
             </tr>`).join('')}
         </tbody>
@@ -401,6 +485,7 @@ fetch('data.json?_=' + Date.now())
     renderBenchmarks();
     renderRotation();
     renderAll();
+    renderBottomNav();
   })
   .catch(err => {
     document.getElementById('app').innerHTML =
