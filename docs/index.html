@@ -181,7 +181,13 @@
   </div>
   <div class="g-block">
     <div class="g-title">Yield / P/B / Debt-Eq / Next Earnings</div>
-    Fundamental and valuation fields, sourced from yfinance, not derived here. <b>Yield</b> is trailing dividend/distribution yield. <b>P/B</b> is price-to-book &mdash; for REITs this is the standard proxy for trading above or below net asset value. <b>Debt/Eq</b> is a gearing proxy; SGX REITs carry a regulatory gearing cap, so this flags balance-sheet and rate sensitivity. <b>Next Earnings</b> is the next scheduled results date where available. None of these predict a future price &mdash; they describe the underlying business and valuation, which momentum and range scores don't capture at all.
+    Fundamental and valuation fields, sourced from yfinance (Yahoo Finance's own aggregation, partly sourced from Morningstar for balance-sheet data), not derived here. Each links through to Yahoo's Key Statistics page. <b>These are pulled every 15 minutes along with price, but they don't all actually change that often</b> &mdash; checked directly, not assumed:
+    <ul style="margin:6px 0 0 18px; padding:0;">
+      <li><b>P/B</b> genuinely moves with live price &mdash; verified Yahoo's figure matches price &divide; book value exactly, and book value is static between filings while price isn't.</li>
+      <li><b>Yield</b>'s methodology is unclear &mdash; Yahoo's reported figure didn't match a manual calc of trailing distribution &divide; price in testing. It may update on Yahoo's own schedule, not necessarily live. Click through to verify before relying on it.</li>
+      <li><b>Debt/Eq</b> is balance-sheet derived and only changes on new quarterly filings &mdash; in practice frozen between reports, regardless of fetch frequency. Some tickers' underlying "most recent quarter" data from Yahoo has tested several years stale, so treat this figure as directional, not precise.</li>
+    </ul>
+    <b>Next Earnings</b> is the next scheduled results date where available. None of these four predict a future price &mdash; they describe the underlying business and valuation, which momentum and range scores don't capture at all.
   </div>
 </details>
 
@@ -255,19 +261,22 @@ function fmtBenchPrice(v) {
   return v.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
 
-function fmtYield(v) {
+function fmtYield(r) {
+  const v = r.dividend_yield_pct;
   if (v === null || v === undefined) return '<span class="neu">&mdash;</span>';
-  return `${v.toFixed(2)}%`;
+  return `<a class="ticker-link" href="${r.yfinance_keystats_url}" target="_blank" rel="noopener" title="Methodology uncertain -- Yahoo's figure doesn't match trailing distribution / price. Click through to verify.">${v.toFixed(2)}%</a>`;
 }
 
-function fmtRatio(v) {
+function fmtRatio(r) {
+  const v = r.price_to_book;
   if (v === null || v === undefined) return '<span class="neu">&mdash;</span>';
-  return `${v.toFixed(2)}x`;
+  return `<a class="ticker-link" href="${r.yfinance_keystats_url}" target="_blank" rel="noopener" title="Moves with live price -- book value is static, price is not.">${v.toFixed(2)}x</a>`;
 }
 
-function fmtDebtEq(v) {
+function fmtDebtEq(r) {
+  const v = r.debt_to_equity;
   if (v === null || v === undefined) return '<span class="neu">&mdash;</span>';
-  return `${v.toFixed(1)}%`;
+  return `<a class="ticker-link" href="${r.yfinance_keystats_url}" target="_blank" rel="noopener" title="Balance-sheet derived -- only changes on new filings, not intraday. Click through for reporting date.">${v.toFixed(1)}%</a>`;
 }
 
 function fmtEarnings(v) {
@@ -461,9 +470,9 @@ function renderAll() {
               <td>${fmtPct(r.change_ytd_pct)}</td>
               <td>${scoreBar(r.momentum_score)}</td>
               <td>${scoreBar(r.range_score)}</td>
-              <td>${fmtYield(r.dividend_yield_pct)}</td>
-              <td>${fmtRatio(r.price_to_book)}</td>
-              <td>${fmtDebtEq(r.debt_to_equity)}</td>
+              <td>${fmtYield(r)}</td>
+              <td>${fmtRatio(r)}</td>
+              <td>${fmtDebtEq(r)}</td>
               <td>${fmtEarnings(r.next_earnings_date)}</td>
               <td>${fmtTarget(r)}</td>
             </tr>`).join('')}
