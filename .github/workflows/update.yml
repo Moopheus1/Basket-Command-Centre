@@ -49,12 +49,12 @@ jobs:
         run: pip install yfinance
 
       - name: Fetch data
-        run: python fetch_data.py
+        run: python scripts/fetch_data.py
 
       - name: Commit and push data.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json
+          git git add docs/data.json
           git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update data.json [automated]"
           git push
