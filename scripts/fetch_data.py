@@ -326,7 +326,7 @@ def main():
     with open(tmp_path, "w") as f:
         json.dump(payload, f, indent=2)
 
-    final_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.json")
+    final_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs", "data.json")
     shutil.move(tmp_path, final_path)
     print(f"\nWrote {final_path}")
     print(f"{len(results) - len(errors)}/{len(results)} tickers OK")
