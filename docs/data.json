@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-08-06 11:14:59 UTC",
+  "last_updated_utc": "2026-08-07 00:15:35 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -8,36 +8,36 @@
       "applies_to": "SGX",
       "name": "STI Index",
       "currency": "SGD",
-      "last_price": 5638.9902,
-      "last_date": "2026-08-06",
-      "change_1d_pct": 1.03,
-      "change_1w_pct": -0.61,
-      "change_1m_pct": 5.02,
-      "change_ytd_pct": 21.11
+      "last_price": 5581.3701,
+      "last_date": "2026-08-05",
+      "change_1d_pct": -0.55,
+      "change_1w_pct": -2.31,
+      "change_1m_pct": 4.48,
+      "change_ytd_pct": 19.87
     },
     "^HSI": {
       "label": "HK Index (HSI)",
       "applies_to": "HK",
       "name": "HANG SENG INDEX",
       "currency": "HKD",
-      "last_price": 25530.2793,
-      "last_date": "2026-08-06",
-      "change_1d_pct": -1.49,
-      "change_1w_pct": -1.27,
-      "change_1m_pct": 5.5,
-      "change_ytd_pct": -3.07
+      "last_price": 25915.8203,
+      "last_date": "2026-08-05",
+      "change_1d_pct": 0.24,
+      "change_1w_pct": 0.42,
+      "change_1m_pct": 10.29,
+      "change_ytd_pct": -1.6
     },
     "3067.HK": {
       "label": "Tech Index (HSTECH ETF)",
       "applies_to": "TECH",
       "name": "ISHARESHSTECH",
       "currency": "HKD",
-      "last_price": 10.18,
-      "last_date": "2026-08-06",
-      "change_1d_pct": -2.12,
-      "change_1w_pct": 0.39,
-      "change_1m_pct": 2.0,
-      "change_ytd_pct": -15.31
+      "last_price": 10.4,
+      "last_date": "2026-08-05",
+      "change_1d_pct": 0.97,
+      "change_1w_pct": 1.56,
+      "change_1m_pct": 9.53,
+      "change_ytd_pct": -13.48
     }
   },
   "sector_rotation": [
@@ -48,8 +48,8 @@
       "avg_1w_pct": -3.16,
       "avg_1m_pct": 11.05,
       "benchmark": "^HSI",
-      "benchmark_1m_pct": 5.5,
-      "rel_to_benchmark_1m_pct": 5.55
+      "benchmark_1m_pct": 10.29,
+      "rel_to_benchmark_1m_pct": 0.76
     },
     {
       "category": "SGX Real Estate",
@@ -58,18 +58,18 @@
       "avg_1w_pct": 3.77,
       "avg_1m_pct": 10.0,
       "benchmark": "^STI",
-      "benchmark_1m_pct": 5.02,
-      "rel_to_benchmark_1m_pct": 4.98
+      "benchmark_1m_pct": 4.48,
+      "rel_to_benchmark_1m_pct": 5.52
     },
     {
       "category": "HK/SGX ETF",
       "count": 2,
-      "avg_1d_pct": -2.02,
-      "avg_1w_pct": -0.13,
-      "avg_1m_pct": 1.72,
+      "avg_1d_pct": 0.8,
+      "avg_1w_pct": 1.36,
+      "avg_1m_pct": 8.68,
       "benchmark": "^HSI",
-      "benchmark_1m_pct": 5.5,
-      "rel_to_benchmark_1m_pct": -3.78
+      "benchmark_1m_pct": 10.29,
+      "rel_to_benchmark_1m_pct": -1.61
     },
     {
       "category": "SGX REIT",
@@ -78,8 +78,8 @@
       "avg_1w_pct": -1.23,
       "avg_1m_pct": 1.04,
       "benchmark": "^STI",
-      "benchmark_1m_pct": 5.02,
-      "rel_to_benchmark_1m_pct": -3.98
+      "benchmark_1m_pct": 4.48,
+      "rel_to_benchmark_1m_pct": -3.44
     },
     {
       "category": "SGX Pref Share",
@@ -88,8 +88,8 @@
       "avg_1w_pct": 0.2,
       "avg_1m_pct": 0.3,
       "benchmark": "^STI",
-      "benchmark_1m_pct": 5.02,
-      "rel_to_benchmark_1m_pct": -4.72
+      "benchmark_1m_pct": 4.48,
+      "rel_to_benchmark_1m_pct": -4.18
     }
   ],
   "instruments": [
@@ -108,20 +108,20 @@
       "change_1m_pct": 4.66,
       "change_ytd_pct": -8.58,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": -0.84,
-      "momentum_score": 54.5,
+      "rel_strength_1m_pct": -5.63,
+      "momentum_score": 47.3,
       "range_score": 56.7,
       "dividend_yield_pct": 0.44,
-      "price_to_book": 3.0309258,
+      "price_to_book": 3.0290945,
       "debt_to_equity": 55.07,
       "payout_ratio": 0.44189999,
       "next_earnings_date": null,
-      "target_mean": 124.853424,
-      "target_high": 147.19476,
-      "target_low": 87.61311,
+      "target_mean": 124.756676,
+      "target_high": 147.0807,
+      "target_low": 87.54522,
       "num_analysts": 27,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 38.96,
+      "upside_to_target_pct": 38.85,
       "target_status": "covered",
       "history": [
         {
@@ -501,10 +501,10 @@
       "change_1m_pct": 17.44,
       "change_ytd_pct": 11.1,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": 11.94,
-      "momentum_score": 77.3,
+      "rel_strength_1m_pct": 7.15,
+      "momentum_score": 73.0,
       "range_score": 8.2,
-      "dividend_yield_pct": 3.01,
+      "dividend_yield_pct": 3.08,
       "price_to_book": 1.388386,
       "debt_to_equity": 38.478,
       "payout_ratio": 0.0,
@@ -887,16 +887,16 @@
       "yfinance_url": "https://finance.yahoo.com/quote/3067.HK",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/3067.HK/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/3067.HK/key-statistics",
-      "last_price": 10.18,
-      "last_date": "2026-08-06",
-      "change_1d_pct": -2.12,
-      "change_1w_pct": 0.39,
-      "change_1m_pct": 2.0,
-      "change_ytd_pct": -15.31,
+      "last_price": 10.4,
+      "last_date": "2026-08-05",
+      "change_1d_pct": 0.97,
+      "change_1w_pct": 1.56,
+      "change_1m_pct": 9.53,
+      "change_ytd_pct": -13.48,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": -3.5,
-      "momentum_score": 40.9,
-      "range_score": 38.7,
+      "rel_strength_1m_pct": -0.76,
+      "momentum_score": 65.9,
+      "range_score": 27.5,
       "dividend_yield_pct": 0.64,
       "price_to_book": null,
       "debt_to_equity": null,
@@ -910,6 +910,10 @@
       "upside_to_target_pct": null,
       "target_status": "no_coverage",
       "history": [
+        {
+          "date": "2026-03-24",
+          "close": 10.13
+        },
         {
           "date": "2026-03-25",
           "close": 10.32
@@ -1265,10 +1269,6 @@
         {
           "date": "2026-08-05",
           "close": 10.4
-        },
-        {
-          "date": "2026-08-06",
-          "close": 10.18
         }
       ]
     },
@@ -1280,16 +1280,16 @@
       "yfinance_url": "https://finance.yahoo.com/quote/HST.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/HST.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/HST.SI/key-statistics",
-      "last_price": 0.77,
-      "last_date": "2026-08-06",
-      "change_1d_pct": -1.91,
-      "change_1w_pct": -0.65,
-      "change_1m_pct": 1.45,
-      "change_ytd_pct": -16.58,
+      "last_price": 0.785,
+      "last_date": "2026-08-05",
+      "change_1d_pct": 0.64,
+      "change_1w_pct": 1.16,
+      "change_1m_pct": 7.83,
+      "change_ytd_pct": -14.95,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": -4.05,
-      "momentum_score": 39.6,
-      "range_score": 42.2,
+      "rel_strength_1m_pct": -2.46,
+      "momentum_score": 60.9,
+      "range_score": 31.1,
       "dividend_yield_pct": null,
       "price_to_book": null,
       "debt_to_equity": null,
@@ -1303,6 +1303,10 @@
       "upside_to_target_pct": null,
       "target_status": "no_coverage",
       "history": [
+        {
+          "date": "2026-04-01",
+          "close": 0.76
+        },
         {
           "date": "2026-04-02",
           "close": 0.749
@@ -1658,10 +1662,6 @@
         {
           "date": "2026-08-05",
           "close": 0.785
-        },
-        {
-          "date": "2026-08-06",
-          "close": 0.77
         }
       ]
     },
@@ -1673,15 +1673,15 @@
       "yfinance_url": "https://finance.yahoo.com/quote/O5RU.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/O5RU.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/O5RU.SI/key-statistics",
-      "last_price": 1.58,
+      "last_price": 1.5566,
       "last_date": "2026-08-06",
       "change_1d_pct": 0.0,
       "change_1w_pct": -3.07,
       "change_1m_pct": -3.66,
       "change_ytd_pct": 8.17,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -8.68,
-      "momentum_score": 35.4,
+      "rel_strength_1m_pct": -8.14,
+      "momentum_score": 36.2,
       "range_score": 34.1,
       "dividend_yield_pct": 6.27,
       "price_to_book": 1.2363068,
@@ -1693,368 +1693,368 @@
       "target_low": 1.66,
       "num_analysts": 3,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 6.75,
+      "upside_to_target_pct": 8.36,
       "target_status": "covered",
       "history": [
         {
           "date": "2026-03-31",
-          "close": 1.4063
+          "close": 1.3855
         },
         {
           "date": "2026-04-01",
-          "close": 1.4063
+          "close": 1.3855
         },
         {
           "date": "2026-04-02",
-          "close": 1.4063
+          "close": 1.3855
         },
         {
           "date": "2026-04-06",
-          "close": 1.4162
+          "close": 1.3952
         },
         {
           "date": "2026-04-07",
-          "close": 1.4063
+          "close": 1.3855
         },
         {
           "date": "2026-04-08",
-          "close": 1.4457
+          "close": 1.4243
         },
         {
           "date": "2026-04-09",
-          "close": 1.4457
+          "close": 1.4243
         },
         {
           "date": "2026-04-10",
-          "close": 1.4457
+          "close": 1.4243
         },
         {
           "date": "2026-04-13",
-          "close": 1.4653
+          "close": 1.4437
         },
         {
           "date": "2026-04-14",
-          "close": 1.4752
+          "close": 1.4533
         },
         {
           "date": "2026-04-15",
-          "close": 1.4752
+          "close": 1.4533
         },
         {
           "date": "2026-04-16",
-          "close": 1.4948
+          "close": 1.4727
         },
         {
           "date": "2026-04-17",
-          "close": 1.485
+          "close": 1.463
         },
         {
           "date": "2026-04-20",
-          "close": 1.485
+          "close": 1.463
         },
         {
           "date": "2026-04-21",
-          "close": 1.4948
+          "close": 1.4727
         },
         {
           "date": "2026-04-22",
-          "close": 1.4948
+          "close": 1.4727
         },
         {
           "date": "2026-04-23",
-          "close": 1.4948
+          "close": 1.4727
         },
         {
           "date": "2026-04-24",
-          "close": 1.485
+          "close": 1.463
         },
         {
           "date": "2026-04-27",
-          "close": 1.485
+          "close": 1.463
         },
         {
           "date": "2026-04-28",
-          "close": 1.4948
+          "close": 1.4727
         },
         {
           "date": "2026-04-29",
-          "close": 1.485
+          "close": 1.463
         },
         {
           "date": "2026-04-30",
-          "close": 1.485
+          "close": 1.463
         },
         {
           "date": "2026-05-04",
-          "close": 1.5047
+          "close": 1.4824
         },
         {
           "date": "2026-05-05",
-          "close": 1.4948
+          "close": 1.4727
         },
         {
           "date": "2026-05-06",
-          "close": 1.4948
+          "close": 1.4727
         },
         {
           "date": "2026-05-07",
-          "close": 1.5538
+          "close": 1.5309
         },
         {
           "date": "2026-05-08",
-          "close": 1.544
+          "close": 1.5212
         },
         {
           "date": "2026-05-11",
-          "close": 1.5342
+          "close": 1.5115
         },
         {
           "date": "2026-05-12",
-          "close": 1.5342
+          "close": 1.5115
         },
         {
           "date": "2026-05-13",
-          "close": 1.544
+          "close": 1.5212
         },
         {
           "date": "2026-05-14",
-          "close": 1.544
+          "close": 1.5212
         },
         {
           "date": "2026-05-15",
-          "close": 1.54
+          "close": 1.5172
         },
         {
           "date": "2026-05-18",
-          "close": 1.54
+          "close": 1.5172
         },
         {
           "date": "2026-05-19",
-          "close": 1.55
+          "close": 1.5271
         },
         {
           "date": "2026-05-20",
-          "close": 1.57
+          "close": 1.5468
         },
         {
           "date": "2026-05-21",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-05-22",
-          "close": 1.59
+          "close": 1.5665
         },
         {
           "date": "2026-05-25",
-          "close": 1.59
+          "close": 1.5665
         },
         {
           "date": "2026-05-26",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-05-27",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-05-28",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-05-29",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-06-02",
-          "close": 1.57
+          "close": 1.5468
         },
         {
           "date": "2026-06-03",
-          "close": 1.57
+          "close": 1.5468
         },
         {
           "date": "2026-06-04",
-          "close": 1.56
+          "close": 1.5369
         },
         {
           "date": "2026-06-05",
-          "close": 1.56
+          "close": 1.5369
         },
         {
           "date": "2026-06-08",
-          "close": 1.56
+          "close": 1.5369
         },
         {
           "date": "2026-06-09",
-          "close": 1.56
+          "close": 1.5369
         },
         {
           "date": "2026-06-10",
-          "close": 1.59
+          "close": 1.5665
         },
         {
           "date": "2026-06-11",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-06-12",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-06-15",
-          "close": 1.59
+          "close": 1.5665
         },
         {
           "date": "2026-06-16",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-06-17",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-06-18",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-06-19",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-06-22",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-06-23",
-          "close": 1.59
+          "close": 1.5665
         },
         {
           "date": "2026-06-24",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-06-25",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-06-26",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-06-29",
-          "close": 1.59
+          "close": 1.5665
         },
         {
           "date": "2026-06-30",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-07-01",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-07-02",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-07-03",
-          "close": 1.65
+          "close": 1.6256
         },
         {
           "date": "2026-07-06",
-          "close": 1.63
+          "close": 1.6059
         },
         {
           "date": "2026-07-07",
-          "close": 1.63
+          "close": 1.6059
         },
         {
           "date": "2026-07-08",
-          "close": 1.64
+          "close": 1.6157
         },
         {
           "date": "2026-07-09",
-          "close": 1.63
+          "close": 1.6059
         },
         {
           "date": "2026-07-10",
-          "close": 1.64
+          "close": 1.6157
         },
         {
           "date": "2026-07-13",
-          "close": 1.64
+          "close": 1.6157
         },
         {
           "date": "2026-07-14",
-          "close": 1.64
+          "close": 1.6157
         },
         {
           "date": "2026-07-15",
-          "close": 1.65
+          "close": 1.6256
         },
         {
           "date": "2026-07-16",
-          "close": 1.67
+          "close": 1.6453
         },
         {
           "date": "2026-07-17",
-          "close": 1.65
+          "close": 1.6256
         },
         {
           "date": "2026-07-20",
-          "close": 1.66
+          "close": 1.6354
         },
         {
           "date": "2026-07-21",
-          "close": 1.66
+          "close": 1.6354
         },
         {
           "date": "2026-07-22",
-          "close": 1.66
+          "close": 1.6354
         },
         {
           "date": "2026-07-23",
-          "close": 1.65
+          "close": 1.6256
         },
         {
           "date": "2026-07-24",
-          "close": 1.64
+          "close": 1.6157
         },
         {
           "date": "2026-07-27",
-          "close": 1.64
+          "close": 1.6157
         },
         {
           "date": "2026-07-28",
-          "close": 1.63
+          "close": 1.6059
         },
         {
           "date": "2026-07-29",
-          "close": 1.65
+          "close": 1.6256
         },
         {
           "date": "2026-07-30",
-          "close": 1.63
+          "close": 1.6059
         },
         {
           "date": "2026-07-31",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-08-03",
-          "close": 1.61
+          "close": 1.5862
         },
         {
           "date": "2026-08-04",
-          "close": 1.6
+          "close": 1.5763
         },
         {
           "date": "2026-08-05",
-          "close": 1.58
+          "close": 1.5566
         },
         {
           "date": "2026-08-06",
-          "close": 1.58
+          "close": 1.5566
         }
       ]
     },
@@ -2073,10 +2073,10 @@
       "change_1m_pct": -3.17,
       "change_ytd_pct": -7.76,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -8.19,
-      "momentum_score": 50.7,
+      "rel_strength_1m_pct": -7.65,
+      "momentum_score": 51.5,
       "range_score": 100.0,
-      "dividend_yield_pct": 9.65,
+      "dividend_yield_pct": 9.97,
       "price_to_book": 0.77020204,
       "debt_to_equity": 77.048,
       "payout_ratio": 1.3087,
@@ -2466,20 +2466,20 @@
       "change_1m_pct": 1.61,
       "change_ytd_pct": -6.75,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.41,
-      "momentum_score": 41.7,
+      "rel_strength_1m_pct": -2.87,
+      "momentum_score": 42.5,
       "range_score": 40.0,
-      "dividend_yield_pct": 7.3,
+      "dividend_yield_pct": 2.96,
       "price_to_book": 1.1269488,
       "debt_to_equity": 64.47,
       "payout_ratio": 0.89419997,
       "next_earnings_date": "2026-08-05",
-      "target_mean": 3.07812,
+      "target_mean": 3.07938,
       "target_high": 3.78,
-      "target_low": 2.77,
+      "target_low": 2.79,
       "num_analysts": 16,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 21.66,
+      "upside_to_target_pct": 21.71,
       "target_status": "covered",
       "history": [
         {
@@ -2859,10 +2859,10 @@
       "change_1m_pct": -1.07,
       "change_ytd_pct": -3.24,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -6.09,
-      "momentum_score": 34.7,
+      "rel_strength_1m_pct": -5.55,
+      "momentum_score": 35.5,
       "range_score": 61.7,
-      "dividend_yield_pct": 7.06,
+      "dividend_yield_pct": 7.02,
       "price_to_book": 0.75850046,
       "debt_to_equity": 68.596,
       "payout_ratio": 0.8268,
@@ -3252,8 +3252,8 @@
       "change_1m_pct": 10.0,
       "change_ytd_pct": 0.36,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 4.98,
-      "momentum_score": 63.3,
+      "rel_strength_1m_pct": 5.52,
+      "momentum_score": 64.1,
       "range_score": 34.1,
       "dividend_yield_pct": 4.35,
       "price_to_book": 1.0904044,
@@ -3645,10 +3645,10 @@
       "change_1m_pct": 2.9,
       "change_ytd_pct": 7.92,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.12,
-      "momentum_score": 42.6,
+      "rel_strength_1m_pct": -1.58,
+      "momentum_score": 43.4,
       "range_score": 11.5,
-      "dividend_yield_pct": 6.22,
+      "dividend_yield_pct": 6.27,
       "price_to_book": 1.1583372,
       "debt_to_equity": 62.3,
       "payout_ratio": 0.8143,
@@ -4038,10 +4038,10 @@
       "change_1m_pct": 2.8,
       "change_ytd_pct": -3.36,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.22,
-      "momentum_score": 44.0,
+      "rel_strength_1m_pct": -1.68,
+      "momentum_score": 44.8,
       "range_score": 71.7,
-      "dividend_yield_pct": 6.29,
+      "dividend_yield_pct": 6.54,
       "price_to_book": 0.5393896,
       "debt_to_equity": 65.148,
       "payout_ratio": 5.0,
@@ -4431,8 +4431,8 @@
       "change_1m_pct": 0.3,
       "change_ytd_pct": 0.44,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -4.72,
-      "momentum_score": 35.3,
+      "rel_strength_1m_pct": -4.18,
+      "momentum_score": 36.1,
       "range_score": 65.7,
       "dividend_yield_pct": null,
       "price_to_book": 0.09886007,
@@ -4824,11 +4824,11 @@
       "change_1m_pct": 1.99,
       "change_ytd_pct": -1.63,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.03,
-      "momentum_score": 40.0,
+      "rel_strength_1m_pct": -2.49,
+      "momentum_score": 40.8,
       "range_score": 39.0,
-      "dividend_yield_pct": 5.62,
-      "price_to_book": 0.64204544,
+      "dividend_yield_pct": 5.77,
+      "price_to_book": 0.64424175,
       "debt_to_equity": 42.78,
       "payout_ratio": 1.8317,
       "next_earnings_date": null,
@@ -5217,10 +5217,10 @@
       "change_1m_pct": -0.45,
       "change_ytd_pct": -4.31,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -5.47,
-      "momentum_score": 50.8,
+      "rel_strength_1m_pct": -4.93,
+      "momentum_score": 51.6,
       "range_score": 77.8,
-      "dividend_yield_pct": 5.4,
+      "dividend_yield_pct": 5.45,
       "price_to_book": 0.9866667,
       "debt_to_equity": 55.65,
       "payout_ratio": 0.5427,
@@ -5610,20 +5610,20 @@
       "change_1m_pct": 1.03,
       "change_ytd_pct": 0.06,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.99,
-      "momentum_score": 39.2,
+      "rel_strength_1m_pct": -3.45,
+      "momentum_score": 40.0,
       "range_score": 15.1,
       "dividend_yield_pct": 5.99,
       "price_to_book": 0.8726625,
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.0980299,
-      "target_high": 1.3369579,
-      "target_low": 0.95148796,
+      "target_mean": 1.0975311,
+      "target_high": 1.3363507,
+      "target_low": 0.9510558,
       "num_analysts": 12,
       "recommendation": "buy",
-      "upside_to_target_pct": 12.04,
+      "upside_to_target_pct": 11.99,
       "target_status": "covered",
       "history": [
         {
@@ -6003,10 +6003,10 @@
       "change_1m_pct": 2.56,
       "change_ytd_pct": 3.58,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.46,
-      "momentum_score": 43.6,
+      "rel_strength_1m_pct": -1.92,
+      "momentum_score": 44.5,
       "range_score": 58.8,
-      "dividend_yield_pct": 4.85,
+      "dividend_yield_pct": 4.96,
       "price_to_book": 1.2796757,
       "debt_to_equity": 54.126,
       "payout_ratio": 0.5482,
@@ -6396,10 +6396,10 @@
       "change_1m_pct": 3.5,
       "change_ytd_pct": -4.69,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -1.52,
-      "momentum_score": 44.4,
+      "rel_strength_1m_pct": -0.98,
+      "momentum_score": 45.2,
       "range_score": 10.6,
-      "dividend_yield_pct": 8.75,
+      "dividend_yield_pct": 8.8,
       "price_to_book": 0.6974921,
       "debt_to_equity": 41.335,
       "payout_ratio": 0.4584,
@@ -6789,10 +6789,10 @@
       "change_1m_pct": 2.31,
       "change_ytd_pct": -21.41,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.71,
-      "momentum_score": 42.2,
+      "rel_strength_1m_pct": -2.17,
+      "momentum_score": 43.0,
       "range_score": 77.8,
-      "dividend_yield_pct": 3.66,
+      "dividend_yield_pct": 3.64,
       "price_to_book": 0.2546495,
       "debt_to_equity": 82.857,
       "payout_ratio": 0.6005,
@@ -7182,20 +7182,20 @@
       "change_1m_pct": 2.61,
       "change_ytd_pct": -4.78,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.41,
-      "momentum_score": 43.2,
+      "rel_strength_1m_pct": -1.87,
+      "momentum_score": 44.0,
       "range_score": 15.4,
-      "dividend_yield_pct": 6.16,
+      "dividend_yield_pct": 6.27,
       "price_to_book": 0.79407805,
       "debt_to_equity": 65.64,
       "payout_ratio": 0.97580004,
       "next_earnings_date": null,
-      "target_mean": 0.71857,
+      "target_mean": 0.72,
       "target_high": 0.78,
       "target_low": 0.63,
       "num_analysts": 7,
-      "recommendation": "none",
-      "upside_to_target_pct": 21.79,
+      "recommendation": "strong_buy",
+      "upside_to_target_pct": 22.03,
       "target_status": "covered",
       "history": [
         {
@@ -7575,10 +7575,10 @@
       "change_1m_pct": 2.14,
       "change_ytd_pct": -2.28,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.88,
-      "momentum_score": 26.7,
+      "rel_strength_1m_pct": -2.34,
+      "momentum_score": 27.5,
       "range_score": 59.8,
-      "dividend_yield_pct": 6.47,
+      "dividend_yield_pct": 6.5,
       "price_to_book": 1.184776,
       "debt_to_equity": 53.535,
       "payout_ratio": 1.8157,
@@ -7968,10 +7968,10 @@
       "change_1m_pct": -0.05,
       "change_ytd_pct": -8.31,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -5.07,
-      "momentum_score": 52.7,
+      "rel_strength_1m_pct": -4.53,
+      "momentum_score": 53.5,
       "range_score": 53.6,
-      "dividend_yield_pct": 5.95,
+      "dividend_yield_pct": 6.14,
       "price_to_book": 0.74437386,
       "debt_to_equity": 62.336,
       "payout_ratio": 1.6581,
@@ -8361,10 +8361,10 @@
       "change_1m_pct": 1.5,
       "change_ytd_pct": -3.47,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.52,
-      "momentum_score": 39.6,
+      "rel_strength_1m_pct": -2.98,
+      "momentum_score": 40.4,
       "range_score": 10.8,
-      "dividend_yield_pct": 5.91,
+      "dividend_yield_pct": 5.96,
       "price_to_book": 0.9651899,
       "debt_to_equity": 79.032,
       "payout_ratio": 1.4524001,
@@ -8754,8 +8754,8 @@
       "change_1m_pct": 2.09,
       "change_ytd_pct": 5.61,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.93,
-      "momentum_score": 27.4,
+      "rel_strength_1m_pct": -2.39,
+      "momentum_score": 28.2,
       "range_score": 41.6,
       "dividend_yield_pct": 7.07,
       "price_to_book": 0.63734293,
@@ -9147,10 +9147,10 @@
       "change_1m_pct": -0.86,
       "change_ytd_pct": -1.27,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -5.88,
-      "momentum_score": 52.1,
+      "rel_strength_1m_pct": -5.34,
+      "momentum_score": 52.9,
       "range_score": 45.0,
-      "dividend_yield_pct": 8.35,
+      "dividend_yield_pct": 8.68,
       "price_to_book": 0.77105093,
       "debt_to_equity": 83.461,
       "payout_ratio": 1.0106,
@@ -9540,8 +9540,8 @@
       "change_1m_pct": 2.02,
       "change_ytd_pct": 10.02,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.0,
-      "momentum_score": 26.5,
+      "rel_strength_1m_pct": -2.46,
+      "momentum_score": 27.3,
       "range_score": 23.2,
       "dividend_yield_pct": 5.37,
       "price_to_book": 0.73003435,
