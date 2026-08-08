@@ -336,7 +336,7 @@ function renderBenchmarks() {
     const dayCls = b.change_1d_pct > 0 ? 'pos' : b.change_1d_pct < 0 ? 'neg' : 'neu';
     strip.innerHTML += `
       <div class="bench-card">
-        <div class="bench-label">${b.label}</div>
+        <div class="bench-label"><a class="ticker-link" href="https://finance.yahoo.com/quote/${encodeURIComponent(ticker)}" target="_blank" rel="noopener">${b.label}</a></div>
         <div class="bench-price ${dayCls}">${fmtBenchPrice(b.last_price)}</div>
         <div class="bench-changes">
           <span>1D ${fmtPct(b.change_1d_pct)}</span>
