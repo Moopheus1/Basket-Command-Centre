@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-08-10 00:15:44 UTC",
+  "last_updated_utc": "2026-08-10 01:15:37 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.0993556,
-      "target_high": 1.3385721,
-      "target_low": 0.95263684,
+      "target_mean": 1.0986136,
+      "target_high": 1.3376688,
+      "target_low": 0.9519939,
       "num_analysts": 12,
       "recommendation": "buy",
-      "upside_to_target_pct": 13.34,
+      "upside_to_target_pct": 13.26,
       "target_status": "covered",
       "history": [
         {
