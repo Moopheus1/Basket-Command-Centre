@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-08-11 00:15:44 UTC",
+  "last_updated_utc": "2026-08-11 01:15:35 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -8,12 +8,12 @@
       "applies_to": "SGX",
       "name": "STI Index",
       "currency": "SGD",
-      "last_price": 5698.4302,
-      "last_date": "2026-08-07",
-      "change_1d_pct": 1.05,
-      "change_1w_pct": 1.24,
-      "change_1m_pct": 4.87,
-      "change_ytd_pct": 22.39
+      "last_price": 5693.4702,
+      "last_date": "2026-08-11",
+      "change_1d_pct": -0.09,
+      "change_1w_pct": 1.45,
+      "change_1m_pct": 4.1,
+      "change_ytd_pct": 22.28
     },
     "^HSI": {
       "label": "HK Index (HSI)",
@@ -54,32 +54,32 @@
     {
       "category": "SGX Real Estate",
       "count": 1,
-      "avg_1d_pct": -2.18,
-      "avg_1w_pct": 1.13,
-      "avg_1m_pct": 8.03,
+      "avg_1d_pct": 1.12,
+      "avg_1w_pct": 2.26,
+      "avg_1m_pct": 7.09,
       "benchmark": "^STI",
-      "benchmark_1m_pct": 4.87,
-      "rel_to_benchmark_1m_pct": 3.16
+      "benchmark_1m_pct": 4.1,
+      "rel_to_benchmark_1m_pct": 2.99
     },
     {
       "category": "HK/SGX ETF",
       "count": 2,
-      "avg_1d_pct": 0.3,
-      "avg_1w_pct": -0.14,
-      "avg_1m_pct": 2.04,
+      "avg_1d_pct": 1.33,
+      "avg_1w_pct": 0.76,
+      "avg_1m_pct": 3.36,
       "benchmark": "^HSI",
       "benchmark_1m_pct": 6.82,
-      "rel_to_benchmark_1m_pct": -4.78
+      "rel_to_benchmark_1m_pct": -3.46
     },
     {
       "category": "SGX REIT",
       "count": 19,
-      "avg_1d_pct": -0.65,
-      "avg_1w_pct": -1.28,
-      "avg_1m_pct": 0.52,
+      "avg_1d_pct": -0.23,
+      "avg_1w_pct": -0.98,
+      "avg_1m_pct": -0.18,
       "benchmark": "^STI",
-      "benchmark_1m_pct": 4.87,
-      "rel_to_benchmark_1m_pct": -4.35
+      "benchmark_1m_pct": 4.1,
+      "rel_to_benchmark_1m_pct": -4.28
     },
     {
       "category": "SGX Pref Share",
@@ -88,8 +88,8 @@
       "avg_1w_pct": -0.4,
       "avg_1m_pct": -0.4,
       "benchmark": "^STI",
-      "benchmark_1m_pct": 4.87,
-      "rel_to_benchmark_1m_pct": -5.27
+      "benchmark_1m_pct": 4.1,
+      "rel_to_benchmark_1m_pct": -4.5
     }
   ],
   "instruments": [
@@ -1280,16 +1280,16 @@
       "yfinance_url": "https://finance.yahoo.com/quote/HST.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/HST.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/HST.SI/key-statistics",
-      "last_price": 0.772,
-      "last_date": "2026-08-10",
-      "change_1d_pct": 0.0,
-      "change_1w_pct": -0.77,
-      "change_1m_pct": 1.31,
-      "change_ytd_pct": -16.36,
+      "last_price": 0.788,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 2.07,
+      "change_1w_pct": 1.03,
+      "change_1m_pct": 3.96,
+      "change_ytd_pct": -14.63,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": -5.51,
-      "momentum_score": 22.1,
-      "range_score": 40.7,
+      "rel_strength_1m_pct": -2.86,
+      "momentum_score": 57.8,
+      "range_score": 28.9,
       "dividend_yield_pct": null,
       "price_to_book": null,
       "debt_to_equity": null,
@@ -1303,10 +1303,6 @@
       "upside_to_target_pct": null,
       "target_status": "no_coverage",
       "history": [
-        {
-          "date": "2026-04-07",
-          "close": 0.753
-        },
         {
           "date": "2026-04-08",
           "close": 0.784
@@ -1662,6 +1658,10 @@
         {
           "date": "2026-08-10",
           "close": 0.772
+        },
+        {
+          "date": "2026-08-11",
+          "close": 0.788
         }
       ]
     },
@@ -1673,18 +1673,18 @@
       "yfinance_url": "https://finance.yahoo.com/quote/O5RU.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/O5RU.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/O5RU.SI/key-statistics",
-      "last_price": 1.53,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -1.71,
-      "change_1w_pct": -2.94,
-      "change_1m_pct": -4.73,
-      "change_ytd_pct": 6.32,
+      "last_price": 1.5,
+      "last_date": "2026-08-11",
+      "change_1d_pct": -1.96,
+      "change_1w_pct": -5.43,
+      "change_1m_pct": -7.16,
+      "change_ytd_pct": 4.24,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -9.6,
-      "momentum_score": 50.0,
-      "range_score": 44.4,
+      "rel_strength_1m_pct": -11.26,
+      "momentum_score": 54.6,
+      "range_score": 55.9,
       "dividend_yield_pct": 6.48,
-      "price_to_book": 1.1971831,
+      "price_to_book": 1.1737089,
       "debt_to_equity": 41.592,
       "payout_ratio": 0.7409,
       "next_earnings_date": null,
@@ -1693,13 +1693,9 @@
       "target_low": 1.66,
       "num_analysts": 3,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 10.24,
+      "upside_to_target_pct": 12.44,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 1.3855
-        },
         {
           "date": "2026-04-02",
           "close": 1.3855
@@ -2055,6 +2051,10 @@
         {
           "date": "2026-08-07",
           "close": 1.53
+        },
+        {
+          "date": "2026-08-11",
+          "close": 1.5
         }
       ]
     },
@@ -2073,8 +2073,8 @@
       "change_1m_pct": 1.61,
       "change_ytd_pct": -4.73,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.26,
-      "momentum_score": 56.6,
+      "rel_strength_1m_pct": -2.49,
+      "momentum_score": 57.8,
       "range_score": 60.3,
       "dividend_yield_pct": 9.65,
       "price_to_book": 0.71753985,
@@ -2460,14 +2460,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/A17U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/A17U.SI/key-statistics",
       "last_price": 2.51,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.79,
-      "change_1w_pct": -2.33,
-      "change_1m_pct": 0.8,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": -1.57,
+      "change_1m_pct": -0.4,
       "change_ytd_pct": -7.49,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -4.07,
-      "momentum_score": 39.5,
+      "rel_strength_1m_pct": -4.5,
+      "momentum_score": 36.9,
       "range_score": 53.3,
       "dividend_yield_pct": 2.98,
       "price_to_book": 1.1180401,
@@ -2482,10 +2482,6 @@
       "upside_to_target_pct": 22.68,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 2.52
-        },
         {
           "date": "2026-04-02",
           "close": 2.5
@@ -2841,6 +2837,10 @@
         {
           "date": "2026-08-07",
           "close": 2.51
+        },
+        {
+          "date": "2026-08-11",
+          "close": 2.51
         }
       ]
     },
@@ -2853,14 +2853,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/HMN.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/HMN.SI/key-statistics",
       "last_price": 0.86,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -1.15,
-      "change_1w_pct": -2.21,
-      "change_1m_pct": -1.66,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": -1.11,
+      "change_1m_pct": -2.21,
       "change_ytd_pct": -4.35,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -6.53,
-      "momentum_score": 50.2,
+      "rel_strength_1m_pct": -6.31,
+      "momentum_score": 35.5,
       "range_score": 87.4,
       "dividend_yield_pct": 7.1,
       "price_to_book": 0.7497821,
@@ -2875,10 +2875,6 @@
       "upside_to_target_pct": 22.74,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 0.8648
-        },
         {
           "date": "2026-04-02",
           "close": 0.8697
@@ -3234,6 +3230,10 @@
         {
           "date": "2026-08-07",
           "close": 0.86
+        },
+        {
+          "date": "2026-08-11",
+          "close": 0.86
         }
       ]
     },
@@ -3245,18 +3245,18 @@
       "yfinance_url": "https://finance.yahoo.com/quote/9CI.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/9CI.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/9CI.SI/key-statistics",
-      "last_price": 2.69,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -2.18,
-      "change_1w_pct": 1.13,
-      "change_1m_pct": 8.03,
-      "change_ytd_pct": -1.82,
+      "last_price": 2.72,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 1.12,
+      "change_1w_pct": 2.26,
+      "change_1m_pct": 7.09,
+      "change_ytd_pct": -0.73,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 3.16,
-      "momentum_score": 57.7,
-      "range_score": 47.7,
+      "rel_strength_1m_pct": 2.99,
+      "momentum_score": 70.0,
+      "range_score": 40.9,
       "dividend_yield_pct": 4.46,
-      "price_to_book": 1.0666138,
+      "price_to_book": 1.0785091,
       "debt_to_equity": 62.792,
       "payout_ratio": 4.1379,
       "next_earnings_date": "2026-08-13",
@@ -3265,13 +3265,9 @@
       "target_low": 3.0,
       "num_analysts": 15,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 26.34,
+      "upside_to_target_pct": 24.95,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 2.75
-        },
         {
           "date": "2026-04-02",
           "close": 2.74
@@ -3627,6 +3623,10 @@
         {
           "date": "2026-08-07",
           "close": 2.69
+        },
+        {
+          "date": "2026-08-11",
+          "close": 2.72
         }
       ]
     },
@@ -3638,18 +3638,18 @@
       "yfinance_url": "https://finance.yahoo.com/quote/C38U.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/C38U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/C38U.SI/key-statistics",
-      "last_price": 2.46,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.81,
-      "change_1w_pct": -1.2,
-      "change_1m_pct": 1.65,
-      "change_ytd_pct": 7.05,
+      "last_price": 2.47,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.41,
+      "change_1w_pct": -0.8,
+      "change_1m_pct": 1.23,
+      "change_ytd_pct": 7.48,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.22,
-      "momentum_score": 40.5,
-      "range_score": 19.2,
+      "rel_strength_1m_pct": -2.87,
+      "momentum_score": 39.8,
+      "range_score": 15.4,
       "dividend_yield_pct": 6.33,
-      "price_to_book": 1.1489958,
+      "price_to_book": 1.1536665,
       "debt_to_equity": 62.3,
       "payout_ratio": 0.8143,
       "next_earnings_date": "2026-08-12",
@@ -3658,13 +3658,9 @@
       "target_low": 2.4,
       "num_analysts": 16,
       "recommendation": "buy",
-      "upside_to_target_pct": 9.35,
+      "upside_to_target_pct": 8.91,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 2.2828
-        },
         {
           "date": "2026-04-02",
           "close": 2.2828
@@ -4020,6 +4016,10 @@
         {
           "date": "2026-08-07",
           "close": 2.46
+        },
+        {
+          "date": "2026-08-11",
+          "close": 2.47
         }
       ]
     },
@@ -4038,11 +4038,11 @@
       "change_1m_pct": 2.12,
       "change_ytd_pct": -3.99,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.75,
-      "momentum_score": 42.7,
+      "rel_strength_1m_pct": -1.98,
+      "momentum_score": 43.8,
       "range_score": 78.5,
       "dividend_yield_pct": 6.58,
-      "price_to_book": 0.535841,
+      "price_to_book": 0.5393896,
       "debt_to_equity": 65.148,
       "payout_ratio": 5.0,
       "next_earnings_date": null,
@@ -4431,8 +4431,8 @@
       "change_1m_pct": -0.4,
       "change_ytd_pct": 0.44,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -5.27,
-      "momentum_score": 34.6,
+      "rel_strength_1m_pct": -4.5,
+      "momentum_score": 35.7,
       "range_score": 65.7,
       "dividend_yield_pct": null,
       "price_to_book": 0.09886007,
@@ -4818,14 +4818,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/Q5T.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/Q5T.SI/key-statistics",
       "last_price": 0.56,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.88,
-      "change_1w_pct": 0.21,
-      "change_1m_pct": 1.09,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": -0.66,
+      "change_1m_pct": 0.21,
       "change_ytd_pct": -2.5,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.78,
-      "momentum_score": 38.2,
+      "rel_strength_1m_pct": -3.89,
+      "momentum_score": 23.4,
       "range_score": 53.7,
       "dividend_yield_pct": 5.82,
       "price_to_book": 0.6385405,
@@ -4840,10 +4840,6 @@
       "upside_to_target_pct": 26.79,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 0.554
-        },
         {
           "date": "2026-04-02",
           "close": 0.5491
@@ -5199,6 +5195,10 @@
         {
           "date": "2026-08-07",
           "close": 0.56
+        },
+        {
+          "date": "2026-08-11",
+          "close": 0.56
         }
       ]
     },
@@ -5211,14 +5211,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/J69U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/J69U.SI/key-statistics",
       "last_price": 2.21,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.45,
-      "change_1w_pct": -2.64,
-      "change_1m_pct": -1.34,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": -1.78,
+      "change_1m_pct": -1.78,
       "change_ytd_pct": -4.74,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -6.21,
-      "momentum_score": 50.1,
+      "rel_strength_1m_pct": -5.88,
+      "momentum_score": 36.4,
       "range_score": 93.8,
       "dividend_yield_pct": 5.47,
       "price_to_book": 0.98222226,
@@ -5233,10 +5233,6 @@
       "upside_to_target_pct": 17.62,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 2.21
-        },
         {
           "date": "2026-04-02",
           "close": 2.2
@@ -5592,6 +5588,10 @@
         {
           "date": "2026-08-07",
           "close": 2.21
+        },
+        {
+          "date": "2026-08-11",
+          "close": 2.21
         }
       ]
     },
@@ -5604,32 +5604,28 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/BUOU.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/BUOU.SI/key-statistics",
       "last_price": 0.97,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -1.02,
-      "change_1w_pct": -2.02,
-      "change_1m_pct": 0.0,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": -1.02,
+      "change_1m_pct": 0.52,
       "change_ytd_pct": -0.96,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -4.87,
-      "momentum_score": 37.4,
+      "rel_strength_1m_pct": -3.58,
+      "momentum_score": 24.5,
       "range_score": 22.7,
       "dividend_yield_pct": 6.08,
       "price_to_book": 0.8637578,
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.0987595,
-      "target_high": 1.3378465,
-      "target_low": 0.95212036,
+      "target_mean": 1.098723,
+      "target_high": 1.337802,
+      "target_low": 0.9520888,
       "num_analysts": 12,
       "recommendation": "buy",
       "upside_to_target_pct": 13.27,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 0.8776
-        },
         {
           "date": "2026-04-02",
           "close": 0.8679
@@ -5985,6 +5981,10 @@
         {
           "date": "2026-08-07",
           "close": 0.97
+        },
+        {
+          "date": "2026-08-11",
+          "close": 0.97
         }
       ]
     },
@@ -5996,18 +5996,18 @@
       "yfinance_url": "https://finance.yahoo.com/quote/AJBU.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/AJBU.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/AJBU.SI/key-statistics",
-      "last_price": 2.2,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.45,
-      "change_1w_pct": -1.35,
+      "last_price": 2.22,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.91,
+      "change_1w_pct": 0.91,
       "change_1m_pct": 1.64,
-      "change_ytd_pct": 3.11,
+      "change_ytd_pct": 4.05,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.23,
-      "momentum_score": 40.3,
-      "range_score": 74.3,
+      "rel_strength_1m_pct": -2.46,
+      "momentum_score": 54.8,
+      "range_score": 62.9,
       "dividend_yield_pct": 4.98,
-      "price_to_book": 1.2738854,
+      "price_to_book": 1.2854662,
       "debt_to_equity": 54.126,
       "payout_ratio": 0.5482,
       "next_earnings_date": "2026-07-23",
@@ -6016,13 +6016,9 @@
       "target_low": 2.3,
       "num_analysts": 16,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 19.86,
+      "upside_to_target_pct": 18.78,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 2.1744
-        },
         {
           "date": "2026-04-02",
           "close": 2.1646
@@ -6378,6 +6374,10 @@
         {
           "date": "2026-08-07",
           "close": 2.2
+        },
+        {
+          "date": "2026-08-11",
+          "close": 2.22
         }
       ]
     },
@@ -6390,14 +6390,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/K71U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/K71U.SI/key-statistics",
       "last_price": 0.89,
-      "last_date": "2026-08-07",
+      "last_date": "2026-08-11",
       "change_1d_pct": 0.0,
-      "change_1w_pct": -0.44,
+      "change_1w_pct": 0.66,
       "change_1m_pct": 4.09,
       "change_ytd_pct": -4.69,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -0.78,
-      "momentum_score": 31.7,
+      "rel_strength_1m_pct": -0.01,
+      "momentum_score": 46.4,
       "range_score": 10.6,
       "dividend_yield_pct": 8.8,
       "price_to_book": 0.6974921,
@@ -6412,10 +6412,6 @@
       "upside_to_target_pct": 11.1,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 0.8696
-        },
         {
           "date": "2026-04-02",
           "close": 0.8696
@@ -6771,6 +6767,10 @@
         {
           "date": "2026-08-07",
           "close": 0.89
+        },
+        {
+          "date": "2026-08-11",
+          "close": 0.89
         }
       ]
     },
@@ -6789,8 +6789,8 @@
       "change_1m_pct": 1.74,
       "change_ytd_pct": -21.86,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.13,
-      "momentum_score": 40.4,
+      "rel_strength_1m_pct": -2.36,
+      "momentum_score": 41.6,
       "range_score": 82.2,
       "dividend_yield_pct": 3.66,
       "price_to_book": 0.2532189,
@@ -7175,18 +7175,18 @@
       "yfinance_url": "https://finance.yahoo.com/quote/JYEU.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/JYEU.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/JYEU.SI/key-statistics",
-      "last_price": 0.585,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.85,
-      "change_1w_pct": -0.85,
-      "change_1m_pct": 1.74,
-      "change_ytd_pct": -5.59,
+      "last_price": 0.57,
+      "last_date": "2026-08-11",
+      "change_1d_pct": -2.56,
+      "change_1w_pct": -0.87,
+      "change_1m_pct": -1.72,
+      "change_ytd_pct": -8.01,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.13,
-      "momentum_score": 40.4,
-      "range_score": 23.1,
+      "rel_strength_1m_pct": -5.82,
+      "momentum_score": 51.4,
+      "range_score": 46.2,
       "dividend_yield_pct": 6.32,
-      "price_to_book": 0.78734857,
+      "price_to_book": 0.7671602,
       "debt_to_equity": 65.64,
       "payout_ratio": 0.97580004,
       "next_earnings_date": null,
@@ -7195,13 +7195,9 @@
       "target_low": 0.63,
       "num_analysts": 7,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 23.57,
+      "upside_to_target_pct": 26.82,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 0.535
-        },
         {
           "date": "2026-04-02",
           "close": 0.535
@@ -7557,6 +7553,10 @@
         {
           "date": "2026-08-07",
           "close": 0.585
+        },
+        {
+          "date": "2026-08-11",
+          "close": 0.57
         }
       ]
     },
@@ -7568,18 +7568,18 @@
       "yfinance_url": "https://finance.yahoo.com/quote/ME8U.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/ME8U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/ME8U.SI/key-statistics",
-      "last_price": 1.92,
-      "last_date": "2026-08-07",
+      "last_price": 1.91,
+      "last_date": "2026-08-11",
       "change_1d_pct": -0.52,
-      "change_1w_pct": -0.52,
-      "change_1m_pct": 1.61,
-      "change_ytd_pct": -2.78,
+      "change_1w_pct": -1.04,
+      "change_1m_pct": 0.04,
+      "change_ytd_pct": -3.29,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -3.26,
-      "momentum_score": 39.4,
-      "range_score": 67.9,
+      "rel_strength_1m_pct": -4.06,
+      "momentum_score": 37.2,
+      "range_score": 75.9,
       "dividend_yield_pct": 6.54,
-      "price_to_book": 1.1786373,
+      "price_to_book": 1.1724985,
       "debt_to_equity": 53.535,
       "payout_ratio": 1.8157,
       "next_earnings_date": "2026-07-23",
@@ -7588,13 +7588,9 @@
       "target_low": 1.82,
       "num_analysts": 15,
       "recommendation": "hold",
-      "upside_to_target_pct": 4.2,
+      "upside_to_target_pct": 4.75,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 1.8988
-        },
         {
           "date": "2026-04-02",
           "close": 1.8988
@@ -7950,6 +7946,10 @@
         {
           "date": "2026-08-07",
           "close": 1.92
+        },
+        {
+          "date": "2026-08-11",
+          "close": 1.91
         }
       ]
     },
@@ -7962,14 +7962,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/N2IU.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/N2IU.SI/key-statistics",
       "last_price": 1.28,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.78,
-      "change_1w_pct": -2.32,
-      "change_1m_pct": -0.07,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": -1.58,
+      "change_1m_pct": -0.83,
       "change_ytd_pct": -9.02,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -4.94,
-      "momentum_score": 50.8,
+      "rel_strength_1m_pct": -4.93,
+      "momentum_score": 36.7,
       "range_score": 60.4,
       "dividend_yield_pct": 6.19,
       "price_to_book": 0.73860353,
@@ -7984,10 +7984,6 @@
       "upside_to_target_pct": 17.66,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 1.3008
-        },
         {
           "date": "2026-04-02",
           "close": 1.2911
@@ -8343,6 +8339,10 @@
         {
           "date": "2026-08-07",
           "close": 1.28
+        },
+        {
+          "date": "2026-08-11",
+          "close": 1.28
         }
       ]
     },
@@ -8355,14 +8355,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/M44U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/M44U.SI/key-statistics",
       "last_price": 1.2,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -1.64,
-      "change_1w_pct": -1.78,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": -0.98,
       "change_1m_pct": -0.98,
       "change_ytd_pct": -5.05,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -5.85,
-      "momentum_score": 50.6,
+      "rel_strength_1m_pct": -5.08,
+      "momentum_score": 36.0,
       "range_score": 30.5,
       "dividend_yield_pct": 6.06,
       "price_to_book": 0.9493671,
@@ -8377,10 +8377,6 @@
       "upside_to_target_pct": 15.5,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 1.1258
-        },
         {
           "date": "2026-04-02",
           "close": 1.1258
@@ -8736,6 +8732,10 @@
         {
           "date": "2026-08-07",
           "close": 1.2
+        },
+        {
+          "date": "2026-08-11",
+          "close": 1.2
         }
       ]
     },
@@ -8747,18 +8747,18 @@
       "yfinance_url": "https://finance.yahoo.com/quote/TS0U.SI",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/TS0U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/TS0U.SI/key-statistics",
-      "last_price": 0.35,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -1.41,
-      "change_1w_pct": -1.41,
-      "change_1m_pct": 0.65,
-      "change_ytd_pct": 4.12,
+      "last_price": 0.345,
+      "last_date": "2026-08-11",
+      "change_1d_pct": -1.43,
+      "change_1w_pct": -1.43,
+      "change_1m_pct": -0.79,
+      "change_ytd_pct": 2.63,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -4.22,
-      "momentum_score": 38.8,
-      "range_score": 58.9,
+      "rel_strength_1m_pct": -4.89,
+      "momentum_score": 51.3,
+      "range_score": 76.1,
       "dividend_yield_pct": 7.17,
-      "price_to_book": 0.62836623,
+      "price_to_book": 0.6193896,
       "debt_to_equity": 56.453,
       "payout_ratio": 3.5397,
       "next_earnings_date": null,
@@ -8767,13 +8767,9 @@
       "target_low": 0.43,
       "num_analysts": 4,
       "recommendation": "none",
-      "upside_to_target_pct": 26.43,
+      "upside_to_target_pct": 28.26,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 0.3381
-        },
         {
           "date": "2026-04-02",
           "close": 0.3429
@@ -9129,6 +9125,10 @@
         {
           "date": "2026-08-07",
           "close": 0.35
+        },
+        {
+          "date": "2026-08-11",
+          "close": 0.345
         }
       ]
     },
@@ -9147,11 +9147,11 @@
       "change_1m_pct": -2.15,
       "change_ytd_pct": -2.55,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -7.02,
-      "momentum_score": 50.9,
+      "rel_strength_1m_pct": -6.25,
+      "momentum_score": 52.1,
       "range_score": 70.6,
       "dividend_yield_pct": 8.79,
-      "price_to_book": 0.7610373,
+      "price_to_book": 0.77105093,
       "debt_to_equity": 83.461,
       "payout_ratio": 1.0106,
       "next_earnings_date": "2026-08-13",
@@ -9534,14 +9534,14 @@
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/T82U.SI/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/T82U.SI/key-statistics",
       "last_price": 1.48,
-      "last_date": "2026-08-07",
-      "change_1d_pct": -0.67,
-      "change_1w_pct": 0.0,
-      "change_1m_pct": 2.02,
+      "last_date": "2026-08-11",
+      "change_1d_pct": 0.0,
+      "change_1w_pct": 0.68,
+      "change_1m_pct": 1.33,
       "change_ytd_pct": 9.29,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -2.85,
-      "momentum_score": 26.7,
+      "rel_strength_1m_pct": -2.77,
+      "momentum_score": 39.5,
       "range_score": 31.0,
       "dividend_yield_pct": 5.41,
       "price_to_book": 0.7251348,
@@ -9556,10 +9556,6 @@
       "upside_to_target_pct": 5.99,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-04-01",
-          "close": 1.4417
-        },
         {
           "date": "2026-04-02",
           "close": 1.4319
@@ -9914,6 +9910,10 @@
         },
         {
           "date": "2026-08-07",
+          "close": 1.48
+        },
+        {
+          "date": "2026-08-11",
           "close": 1.48
         }
       ]
