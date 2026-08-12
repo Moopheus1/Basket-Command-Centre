@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-08-12 09:15:35 UTC",
+  "last_updated_utc": "2026-08-12 09:23:57 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -8,7 +8,7 @@
       "applies_to": "SGX",
       "name": "STI Index",
       "currency": "SGD",
-      "last_price": 5721.3301,
+      "last_price": 5721.2998,
       "last_date": "2026-08-12",
       "change_1d_pct": -0.57,
       "change_1w_pct": 1.94,
@@ -116,12 +116,12 @@
       "debt_to_equity": 55.07,
       "payout_ratio": 0.44189999,
       "next_earnings_date": null,
-      "target_mean": 125.52782,
-      "target_high": 150.14226,
-      "target_low": 87.74892,
+      "target_mean": 125.53861,
+      "target_high": 150.15517,
+      "target_low": 87.75646,
       "num_analysts": 27,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 40.1,
+      "upside_to_target_pct": 40.11,
       "target_status": "covered",
       "history": [
         {
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.0995746,
-      "target_high": 1.3388388,
-      "target_low": 0.95282656,
+      "target_mean": 1.0998299,
+      "target_high": 1.3391497,
+      "target_low": 0.9530479,
       "num_analysts": 12,
       "recommendation": "buy",
-      "upside_to_target_pct": 13.36,
+      "upside_to_target_pct": 13.38,
       "target_status": "covered",
       "history": [
         {
