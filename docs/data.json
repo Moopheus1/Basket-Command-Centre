@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-08-20 09:27:12 UTC",
+  "last_updated_utc": "2026-08-20 10:15:39 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -8,12 +8,12 @@
       "applies_to": "SGX",
       "name": "STI Index",
       "currency": "SGD",
-      "last_price": 5671.75,
+      "last_price": 5671.9102,
       "last_date": "2026-08-20",
       "change_1d_pct": -0.39,
       "change_1w_pct": -0.84,
       "change_1m_pct": 2.39,
-      "change_ytd_pct": 21.81
+      "change_ytd_pct": 21.82
     },
     "^HSI": {
       "label": "HK Index (HSI)",
@@ -116,12 +116,12 @@
       "debt_to_equity": 55.07,
       "payout_ratio": 0.44189999,
       "next_earnings_date": "2026-08-28",
-      "target_mean": 125.6591,
-      "target_high": 150.59406,
-      "target_low": 88.01297,
+      "target_mean": 125.57293,
+      "target_high": 150.49078,
+      "target_low": 87.952614,
       "num_analysts": 27,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 36.88,
+      "upside_to_target_pct": 36.79,
       "target_status": "covered",
       "history": [
         {
@@ -505,7 +505,7 @@
       "momentum_score": 41.6,
       "range_score": 46.2,
       "dividend_yield_pct": 3.48,
-      "price_to_book": 1.1988523,
+      "price_to_book": 1.1993861,
       "debt_to_equity": 37.294,
       "payout_ratio": 0.6785,
       "next_earnings_date": "2026-08-13",
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.101472,
-      "target_high": 1.3411491,
-      "target_low": 0.95447075,
+      "target_mean": 1.101764,
+      "target_high": 1.3415046,
+      "target_low": 0.9547238,
       "num_analysts": 12,
       "recommendation": "none",
-      "upside_to_target_pct": 17.18,
+      "upside_to_target_pct": 17.21,
       "target_status": "covered",
       "history": [
         {
