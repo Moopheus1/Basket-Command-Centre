@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-09-14 10:58:31 UTC",
+  "last_updated_utc": "2026-09-14 15:33:50 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -112,16 +112,16 @@
       "momentum_score": 43.8,
       "range_score": 73.1,
       "dividend_yield_pct": 0.52,
-      "price_to_book": 2.5965276,
+      "price_to_book": 2.5969157,
       "debt_to_equity": 46.056,
       "payout_ratio": 0.1107,
       "next_earnings_date": "2026-08-28",
-      "target_mean": 126.089035,
-      "target_high": 150.32167,
-      "target_low": 95.2036,
+      "target_mean": 126.05665,
+      "target_high": 150.28307,
+      "target_low": 95.179146,
       "num_analysts": 27,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 57.22,
+      "upside_to_target_pct": 57.18,
       "target_status": "covered",
       "history": [
         {
@@ -2867,12 +2867,12 @@
       "debt_to_equity": 68.596,
       "payout_ratio": 0.8268,
       "next_earnings_date": "2026-07-28",
-      "target_mean": 1.01222,
-      "target_high": 1.15,
+      "target_mean": 1.05556,
+      "target_high": 1.42,
       "target_low": 0.88,
       "num_analysts": 9,
       "recommendation": "buy",
-      "upside_to_target_pct": 21.95,
+      "upside_to_target_pct": 27.18,
       "target_status": "covered",
       "history": [
         {
@@ -4050,7 +4050,7 @@
       "target_high": 1.0,
       "target_low": 0.69,
       "num_analysts": 11,
-      "recommendation": "none",
+      "recommendation": "hold",
       "upside_to_target_pct": 14.91,
       "target_status": "covered",
       "history": [
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.067247,
-      "target_high": 1.1557881,
-      "target_low": 0.9547027,
+      "target_mean": 1.0680482,
+      "target_high": 1.1566558,
+      "target_low": 0.9554194,
       "num_analysts": 12,
       "recommendation": "buy",
-      "upside_to_target_pct": 19.25,
+      "upside_to_target_pct": 19.33,
       "target_status": "covered",
       "history": [
         {
