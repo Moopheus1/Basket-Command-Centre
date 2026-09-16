@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-09-16 10:15:37 UTC",
+  "last_updated_utc": "2026-09-16 13:58:14 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -116,12 +116,12 @@
       "debt_to_equity": 46.056,
       "payout_ratio": 0.1107,
       "next_earnings_date": "2026-08-28",
-      "target_mean": 126.155495,
-      "target_high": 150.41173,
-      "target_low": 95.26064,
+      "target_mean": 126.17707,
+      "target_high": 150.43745,
+      "target_low": 95.27693,
       "num_analysts": 27,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 59.29,
+      "upside_to_target_pct": 59.31,
       "target_status": "covered",
       "history": [
         {
@@ -505,7 +505,7 @@
       "momentum_score": 57.9,
       "range_score": 71.2,
       "dividend_yield_pct": 3.68,
-      "price_to_book": 1.1037018,
+      "price_to_book": 1.1041884,
       "debt_to_equity": 37.294,
       "payout_ratio": 0.6785,
       "next_earnings_date": "2026-08-13",
@@ -2867,12 +2867,12 @@
       "debt_to_equity": 68.596,
       "payout_ratio": 0.8268,
       "next_earnings_date": "2026-07-28",
-      "target_mean": 1.01222,
-      "target_high": 1.15,
+      "target_mean": 1.05556,
+      "target_high": 1.42,
       "target_low": 0.88,
       "num_analysts": 9,
       "recommendation": "buy",
-      "upside_to_target_pct": 22.69,
+      "upside_to_target_pct": 27.95,
       "target_status": "covered",
       "history": [
         {
@@ -4050,7 +4050,7 @@
       "target_high": 1.0,
       "target_low": 0.69,
       "num_analysts": 11,
-      "recommendation": "none",
+      "recommendation": "hold",
       "upside_to_target_pct": 14.15,
       "target_status": "covered",
       "history": [
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.0698745,
-      "target_high": 1.1586336,
-      "target_low": 0.9570531,
+      "target_mean": 1.0696507,
+      "target_high": 1.1583911,
+      "target_low": 0.95685285,
       "num_analysts": 12,
       "recommendation": "buy",
-      "upside_to_target_pct": 19.54,
+      "upside_to_target_pct": 19.51,
       "target_status": "covered",
       "history": [
         {
