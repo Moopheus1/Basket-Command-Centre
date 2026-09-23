@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-09-23 10:15:36 UTC",
+  "last_updated_utc": "2026-09-23 14:00:51 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -116,12 +116,12 @@
       "debt_to_equity": 46.056,
       "payout_ratio": 0.1107,
       "next_earnings_date": "2026-08-28",
-      "target_mean": 125.56095,
-      "target_high": 150.41173,
-      "target_low": 95.26064,
+      "target_mean": 125.496506,
+      "target_high": 150.33453,
+      "target_low": 95.21175,
       "num_analysts": 27,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 56.27,
+      "upside_to_target_pct": 56.19,
       "target_status": "covered",
       "history": [
         {
@@ -2867,12 +2867,12 @@
       "debt_to_equity": 68.596,
       "payout_ratio": 0.8268,
       "next_earnings_date": "2026-07-28",
-      "target_mean": 1.01222,
-      "target_high": 1.15,
+      "target_mean": 1.05556,
+      "target_high": 1.42,
       "target_low": 0.88,
       "num_analysts": 9,
       "recommendation": "buy",
-      "upside_to_target_pct": 21.22,
+      "upside_to_target_pct": 26.41,
       "target_status": "covered",
       "history": [
         {
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.0660233,
-      "target_high": 1.1543845,
-      "target_low": 0.9535433,
+      "target_mean": 1.0621583,
+      "target_high": 1.1501992,
+      "target_low": 0.9500861,
       "num_analysts": 12,
       "recommendation": "buy",
-      "upside_to_target_pct": 19.78,
+      "upside_to_target_pct": 19.34,
       "target_status": "covered",
       "history": [
         {
@@ -7583,12 +7583,12 @@
       "debt_to_equity": 53.535,
       "payout_ratio": 1.8157,
       "next_earnings_date": "2026-07-23",
-      "target_mean": 1.97867,
+      "target_mean": 1.972,
       "target_high": 2.22,
       "target_low": 1.74,
       "num_analysts": 15,
-      "recommendation": "none",
-      "upside_to_target_pct": 3.6,
+      "recommendation": "hold",
+      "upside_to_target_pct": 3.25,
       "target_status": "covered",
       "history": [
         {
