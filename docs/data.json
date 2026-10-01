@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-10-01 13:54:26 UTC",
+  "last_updated_utc": "2026-10-01 15:54:07 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -56,10 +56,10 @@
       "count": 19,
       "avg_1d_pct": -0.12,
       "avg_1w_pct": -0.66,
-      "avg_1m_pct": -4.19,
+      "avg_1m_pct": -4.18,
       "benchmark": "^STI",
       "benchmark_1m_pct": -1.33,
-      "rel_to_benchmark_1m_pct": -2.86
+      "rel_to_benchmark_1m_pct": -2.85
     },
     {
       "category": "SGX Real Estate",
@@ -112,16 +112,16 @@
       "momentum_score": 60.4,
       "range_score": 86.8,
       "dividend_yield_pct": 0.54,
-      "price_to_book": 2.4426143,
+      "price_to_book": 2.4453614,
       "debt_to_equity": 46.056,
       "payout_ratio": 0.1107,
       "next_earnings_date": "2026-08-28",
-      "target_mean": 124.348404,
-      "target_high": 150.3474,
-      "target_low": 88.00441,
+      "target_mean": 124.33777,
+      "target_high": 150.33453,
+      "target_low": 87.99689,
       "num_analysts": 26,
       "recommendation": "strong_buy",
-      "upside_to_target_pct": 64.48,
+      "upside_to_target_pct": 64.47,
       "target_status": "covered",
       "history": [
         {
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0625,
       "next_earnings_date": null,
-      "target_mean": 1.0118306,
-      "target_high": 1.1354487,
-      "target_low": 0.8417981,
+      "target_mean": 1.006384,
+      "target_high": 1.1293366,
+      "target_low": 0.83726674,
       "num_analysts": 12,
       "recommendation": "buy",
-      "upside_to_target_pct": 15.64,
+      "upside_to_target_pct": 15.02,
       "target_status": "covered",
       "history": [
         {
@@ -6000,12 +6000,12 @@
       "last_date": "2026-10-01",
       "change_1d_pct": 2.37,
       "change_1w_pct": 1.41,
-      "change_1m_pct": -0.36,
-      "change_ytd_pct": 2.27,
+      "change_1m_pct": -0.21,
+      "change_ytd_pct": 2.43,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 0.97,
+      "rel_strength_1m_pct": 1.12,
       "momentum_score": 47.3,
-      "range_score": 66.3,
+      "range_score": 65.5,
       "dividend_yield_pct": 3.78,
       "price_to_book": 1.2507238,
       "debt_to_equity": 54.126,
@@ -6021,291 +6021,291 @@
       "history": [
         {
           "date": "2026-05-27",
-          "close": 2.2007
+          "close": 2.1972
         },
         {
           "date": "2026-05-28",
-          "close": 2.2103
+          "close": 2.2068
         },
         {
           "date": "2026-05-29",
-          "close": 2.2296
+          "close": 2.2261
         },
         {
           "date": "2026-06-02",
-          "close": 2.2007
+          "close": 2.1972
         },
         {
           "date": "2026-06-03",
-          "close": 2.191
+          "close": 2.1876
         },
         {
           "date": "2026-06-04",
-          "close": 2.191
+          "close": 2.1876
         },
         {
           "date": "2026-06-05",
-          "close": 2.2103
+          "close": 2.2068
         },
         {
           "date": "2026-06-08",
-          "close": 2.1814
+          "close": 2.1779
         },
         {
           "date": "2026-06-09",
-          "close": 2.1814
+          "close": 2.1779
         },
         {
           "date": "2026-06-10",
-          "close": 2.2007
+          "close": 2.1972
         },
         {
           "date": "2026-06-11",
-          "close": 2.2007
+          "close": 2.1972
         },
         {
           "date": "2026-06-12",
-          "close": 2.2103
+          "close": 2.2068
         },
         {
           "date": "2026-06-15",
-          "close": 2.1814
+          "close": 2.1779
         },
         {
           "date": "2026-06-16",
-          "close": 2.1717
+          "close": 2.1683
         },
         {
           "date": "2026-06-17",
-          "close": 2.191
+          "close": 2.1876
         },
         {
           "date": "2026-06-18",
-          "close": 2.1621
+          "close": 2.1587
         },
         {
           "date": "2026-06-19",
-          "close": 2.1717
+          "close": 2.1683
         },
         {
           "date": "2026-06-22",
-          "close": 2.1621
+          "close": 2.1587
         },
         {
           "date": "2026-06-23",
-          "close": 2.1621
+          "close": 2.1587
         },
         {
           "date": "2026-06-24",
-          "close": 2.2007
+          "close": 2.1972
         },
         {
           "date": "2026-06-25",
-          "close": 2.191
+          "close": 2.1876
         },
         {
           "date": "2026-06-26",
-          "close": 2.1717
+          "close": 2.1683
         },
         {
           "date": "2026-06-29",
-          "close": 2.1814
+          "close": 2.1779
         },
         {
           "date": "2026-06-30",
-          "close": 2.1621
+          "close": 2.1587
         },
         {
           "date": "2026-07-01",
-          "close": 2.1621
+          "close": 2.1587
         },
         {
           "date": "2026-07-02",
-          "close": 2.1717
+          "close": 2.1683
         },
         {
           "date": "2026-07-03",
-          "close": 2.1717
+          "close": 2.1683
         },
         {
           "date": "2026-07-06",
-          "close": 2.1428
+          "close": 2.1394
         },
         {
           "date": "2026-07-07",
-          "close": 2.1428
+          "close": 2.1394
         },
         {
           "date": "2026-07-08",
-          "close": 2.1331
+          "close": 2.1297
         },
         {
           "date": "2026-07-09",
-          "close": 2.1428
+          "close": 2.1394
         },
         {
           "date": "2026-07-10",
-          "close": 2.1621
+          "close": 2.1587
         },
         {
           "date": "2026-07-13",
-          "close": 2.1814
+          "close": 2.1779
         },
         {
           "date": "2026-07-14",
-          "close": 2.2007
+          "close": 2.1972
         },
         {
           "date": "2026-07-15",
-          "close": 2.2296
+          "close": 2.2261
         },
         {
           "date": "2026-07-16",
-          "close": 2.2393
+          "close": 2.2358
         },
         {
           "date": "2026-07-17",
-          "close": 2.2393
+          "close": 2.2358
         },
         {
           "date": "2026-07-20",
-          "close": 2.2393
+          "close": 2.2358
         },
         {
           "date": "2026-07-21",
-          "close": 2.2393
+          "close": 2.2358
         },
         {
           "date": "2026-07-22",
-          "close": 2.2586
+          "close": 2.255
         },
         {
           "date": "2026-07-23",
-          "close": 2.22
+          "close": 2.2165
         },
         {
           "date": "2026-07-24",
-          "close": 2.1717
+          "close": 2.1683
         },
         {
           "date": "2026-07-27",
-          "close": 2.1621
+          "close": 2.1587
         },
         {
           "date": "2026-07-28",
-          "close": 2.1814
+          "close": 2.1779
         },
         {
           "date": "2026-07-29",
-          "close": 2.2103
+          "close": 2.2068
         },
         {
           "date": "2026-07-30",
-          "close": 2.2075
+          "close": 2.204
         },
         {
           "date": "2026-07-31",
-          "close": 2.2075
+          "close": 2.204
         },
         {
           "date": "2026-08-03",
-          "close": 2.1778
+          "close": 2.1744
         },
         {
           "date": "2026-08-04",
-          "close": 2.1679
+          "close": 2.1645
         },
         {
           "date": "2026-08-05",
-          "close": 2.2372
+          "close": 2.2337
         },
         {
           "date": "2026-08-06",
-          "close": 2.1877
+          "close": 2.1842
         },
         {
           "date": "2026-08-07",
-          "close": 2.1778
+          "close": 2.1744
         },
         {
           "date": "2026-08-11",
-          "close": 2.1877
+          "close": 2.1842
         },
         {
           "date": "2026-08-12",
-          "close": 2.1877
+          "close": 2.1842
         },
         {
           "date": "2026-08-13",
-          "close": 2.1877
+          "close": 2.1842
         },
         {
           "date": "2026-08-14",
-          "close": 2.1778
+          "close": 2.1744
         },
         {
           "date": "2026-08-17",
-          "close": 2.1976
+          "close": 2.1941
         },
         {
           "date": "2026-08-18",
-          "close": 2.2075
+          "close": 2.204
         },
         {
           "date": "2026-08-19",
-          "close": 2.2075
+          "close": 2.204
         },
         {
           "date": "2026-08-20",
-          "close": 2.2174
+          "close": 2.2139
         },
         {
           "date": "2026-08-21",
-          "close": 2.2372
+          "close": 2.2337
         },
         {
           "date": "2026-08-24",
-          "close": 2.2372
+          "close": 2.2337
         },
         {
           "date": "2026-08-25",
-          "close": 2.2174
+          "close": 2.2139
         },
         {
           "date": "2026-08-26",
-          "close": 2.1976
+          "close": 2.1941
         },
         {
           "date": "2026-08-27",
-          "close": 2.1877
+          "close": 2.1842
         },
         {
           "date": "2026-08-28",
-          "close": 2.1778
+          "close": 2.1744
         },
         {
           "date": "2026-08-31",
-          "close": 2.1778
+          "close": 2.1744
         },
         {
           "date": "2026-09-01",
-          "close": 2.1778
+          "close": 2.1744
         },
         {
           "date": "2026-09-02",
-          "close": 2.1679
+          "close": 2.1645
         },
         {
           "date": "2026-09-03",
-          "close": 2.1679
+          "close": 2.1645
         },
         {
           "date": "2026-09-04",
-          "close": 2.1679
+          "close": 2.1645
         },
         {
           "date": "2026-09-07",
-          "close": 2.2174
+          "close": 2.2139
         },
         {
           "date": "2026-09-08",
@@ -9145,7 +9145,7 @@
       "change_1d_pct": -0.93,
       "change_1w_pct": -2.3,
       "change_1m_pct": -7.02,
-      "change_ytd_pct": -5.58,
+      "change_ytd_pct": -5.54,
       "benchmark": "^STI",
       "rel_strength_1m_pct": -5.69,
       "momentum_score": 56.7,
