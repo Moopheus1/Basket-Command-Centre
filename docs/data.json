@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-10-20 10:24:36 UTC",
+  "last_updated_utc": "2026-10-20 14:01:40 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -116,12 +116,12 @@
       "debt_to_equity": 46.056,
       "payout_ratio": 0.113900006,
       "next_earnings_date": "2026-10-29",
-      "target_mean": 123.54154,
+      "target_mean": 123.53676,
       "target_high": 151.10654,
       "target_low": 88.44876,
       "num_analysts": 26,
       "recommendation": "buy",
-      "upside_to_target_pct": 67.74,
+      "upside_to_target_pct": 67.73,
       "target_status": "covered",
       "history": [
         {
@@ -509,12 +509,12 @@
       "debt_to_equity": 37.294,
       "payout_ratio": 0.7039,
       "next_earnings_date": "2026-08-13",
-      "target_mean": 151.04,
+      "target_mean": 150.58762,
       "target_high": 228.0,
       "target_low": 93.0,
       "num_analysts": 21,
       "recommendation": "buy",
-      "upside_to_target_pct": 44.67,
+      "upside_to_target_pct": 44.24,
       "target_status": "covered",
       "history": [
         {
@@ -2469,7 +2469,7 @@
       "rel_strength_1m_pct": -1.28,
       "momentum_score": 46.3,
       "range_score": 97.4,
-      "dividend_yield_pct": 5.19,
+      "dividend_yield_pct": 5.17,
       "price_to_book": 0.95426565,
       "debt_to_equity": 72.331,
       "payout_ratio": 0.7668,
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 57.116,
       "payout_ratio": 1.0605999,
       "next_earnings_date": null,
-      "target_mean": 1.0043937,
-      "target_high": 1.1403612,
-      "target_low": 0.8454402,
+      "target_mean": 1.0051242,
+      "target_high": 1.1411906,
+      "target_low": 0.8460551,
       "num_analysts": 14,
       "recommendation": "buy",
-      "upside_to_target_pct": 14.14,
+      "upside_to_target_pct": 14.22,
       "target_status": "covered",
       "history": [
         {
@@ -6404,12 +6404,12 @@
       "debt_to_equity": 41.335,
       "payout_ratio": 0.46130002,
       "next_earnings_date": "2026-07-29",
-      "target_mean": 0.96125,
+      "target_mean": 0.95562,
       "target_high": 1.1,
       "target_low": 0.82,
       "num_analysts": 16,
       "recommendation": "hold",
-      "upside_to_target_pct": 22.45,
+      "upside_to_target_pct": 21.74,
       "target_status": "covered",
       "history": [
         {
