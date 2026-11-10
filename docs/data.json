@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-11-10 10:15:42 UTC",
+  "last_updated_utc": "2026-11-10 15:56:55 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -116,12 +116,12 @@
       "debt_to_equity": 37.89,
       "payout_ratio": 0.10569999,
       "next_earnings_date": "2026-10-29",
-      "target_mean": 107.474976,
-      "target_high": 135.4799,
-      "target_low": 59.905834,
+      "target_mean": 107.301254,
+      "target_high": 135.26091,
+      "target_low": 59.809002,
       "num_analysts": 26,
       "recommendation": "buy",
-      "upside_to_target_pct": 49.37,
+      "upside_to_target_pct": 49.13,
       "target_status": "covered",
       "history": [
         {
@@ -897,7 +897,7 @@
       "rel_strength_1m_pct": -4.14,
       "momentum_score": 44.1,
       "range_score": 71.9,
-      "dividend_yield_pct": 0.67,
+      "dividend_yield_pct": 0.76,
       "price_to_book": null,
       "debt_to_equity": null,
       "payout_ratio": null,
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 71.28,
       "payout_ratio": 9.5161,
       "next_earnings_date": null,
-      "target_mean": 0.99990165,
-      "target_high": 1.1010635,
-      "target_low": 0.84058744,
+      "target_mean": 0.9946811,
+      "target_high": 1.0953149,
+      "target_low": 0.8361987,
       "num_analysts": 14,
       "recommendation": "buy",
-      "upside_to_target_pct": 11.72,
+      "upside_to_target_pct": 11.14,
       "target_status": "covered",
       "history": [
         {
