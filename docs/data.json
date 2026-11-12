@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-11-12 09:15:43 UTC",
+  "last_updated_utc": "2026-11-12 10:15:39 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -8,12 +8,12 @@
       "applies_to": "SGX",
       "name": "STI Index",
       "currency": "SGD",
-      "last_price": 5281.6299,
+      "last_price": 5282.7002,
       "last_date": "2026-11-12",
-      "change_1d_pct": -0.15,
-      "change_1w_pct": 0.25,
-      "change_1m_pct": -2.74,
-      "change_ytd_pct": 13.43
+      "change_1d_pct": -0.13,
+      "change_1w_pct": 0.27,
+      "change_1m_pct": -2.72,
+      "change_ytd_pct": 13.46
     },
     "^HSI": {
       "label": "HK Index (HSI)",
@@ -34,9 +34,9 @@
       "currency": "HKD",
       "last_price": 8.29,
       "last_date": "2026-11-12",
-      "change_1d_pct": -3.6,
-      "change_1w_pct": -0.12,
-      "change_1m_pct": -5.74,
+      "change_1d_pct": -2.47,
+      "change_1w_pct": -5.58,
+      "change_1m_pct": -5.15,
       "change_ytd_pct": -31.03
     }
   },
@@ -48,8 +48,8 @@
       "avg_1w_pct": -0.48,
       "avg_1m_pct": 0.77,
       "benchmark": "^STI",
-      "benchmark_1m_pct": -2.74,
-      "rel_to_benchmark_1m_pct": 3.51
+      "benchmark_1m_pct": -2.72,
+      "rel_to_benchmark_1m_pct": 3.49
     },
     {
       "category": "SGX Pref Share",
@@ -58,8 +58,8 @@
       "avg_1w_pct": 0.0,
       "avg_1m_pct": 0.0,
       "benchmark": "^STI",
-      "benchmark_1m_pct": -2.74,
-      "rel_to_benchmark_1m_pct": 2.74
+      "benchmark_1m_pct": -2.72,
+      "rel_to_benchmark_1m_pct": 2.72
     },
     {
       "category": "SGX Real Estate",
@@ -68,8 +68,8 @@
       "avg_1w_pct": 0.0,
       "avg_1m_pct": -1.65,
       "benchmark": "^STI",
-      "benchmark_1m_pct": -2.74,
-      "rel_to_benchmark_1m_pct": 1.09
+      "benchmark_1m_pct": -2.72,
+      "rel_to_benchmark_1m_pct": 1.07
     },
     {
       "category": "HK Stock",
@@ -84,12 +84,12 @@
     {
       "category": "HK/SGX ETF",
       "count": 2,
-      "avg_1d_pct": -3.34,
-      "avg_1w_pct": 0.99,
-      "avg_1m_pct": -5.5,
+      "avg_1d_pct": -2.4,
+      "avg_1w_pct": -2.55,
+      "avg_1m_pct": -4.92,
       "benchmark": "^HSI",
       "benchmark_1m_pct": -1.38,
-      "rel_to_benchmark_1m_pct": -4.12
+      "rel_to_benchmark_1m_pct": -3.54
     }
   ],
   "instruments": [
@@ -889,13 +889,13 @@
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/3067.HK/key-statistics",
       "last_price": 8.29,
       "last_date": "2026-11-12",
-      "change_1d_pct": -3.6,
-      "change_1w_pct": -0.12,
-      "change_1m_pct": -5.74,
+      "change_1d_pct": -2.47,
+      "change_1w_pct": -5.58,
+      "change_1m_pct": -5.15,
       "change_ytd_pct": -31.03,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": -4.36,
-      "momentum_score": 57.9,
+      "rel_strength_1m_pct": -3.77,
+      "momentum_score": 62.5,
       "range_score": 84.2,
       "dividend_yield_pct": 0.76,
       "price_to_book": null,
@@ -910,10 +910,6 @@
       "upside_to_target_pct": null,
       "target_status": "no_coverage",
       "history": [
-        {
-          "date": "2026-07-07",
-          "close": 9.495
-        },
         {
           "date": "2026-07-08",
           "close": 9.98
@@ -1267,6 +1263,10 @@
           "close": 8.6
         },
         {
+          "date": "2026-11-11",
+          "close": 8.5
+        },
+        {
           "date": "2026-11-12",
           "close": 8.29
         }
@@ -1282,13 +1282,13 @@
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/HST.SI/key-statistics",
       "last_price": 0.63,
       "last_date": "2026-11-12",
-      "change_1d_pct": -3.08,
-      "change_1w_pct": 2.11,
-      "change_1m_pct": -5.26,
+      "change_1d_pct": -2.33,
+      "change_1w_pct": 0.48,
+      "change_1m_pct": -4.69,
       "change_ytd_pct": -31.74,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": -3.88,
-      "momentum_score": 46.3,
+      "rel_strength_1m_pct": -3.31,
+      "momentum_score": 44.2,
       "range_score": 82.9,
       "dividend_yield_pct": null,
       "price_to_book": null,
@@ -1303,10 +1303,6 @@
       "upside_to_target_pct": null,
       "target_status": "no_coverage",
       "history": [
-        {
-          "date": "2026-07-07",
-          "close": 0.728
-        },
         {
           "date": "2026-07-08",
           "close": 0.759
@@ -1660,6 +1656,10 @@
           "close": 0.65
         },
         {
+          "date": "2026-11-11",
+          "close": 0.645
+        },
+        {
           "date": "2026-11-12",
           "close": 0.63
         }
@@ -1680,8 +1680,8 @@
       "change_1m_pct": -0.3,
       "change_ytd_pct": -2.31,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 2.44,
-      "momentum_score": 47.1,
+      "rel_strength_1m_pct": 2.42,
+      "momentum_score": 47.0,
       "range_score": 83.9,
       "dividend_yield_pct": 7.33,
       "price_to_book": 1.0789679,
@@ -2073,7 +2073,7 @@
       "change_1m_pct": -3.23,
       "change_ytd_pct": -9.27,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -0.49,
+      "rel_strength_1m_pct": -0.51,
       "momentum_score": 30.8,
       "range_score": 100.0,
       "dividend_yield_pct": 9.77,
@@ -2466,7 +2466,7 @@
       "change_1m_pct": 1.84,
       "change_ytd_pct": -17.31,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 4.58,
+      "rel_strength_1m_pct": 4.56,
       "momentum_score": 53.9,
       "range_score": 86.9,
       "dividend_yield_pct": 6.73,
@@ -2859,7 +2859,7 @@
       "change_1m_pct": 0.61,
       "change_ytd_pct": -7.69,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 3.35,
+      "rel_strength_1m_pct": 3.33,
       "momentum_score": 49.1,
       "range_score": 62.8,
       "dividend_yield_pct": 7.27,
@@ -3252,7 +3252,7 @@
       "change_1m_pct": -1.65,
       "change_ytd_pct": -9.22,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 1.09,
+      "rel_strength_1m_pct": 1.07,
       "momentum_score": 31.6,
       "range_score": 84.4,
       "dividend_yield_pct": 5.04,
@@ -3645,8 +3645,8 @@
       "change_1m_pct": 5.86,
       "change_ytd_pct": 3.14,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 8.6,
-      "momentum_score": 75.1,
+      "rel_strength_1m_pct": 8.58,
+      "momentum_score": 75.0,
       "range_score": 48.0,
       "dividend_yield_pct": 2.57,
       "price_to_book": 1.0920074,
@@ -4038,8 +4038,8 @@
       "change_1m_pct": -1.45,
       "change_ytd_pct": -13.53,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 1.29,
-      "momentum_score": 65.5,
+      "rel_strength_1m_pct": 1.27,
+      "momentum_score": 65.4,
       "range_score": 100.0,
       "dividend_yield_pct": 7.1,
       "price_to_book": 0.49526584,
@@ -4431,7 +4431,7 @@
       "change_1m_pct": 0.0,
       "change_ytd_pct": 0.44,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 2.74,
+      "rel_strength_1m_pct": 2.72,
       "momentum_score": 19.1,
       "range_score": 70.6,
       "dividend_yield_pct": null,
@@ -4824,7 +4824,7 @@
       "change_1m_pct": 0.0,
       "change_ytd_pct": -12.08,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 2.74,
+      "rel_strength_1m_pct": 2.72,
       "momentum_score": 48.7,
       "range_score": 87.2,
       "dividend_yield_pct": 6.39,
@@ -5217,7 +5217,7 @@
       "change_1m_pct": 6.5,
       "change_ytd_pct": -2.41,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 9.24,
+      "rel_strength_1m_pct": 9.22,
       "momentum_score": 48.7,
       "range_score": 31.4,
       "dividend_yield_pct": 5.81,
@@ -5610,7 +5610,7 @@
       "change_1m_pct": 0.0,
       "change_ytd_pct": -10.15,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 2.74,
+      "rel_strength_1m_pct": 2.72,
       "momentum_score": 49.6,
       "range_score": 88.9,
       "dividend_yield_pct": 6.67,
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 71.28,
       "payout_ratio": 9.5161,
       "next_earnings_date": null,
-      "target_mean": 0.9930165,
-      "target_high": 1.0934818,
-      "target_low": 0.8347993,
+      "target_mean": 0.993662,
+      "target_high": 1.0941926,
+      "target_low": 0.83534193,
       "num_analysts": 14,
       "recommendation": "buy",
-      "upside_to_target_pct": 12.84,
+      "upside_to_target_pct": 12.92,
       "target_status": "covered",
       "history": [
         {
@@ -6003,7 +6003,7 @@
       "change_1m_pct": 2.84,
       "change_ytd_pct": 2.74,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 5.58,
+      "rel_strength_1m_pct": 5.56,
       "momentum_score": 53.3,
       "range_score": 38.8,
       "dividend_yield_pct": 3.68,
@@ -6396,7 +6396,7 @@
       "change_1m_pct": -0.6,
       "change_ytd_pct": -10.58,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 2.14,
+      "rel_strength_1m_pct": 2.12,
       "momentum_score": 32.7,
       "range_score": 56.0,
       "dividend_yield_pct": 4.2,
@@ -6789,7 +6789,7 @@
       "change_1m_pct": -4.0,
       "change_ytd_pct": -36.02,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -1.26,
+      "rel_strength_1m_pct": -1.28,
       "momentum_score": 45.8,
       "range_score": 88.4,
       "dividend_yield_pct": 4.39,
@@ -7182,7 +7182,7 @@
       "change_1m_pct": 0.0,
       "change_ytd_pct": -10.0,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 2.74,
+      "rel_strength_1m_pct": 2.72,
       "momentum_score": 48.5,
       "range_score": 73.2,
       "dividend_yield_pct": 6.79,
@@ -7575,7 +7575,7 @@
       "change_1m_pct": -3.82,
       "change_ytd_pct": -10.88,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": -1.08,
+      "rel_strength_1m_pct": -1.1,
       "momentum_score": 30.5,
       "range_score": 86.3,
       "dividend_yield_pct": 7.13,
@@ -7968,7 +7968,7 @@
       "change_1m_pct": 1.63,
       "change_ytd_pct": -16.21,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 4.37,
+      "rel_strength_1m_pct": 4.35,
       "momentum_score": 64.8,
       "range_score": 76.7,
       "dividend_yield_pct": 6.83,
@@ -8361,7 +8361,7 @@
       "change_1m_pct": 3.56,
       "change_ytd_pct": -11.51,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 6.3,
+      "rel_strength_1m_pct": 6.28,
       "momentum_score": 41.3,
       "range_score": 65.9,
       "dividend_yield_pct": 6.61,
@@ -8754,8 +8754,8 @@
       "change_1m_pct": 2.94,
       "change_ytd_pct": 4.12,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 5.68,
-      "momentum_score": 54.6,
+      "rel_strength_1m_pct": 5.66,
+      "momentum_score": 54.5,
       "range_score": 50.0,
       "dividend_yield_pct": 7.17,
       "price_to_book": 0.62836623,
@@ -9147,7 +9147,7 @@
       "change_1m_pct": 0.0,
       "change_ytd_pct": -5.58,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 2.74,
+      "rel_strength_1m_pct": 2.72,
       "momentum_score": 50.6,
       "range_score": 64.6,
       "dividend_yield_pct": 9.47,
@@ -9540,7 +9540,7 @@
       "change_1m_pct": 2.27,
       "change_ytd_pct": 1.95,
       "benchmark": "^STI",
-      "rel_strength_1m_pct": 5.01,
+      "rel_strength_1m_pct": 4.99,
       "momentum_score": 52.9,
       "range_score": 78.0,
       "dividend_yield_pct": 5.89,
