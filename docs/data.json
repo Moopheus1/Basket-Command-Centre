@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-11-23 20:47:22 UTC",
+  "last_updated_utc": "2026-11-24 00:15:41 UTC",
   "instrument_count": 25,
   "error_count": 0,
   "benchmarks": {
@@ -74,12 +74,12 @@
     {
       "category": "HK Stock",
       "count": 2,
-      "avg_1d_pct": -1.0,
-      "avg_1w_pct": -6.27,
-      "avg_1m_pct": -3.92,
+      "avg_1d_pct": -1.12,
+      "avg_1w_pct": -7.88,
+      "avg_1m_pct": -8.49,
       "benchmark": "^HSI",
       "benchmark_1m_pct": -2.28,
-      "rel_to_benchmark_1m_pct": -1.64
+      "rel_to_benchmark_1m_pct": -6.21
     },
     {
       "category": "HK/SGX ETF",
@@ -101,33 +101,29 @@
       "yfinance_url": "https://finance.yahoo.com/quote/1211.HK",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/1211.HK/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/1211.HK/key-statistics",
-      "last_price": 62.35,
-      "last_date": "2026-11-20",
-      "change_1d_pct": -1.34,
-      "change_1w_pct": -4.08,
-      "change_1m_pct": -7.49,
-      "change_ytd_pct": -36.56,
+      "last_price": 61.2,
+      "last_date": "2026-11-23",
+      "change_1d_pct": -1.84,
+      "change_1w_pct": -5.99,
+      "change_1m_pct": -14.53,
+      "change_ytd_pct": -37.73,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": -5.21,
-      "momentum_score": 60.1,
+      "rel_strength_1m_pct": -12.25,
+      "momentum_score": 62.4,
       "range_score": 100.0,
       "dividend_yield_pct": 0.66,
       "price_to_book": 1.900597,
       "debt_to_equity": 37.89,
       "payout_ratio": 0.10569999,
       "next_earnings_date": "2026-10-29",
-      "target_mean": 105.82819,
-      "target_high": 134.88045,
-      "target_low": 59.946606,
+      "target_mean": 105.75622,
+      "target_high": 134.78871,
+      "target_low": 59.905834,
       "num_analysts": 25,
       "recommendation": "buy",
-      "upside_to_target_pct": 69.73,
+      "upside_to_target_pct": 72.8,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-07-16",
-          "close": 90.95
-        },
         {
           "date": "2026-07-17",
           "close": 88.7
@@ -483,6 +479,10 @@
         {
           "date": "2026-11-20",
           "close": 62.35
+        },
+        {
+          "date": "2026-11-23",
+          "close": 61.2
         }
       ]
     },
@@ -494,16 +494,16 @@
       "yfinance_url": "https://finance.yahoo.com/quote/9618.HK",
       "yfinance_analysis_url": "https://finance.yahoo.com/quote/9618.HK/analysis",
       "yfinance_keystats_url": "https://finance.yahoo.com/quote/9618.HK/key-statistics",
-      "last_price": 97.95,
-      "last_date": "2026-11-20",
-      "change_1d_pct": -0.66,
-      "change_1w_pct": -8.46,
-      "change_1m_pct": -0.36,
-      "change_ytd_pct": -14.52,
+      "last_price": 97.55,
+      "last_date": "2026-11-23",
+      "change_1d_pct": -0.41,
+      "change_1w_pct": -9.76,
+      "change_1m_pct": -2.45,
+      "change_ytd_pct": -14.87,
       "benchmark": "^HSI",
-      "rel_strength_1m_pct": 1.92,
+      "rel_strength_1m_pct": -0.17,
       "momentum_score": 67.4,
-      "range_score": 99.1,
+      "range_score": 100.0,
       "dividend_yield_pct": 4.0,
       "price_to_book": 1.0115318,
       "debt_to_equity": 38.21,
@@ -514,13 +514,9 @@
       "target_low": 98.0,
       "num_analysts": 22,
       "recommendation": "buy",
-      "upside_to_target_pct": 47.64,
+      "upside_to_target_pct": 48.24,
       "target_status": "covered",
       "history": [
-        {
-          "date": "2026-07-16",
-          "close": 116.8
-        },
         {
           "date": "2026-07-17",
           "close": 116.3
@@ -876,6 +872,10 @@
         {
           "date": "2026-11-20",
           "close": 97.95
+        },
+        {
+          "date": "2026-11-23",
+          "close": 97.55
         }
       ]
     },
@@ -5618,12 +5618,12 @@
       "debt_to_equity": 71.28,
       "payout_ratio": 9.5161,
       "next_earnings_date": null,
-      "target_mean": 0.97833884,
-      "target_high": 1.0670204,
-      "target_low": 0.81459785,
+      "target_mean": 0.97765285,
+      "target_high": 1.0662723,
+      "target_low": 0.81402665,
       "num_analysts": 14,
       "recommendation": "buy",
-      "upside_to_target_pct": 18.59,
+      "upside_to_target_pct": 18.5,
       "target_status": "covered",
       "history": [
         {
